@@ -1,45 +1,25 @@
-// src/product/product.controller.ts
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Put,
-  Delete,
-} from '@nestjs/common';
-import { Product } from './product.model';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { Models } from './product.schema';
+import { ApiTags } from '@nestjs/swagger';
+import {
+  Product,
+  TProductResponse,
+} from 'src/submodules/models/ProductModel/Product';
+import { ProductQueryDto } from './dto/query-product';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
-  @Post()
-  create(@Body() product: Product): Promise<Product> {
-    return this.productService.create(product);
-  }
-
   @Get()
-  findAll(): Promise<Product[]> {
-    return this.productService.findAll();
+  async findAll(@Query() query: ProductQueryDto): Promise<TProductResponse> {
+    return this.productService.findAll(query);
   }
+  @Post('store')
+  async createProduct(@Body() product: Partial<Product>) {
+    console.log(product);
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Product> {
-    return this.productService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() product: Product,
-  ): Promise<[number, Product[]]> {
-    return this.productService.update(+id, product);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<number> {
-    return this.productService.remove(+id);
+    return this.productService.createProduct(product);
   }
 }

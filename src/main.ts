@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module'; // Update the import path
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   const config = new DocumentBuilder()
     .setTitle('NestJS Swagger Example')
@@ -15,7 +15,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('', app, document);
-
   await app.listen(3000);
 }
 bootstrap();

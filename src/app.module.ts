@@ -1,11 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductController } from './modules/Product/product.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { databaseConfig } from './configs/database.config';
 import { CustomerController } from './modules/Auth/auth.controller';
 import { CustomerService } from './modules/Auth/auth.service';
+import { CustomerModel } from './modules/Auth/auth.schema';
+import { ProductController } from './modules/Product/product.controller';
+import { ProductService } from './modules/Product/product.service';
+import { CategoryController } from './modules/Category/category.controller';
+import { CategoryService } from './modules/Category/category.service';
+import { ProducerController } from './modules/Producer/producer.controller';
+import { producerService } from './modules/Producer/producer.service';
 
 @Module({
   imports: [
@@ -20,7 +25,19 @@ import { CustomerService } from './modules/Auth/auth.service';
       synchronize: true, // Auto-create and update database tables (not recommended for production)
     }),
   ],
-  controllers: [AppController, CustomerController],
-  providers: [AppService, CustomerService],
+  controllers: [
+    AppController,
+    CustomerController,
+    ProductController,
+    CategoryController,
+    ProducerController,
+  ],
+  providers: [
+    AppService,
+    CustomerService,
+    ProductService,
+    CategoryService,
+    producerService,
+  ],
 })
 export class AppModule {}

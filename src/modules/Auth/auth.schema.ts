@@ -1,49 +1,46 @@
-/**
- * Keep this file in sync with the code in the "Usage of `sequelize.define`"
- * section in /docs/manual/other-topics/typescript.md
- *
- * Don't include this comment in the md file.
- */
 import {
-  Sequelize,
-  Model,
-  DataTypes,
   CreationOptional,
+  DataTypes,
   InferAttributes,
   InferCreationAttributes,
+  Model,
 } from 'sequelize';
-import { SequelizeConfig } from 'src/configs/SequelizeConfig';
-import { Customer } from 'src/models/CustomerModel/Customer';
-
-// We recommend you declare an interface for the attributes, for stricter typechecking
-interface CustomerModel extends Model, Customer {
-  // Some fields are optional when calling UserModel.create() or UserModel.build()
-}
-export const CustomerModel = SequelizeConfig.define<CustomerModel>(
-  'db_customer',
+import { Sequelize } from 'sequelize-typescript';
+import { SequelizeBase } from 'src/configs/SequelizeConfig';
+import { Customer } from 'src/submodules/models/CustomerModel/Customer';
+export interface Models extends Customer, Model {}
+export const CustomerModel = SequelizeBase.define<Models>(
+  'db_customers',
   {
     id: {
+      type: DataTypes.NUMBER,
       primaryKey: true,
-      type: DataTypes.INTEGER.UNSIGNED,
+      unique: true,
       autoIncrement: true,
     },
     fullName: {
       type: DataTypes.STRING,
     },
-    username: {
+    email: {
       type: DataTypes.STRING,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
     },
-    address: {
-      type: DataTypes.STRING,
+    phone: {
+      type: DataTypes.NUMBER,
     },
-    email: {
-      type: DataTypes.INTEGER,
+    trash: {
+      type: DataTypes.NUMBER,
+      defaultValue: 1,
+    },
+    status: {
+      type: DataTypes.NUMBER,
+      defaultValue: 1,
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   },
 );
