@@ -10,7 +10,7 @@ export interface Product extends BaseModel, Modified {
   price_sale?: number;
   image?: string;
   listImage?: string;
-  trash?: number;
+  deleteAt?: number;
 }
 
 export interface TProductResponse {

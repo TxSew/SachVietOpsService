@@ -41,7 +41,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      trash: {
+      deleteAt: {
         type: Sequelize.INTEGER,
       },
       status: {

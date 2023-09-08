@@ -31,7 +31,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: 'db_producer',
-        }
+        },
       },
       number: {
         type: Sequelize.INTEGER(11),
@@ -50,7 +50,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      trash: {
+      deleteAt: {
         type: Sequelize.INTEGER,
       },
       status: {

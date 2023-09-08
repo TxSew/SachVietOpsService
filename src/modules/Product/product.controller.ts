@@ -18,8 +18,6 @@ export class ProductController {
   }
   @Post('store')
   async createProduct(@Body() product: Partial<Product>) {
-    console.log(product);
-
     return this.productService.createProduct(product);
   }
 }

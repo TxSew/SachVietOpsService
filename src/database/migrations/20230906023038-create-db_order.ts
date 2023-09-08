@@ -14,7 +14,7 @@ module.exports = {
       },
       customerID: {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model: 'db_customers',
         },
       },
@@ -59,7 +59,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      trash: {
+      deleteAt: {
         type: Sequelize.INTEGER,
       },
       status: {

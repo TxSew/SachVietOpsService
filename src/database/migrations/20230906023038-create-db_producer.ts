@@ -26,7 +26,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      trash: {
+      deleteAt: {
         type: Sequelize.INTEGER,
       },
       status: {
@@ -35,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('db_producers');
+    await queryInterface.dropTable('db_producer');
   },
 };
