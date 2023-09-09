@@ -11,7 +11,7 @@ export class CategoryService {
     WITH RECURSIVE CategoryTree AS (
       SELECT id, parentId, name, slug
       FROM db_category
-      WHERE id = 9
+      WHERE id = 1
       UNION ALL
       SELECT c.id, c.parentId, c.name, c.slug
       FROM db_category c
@@ -19,7 +19,6 @@ export class CategoryService {
     )
     SELECT * FROM CategoryTree;
   `;
-
     const [results] = await SequelizeBase.query(query);
 
     const nestedCategories = this.buildCategoryHierarchy(results);
@@ -30,12 +29,11 @@ export class CategoryService {
   async buildCategoryHierarchy(categories) {
     const categoryMap = {};
     const rootCategories = [];
-
     categories.forEach((category) => {
       category.subcategories = [];
       categoryMap[category.id] = category;
 
-      if (category.parentId === 9) {
+      if (category.parentId === null) {
         rootCategories.push(category);
       } else {
         const parentCategory = categoryMap[category.parentId];

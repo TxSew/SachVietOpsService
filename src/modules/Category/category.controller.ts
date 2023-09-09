@@ -22,6 +22,8 @@ export class CategoryController {
   }
   @Post('store')
   createCategory(@Body() category) {
+    console.log(category);
+
     return this.categoryService.createCategory(category);
   }
   @Put('update/:id')
@@ -31,8 +33,6 @@ export class CategoryController {
   }
   @Delete(':id')
   removeCategory(@Param('id') id: string) {
-    console.log(id);
-
     return this.categoryService.removeCategory(Number(id));
   }
 }

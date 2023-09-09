@@ -21,6 +21,10 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
+      slug: {
+        type: Sequelize.STRING,
+        unique: true,
+      },
       listImage: {
         type: Sequelize.STRING,
       },

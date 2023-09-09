@@ -7,10 +7,10 @@ import {
 } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { Customer } from 'src/submodules/models/CustomerModel/Customer';
-export interface Models extends Customer, Model {}
+import { User } from 'src/submodules/models/UserModel/User';
+export interface Models extends User, Model {}
 export const CustomerModel = SequelizeBase.define<Models>(
-  'db_customers',
+  'db_users',
   {
     id: {
       type: DataTypes.NUMBER,

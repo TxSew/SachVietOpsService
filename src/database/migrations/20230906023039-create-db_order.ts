@@ -12,10 +12,10 @@ module.exports = {
       orderCode: {
         type: Sequelize.INTEGER(11),
       },
-      customerID: {
+      userID: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'db_customers',
+          model: 'db_users',
         },
       },
       orderDate: {
