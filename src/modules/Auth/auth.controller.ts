@@ -4,6 +4,7 @@ import { Models } from './auth.schema';
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from 'src/submodules/models/UserModel/User';
+import { LoginRequestDTO } from './dto/loginRequest.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class CustomerController {
@@ -23,7 +24,7 @@ export class CustomerController {
   @Post('Login')
   @ApiOperation({ summary: 'check login account' })
   @ApiCreatedResponse({ description: ' checkLogin successfully.' })
-  Login(@Body() data: User): Promise<User> {
+  Login(@Body() data: LoginRequestDTO) {
     return this.customerService.checkLogin(data);
   }
 }

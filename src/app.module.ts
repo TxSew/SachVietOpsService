@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CustomerController } from './modules/Auth/auth.controller';
 import { CustomerService } from './modules/Auth/auth.service';
-import { CustomerModel } from './modules/Auth/auth.schema';
 import { ProductController } from './modules/Product/product.controller';
 import { ProductService } from './modules/Product/product.service';
 import { CategoryController } from './modules/Category/category.controller';

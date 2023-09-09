@@ -4,6 +4,4 @@ export interface User {
   password?: string;
   userGroup?: number;
   email?: string;
-  phone?: number;
-  address?: string;
 }

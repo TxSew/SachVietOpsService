@@ -9,7 +9,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { User } from 'src/submodules/models/UserModel/User';
 export interface Models extends User, Model {}
-export const CustomerModel = SequelizeBase.define<Models>(
+export const UserModel = SequelizeBase.define<Models>(
   'db_users',
   {
     id: {
@@ -28,9 +28,16 @@ export const CustomerModel = SequelizeBase.define<Models>(
     password: {
       type: DataTypes.STRING,
     },
-    phone: {
+    // phone: {
+    //   type: DataTypes.NUMBER,
+    // },
+     userGroup: {
       type: DataTypes.NUMBER,
-    },
+       defaultValue:1,
+        references: {
+           model:"db_userGroup"
+        }
+     },
     trash: {
       type: DataTypes.NUMBER,
       defaultValue: 1,
