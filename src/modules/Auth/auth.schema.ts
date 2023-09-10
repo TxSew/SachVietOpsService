@@ -38,7 +38,7 @@ export const UserModel = SequelizeBase.define<Models>(
            model:"db_userGroup"
         }
      },
-    trash: {
+    deleteAt: {
       type: DataTypes.NUMBER,
       defaultValue: 1,
     },

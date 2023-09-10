@@ -7,16 +7,17 @@ import {
   Put,
   Query,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Models } from './product.schema';
 import { ApiTags } from '@nestjs/swagger';
 import {
   Product,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
 import { ProductQueryDto } from './dto/query-product';
-import { query } from 'express';
+import { JwtAuthGuard } from 'src/guard/jwt.guard';
+import { JwtMiddleware } from 'src/guard/jwt.middleware';
 
 @ApiTags('products')
 @Controller('products')
@@ -30,6 +31,7 @@ export class ProductController {
   async findOne(@Param('id') slug: string): Promise<Product> {
     return this.productService.findOne(slug);
   }
+  @UseGuards(JwtMiddleware)
   @Post('store')
   async createProduct(@Body() product) {
     console.log(product);
