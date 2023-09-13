@@ -17,25 +17,38 @@ export class JwtAuthGuard implements CanActivate {
 
     // If the route is marked as public (no authentication required), allow access
     if (isPublic) {
+      console.log('sss');
+      
       return true;
     }
 
     // Check if a JWT token is present in the request headers
     const token = request.headers.authorization?.split(' ')[1];
+console.log(token);
 
     if (!token) {
+       
       return false; // No token found, access denied
     }
 
     try {
       // Verify and decode the token using the JWT service
-      const decoded = this.jwtService.verify(token );
+       
+      const decoded =  this.jwtService.verify(token, {
+         secret:process.env.JWT_ExpiresIn
+      })
+       console.log("decoded", decoded);
+        console.log("response", request);
+        
+       
       
       // Attach the user data to the request for later use in controllers
       request.user = decoded;
       
       return true; // Token is valid, allow access
     } catch (error) {
+      console.log('err');
+      
       return false; // Token is invalid, access denied
     }
   }

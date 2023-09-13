@@ -9,9 +9,9 @@ export class producerService {
     const data = await ProducerModel.findAll({});
     return data;
   }
-  async create(data: Partial<Producer>): Promise<Producer> {
-    console.log(data);
-    const producerData = await ProducerModel.create(data);
+  async create(producer: Partial<Producer>): Promise<Producer> {
+    console.log(producer);
+    const producerData = await ProducerModel.create(producer);
     return producerData;
   }
 
@@ -30,7 +30,7 @@ export class producerService {
     return;
   }
   async remove(id: number) {
-    const destroy = await ProducerModel.destroy({
+ const destroy = await ProducerModel.destroy({
       where: { id: id },
     });
     return destroy;

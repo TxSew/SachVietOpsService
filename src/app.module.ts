@@ -11,6 +11,8 @@ import { ProducerController } from './modules/Producer/producer.controller';
 import { producerService } from './modules/Producer/producer.service';
 import { ProductController } from './modules/Product/product.controller';
 import { ProductService } from './modules/Product/product.service';
+import { OrderController } from './modules/Order/order.controller';
+import { OrderService } from './modules/Order/order.service';
 
 
 @Module({
@@ -36,6 +38,7 @@ import { ProductService } from './modules/Product/product.service';
     ProductController,
     CategoryController,
     ProducerController,
+     OrderController
   ],
   providers: [
     AppService,
@@ -43,6 +46,7 @@ import { ProductService } from './modules/Product/product.service';
     ProductService,
     CategoryService,
     producerService,
+    OrderService
   ],
 })
 export class AppModule {}

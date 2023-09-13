@@ -43,6 +43,7 @@ export class ProductService {
   }
   // create a new Product
   async createProduct(data: Partial<Product>) {
+     console.log(data);
     const productData = await ProductModel.create(data);
     return productData;
   }

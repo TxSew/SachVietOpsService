@@ -31,16 +31,19 @@ export class ProductController {
   async findOne(@Param('id') slug: string): Promise<Product> {
     return this.productService.findOne(slug);
   }
-  @UseGuards(JwtMiddleware)
+  // @UseGuards(JwtMiddleware)
+  @UseGuards(JwtAuthGuard)
   @Post('store')
-  async createProduct(@Body() product) {
+  async createProduct(@Body() product :Partial<Product>): Promise<Product> {
     console.log(product);
     return this.productService.createProduct(product);
   }
+  @UseGuards(JwtAuthGuard)
   @Put('update/:id')
   async updateProduct(@Param('id') id: number, @Body() product: Product) {
     return this.productService.updateProduct(id, product);
   }
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async removeProduct(@Param('id') id: string) {
     return this.productService.trashRemoveProduct(Number(id));

@@ -14,6 +14,7 @@ export class AccountController {
   getAll(): Promise<Models[]> {
     return this.accountService.getAll();
   }
+  
    @Get('current')
      getCurrent( @Res() result: Request) {
        this.accountService.getCurrent(result) 
@@ -22,8 +23,8 @@ export class AccountController {
   @Post('register')
   @ApiOperation({ summary: 'Create a new account' })
   @ApiCreatedResponse({ description: 'The cat has been successfully created.' })
-  create(@Body() data: User): Promise<User> {
-    return this.accountService.register(data);
+  create(@Body() register: User): Promise<User> {
+    return this.accountService.register(register);
   }
   @Post('Login')
   @ApiOperation({ summary: 'check login account' })
