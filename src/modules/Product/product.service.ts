@@ -1,12 +1,10 @@
-import { Injectable, NotFoundException, Param } from '@nestjs/common';
-import { Models, ProductModel } from './product.schema';
-import { Sequelize } from 'sequelize';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { ProductQueryDto } from './dto/query-product';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   Product,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
+import { ProductQueryDto } from './dto/query-product';
+import { ProductModel } from './product.schema';
 
 @Injectable()
 export class ProductService {
@@ -15,23 +13,30 @@ export class ProductService {
     const limit = query.limit || 10;
     const page = query.page || 1;
     const offset = (page - 1) * limit;
-    const findOptions: any = {
-      where: {
-        deleteAt: 1,
-      },
+const findOptions: any = {
+      // where: {
+      //   deleteAt: 1,
+      // },
       limit,
       offset,
       order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
     };
-    const data = await ProductModel.findAndCountAll(findOptions);
-    const { rows: db_products, count: total } = data;
-    return { total, limit, page, products: db_products };
+
+     try {
+       
+       const data = await ProductModel.findAndCountAll(findOptions);
+       const { rows: db_products, count: total } = data;
+       return { total, limit, page, products: db_products };
+     }
+      catch(err){
+         throw new Error(err);
+      }
   }
   // find One or more products
   async findOne(slug: string): Promise<Product> {
     try {
       const findOne = await ProductModel.findOne({
-        where: { slug: slug, deleteAt: 1 },
+        where: { slug: slug },
       });
       if (!findOne) {
         throw 'Product not found';
@@ -42,17 +47,28 @@ export class ProductService {
     }
   }
   // create a new Product
-  async createProduct(data: Partial<Product>) {
-     console.log(data);
-    const productData = await ProductModel.create(data);
-    return productData;
+  async createProduct(data: Partial<Product>): Promise<Product> {
+    try {
+      if (!data) {
+       throw "product creating not value"
+      }
+      const productData = await ProductModel.create(data);
+      return productData;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.ACCEPTED);
+    
+    }
   }
   // update a Product
   async updateProduct(id: number, data: Partial<Product>) {
-    const updated = await ProductModel.update(data, {
-      where: { id: id },
-    });
-    return updated;
+    try {
+      const updated = await ProductModel.update(data, {
+        where: { id: id },
+      });
+      return updated;
+    } catch (errors) {
+      throw new BadRequestException(errors.message); 
+    }
   }
   //delete a Product
   async trashRemoveProduct(id: number) {

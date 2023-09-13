@@ -1,23 +1,22 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
   Query,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/guard/jwt.guard';
 import {
   Product,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
 import { ProductQueryDto } from './dto/query-product';
-import { JwtAuthGuard } from 'src/guard/jwt.guard';
-import { JwtMiddleware } from 'src/guard/jwt.middleware';
+import { ProductService } from './product.service';
 
 @ApiTags('products')
 @Controller('products')
@@ -32,7 +31,7 @@ export class ProductController {
     return this.productService.findOne(slug);
   }
   // @UseGuards(JwtMiddleware)
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('store')
   async createProduct(@Body() product :Partial<Product>): Promise<Product> {
     console.log(product);
@@ -43,9 +42,9 @@ export class ProductController {
   async updateProduct(@Param('id') id: number, @Body() product: Product) {
     return this.productService.updateProduct(id, product);
   }
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async removeProduct(@Param('id') id: string) {
+  async removeProduct<T>(@Param('id') id: T) {
     return this.productService.trashRemoveProduct(Number(id));
   }
 }

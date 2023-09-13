@@ -1,8 +1,7 @@
-import { Injectable, Param } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { Category } from 'src/submodules/models/ProductModel/Category';
 import CategoryModel from './category.schema';
-import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class CategoryService {
@@ -11,7 +10,7 @@ export class CategoryService {
     WITH RECURSIVE CategoryTree AS (
       SELECT id, parentId, name, slug
       FROM db_category
-      WHERE id = 1
+      WHERE id = 2
       UNION ALL
       SELECT c.id, c.parentId, c.name, c.slug
       FROM db_category c
@@ -20,6 +19,7 @@ export class CategoryService {
     SELECT * FROM CategoryTree;
   `;
     const [results] = await SequelizeBase.query(query);
+console.log(results);
 
     const nestedCategories = this.buildCategoryHierarchy(results);
 
@@ -33,7 +33,7 @@ export class CategoryService {
       category.subcategories = [];
       categoryMap[category.id] = category;
 
-      if (category.parentId === null) {
+      if (category.parentId === 1) {
         rootCategories.push(category);
       } else {
         const parentCategory = categoryMap[category.parentId];

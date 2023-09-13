@@ -7,3 +7,16 @@ export interface Category extends BaseModel, Modified {
   level?: number;
   orders?: number;
 }
+interface subcategories {
+  id:number
+}
+interface Subcategories extends Category {
+  subcategories : subcategories[
+    
+  ]
+}
+ interface TOrderResponse {
+   Category: Category;
+
+   SubCategory: Subcategories[]
+ }

@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       categoryId: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER,
         references: {
           model: 'db_category',
         },

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Order, OrderDto } from 'src/submodules/models/OrderModel/Order';
-import { OrderModel } from './order.schema';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { Sequelize } from 'sequelize';
-import { OrderController } from './order.controller';
+import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderDetailModel } from './dto/orderDetail.schema';
+import { OrderModel } from './order.schema';
 // import { OrderModel } from './dto/OrderAssociations';
 
 @Injectable()

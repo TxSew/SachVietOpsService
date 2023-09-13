@@ -66,7 +66,6 @@ export class AccountService {
     if (!user) {
       throw new NotFoundException('User not found. Invalid email.');
     }
-
     const isPasswordValid = await bcrypt.compare(
       loginRequestDTO.password,
       user.password,

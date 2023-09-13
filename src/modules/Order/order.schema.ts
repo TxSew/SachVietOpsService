@@ -48,7 +48,4 @@ export const OrderModel = SequelizeBase.define<Models, Order>('db_order', {
 } , {
      freezeTableName:true
 });
-(async () => {
-  await SequelizeBase.sync({ force: true });
-  // Code here
-})();
+

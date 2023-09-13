@@ -47,7 +47,7 @@ console.log(token);
       
       return true; // Token is valid, allow access
     } catch (error) {
-      console.log('err');
+      console.log('Token is not valid - Khong co quyen');
       
       return false; // Token is invalid, access denied
     }

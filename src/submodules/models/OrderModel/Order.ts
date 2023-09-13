@@ -15,7 +15,10 @@ export interface Order extends BaseModel , Modified {
   address?: string;
 
 }
- export interface orderDetail {
+
+ export type OrderHistory = Omit<Order, "province"| "district"| "orderDate" | "price_ship">
+
+ export interface orderDetail extends Modified {
    productId?: number;
    orderID?: number;
     count?:number;

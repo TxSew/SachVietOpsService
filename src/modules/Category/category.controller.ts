@@ -31,6 +31,7 @@ export class CategoryController {
     const idCategory = id.id;
     return this.categoryService.updateCategory(Number(idCategory), category);
   }
+   
   @Delete(':id')
   removeCategory(@Param('id') id: string) {
     return this.categoryService.removeCategory(Number(id));

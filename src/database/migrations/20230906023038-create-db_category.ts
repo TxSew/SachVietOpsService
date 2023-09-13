@@ -15,9 +15,6 @@ module.exports = {
       slug: {
         type: Sequelize.STRING,
       },
-      orders: {
-        type: Sequelize.STRING(11),
-      },
       level: {
         type: Sequelize.STRING,
       },
