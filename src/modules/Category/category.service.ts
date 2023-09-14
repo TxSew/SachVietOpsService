@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { Category } from 'src/submodules/models/ProductModel/Category';
 import CategoryModel from './category.schema';
@@ -44,23 +44,25 @@ console.log(results);
     });
     return rootCategories;
   }
+  //category 
   async createCategory(category) {
-    console.log(category);
-    const existingCategory = await CategoryModel.findOne({
+     try {
+     const existingCategory = await CategoryModel.findOne({
       where: { name: category.name },
     });
-    console.log(existingCategory);
     if (existingCategory) {
       throw 'Name already exists';
     }
-    const data = await CategoryModel.create(category);
-    console.log(data);
-    return data;
-  }
+    const Category = await CategoryModel.create(category);
+    return Category;
+   
+     }
+      catch(err) {
+         throw new HttpException(err, HttpStatus.FORBIDDEN)
+      }
+     }
 
   async updateCategory(id: number, category: Category) {
-    console.log(id);
-    console.log(category);
     const update = await CategoryModel.update(category, {
       where: { id: id },
     });

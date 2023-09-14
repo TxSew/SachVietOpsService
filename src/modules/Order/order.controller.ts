@@ -11,15 +11,19 @@ export class OrderController {
   getOrderHistory() {
     return this.orderService.getOrderAll();
   }
+   @Get('orderDetail/:id')
+   getOrderDetail(@Param('id') id:number):Promise<any> {
+     return this.orderService.getOrderDetailByOrder(id);
+   }
    @Get('current/:id')
-   getOrderCUrrent(@Param('id') id: number) {
-     this.orderService.getOrderByCurrent(Number(id))
+   getOrderCUrrent(@Param('id') id: number):Promise<any> {
+     return this.orderService.getOrderByCurrent(Number(id));
    }
   @ApiOperation({ summary: 'Order product' })
   @ApiCreatedResponse({ description: ' Order successfully.' })
   @Post('store')
-  addOrder(@Body() data: OrderDto):Promise<any> {
-    return this.orderService.createOrder(data);
+  addOrder(@Body() OrderDto: OrderDto):Promise<any> {
+    return this.orderService.createOrder(OrderDto);
   }
    @Delete('id')
    RemoveOrder(@Param('id') id: number) {

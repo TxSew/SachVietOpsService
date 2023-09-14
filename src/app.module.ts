@@ -13,6 +13,11 @@ import { ProductController } from './modules/Product/product.controller';
 import { ProductService } from './modules/Product/product.service';
 import { OrderController } from './modules/Order/order.controller';
 import { OrderService } from './modules/Order/order.service';
+import { StatisticalModule } from './modules/Statistical/statistical.module';
+import { StatisticalController } from './modules/Statistical/statistical.controller';
+import { StatisticalService } from './modules/Statistical/statistical.service';
+import { UserController } from './modules/User/user.controller';
+import { UserService } from './modules/User/user.service';
 
 
 @Module({
@@ -30,7 +35,7 @@ import { OrderService } from './modules/Order/order.service';
      JwtModule.register({
       secret: process.env.JWT_ExpiresIn,
       signOptions: {expiresIn: '1d'}
-     })
+     }),
   ],
   controllers: [
     AppController,
@@ -38,7 +43,9 @@ import { OrderService } from './modules/Order/order.service';
     ProductController,
     CategoryController,
     ProducerController,
-     OrderController
+     OrderController,
+     StatisticalController,
+     UserController
   ],
   providers: [
     AppService,
@@ -46,7 +53,9 @@ import { OrderService } from './modules/Order/order.service';
     ProductService,
     CategoryService,
     producerService,
-    OrderService
+    OrderService,
+    StatisticalService,
+    UserService
   ],
 })
 export class AppModule {}

@@ -28,8 +28,8 @@ export interface Order extends BaseModel , Modified {
 
 
  export interface OrderDto {
-  orders: Order;
-  orderDetail: orderDetail[]
+  orders?: Order;
+  orderDetail?: orderDetail[]
  }
 // orderDto {
 //   order:Order,

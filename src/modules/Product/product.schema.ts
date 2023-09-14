@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import slugify from 'slugify';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
+import { convertToSlug } from 'src/helpers/helpers';
 import { Product } from 'src/submodules/models/ProductModel/Product';
 export interface Models extends Product, Model {}
 export const ProductModel = SequelizeBase.define<Models>('db_products', {
@@ -46,8 +47,9 @@ export const ProductModel = SequelizeBase.define<Models>('db_products', {
     defaultValue: 1,
   },
 });
+
 ProductModel.beforeCreate(async (product) => {
   if (product.title) {
-    product.slug = slugify(product.title, { lower: true });
+    product.title =  convertToSlug(product.title)
   }
 });

@@ -11,6 +11,9 @@ export const OrderModel = SequelizeBase.define<Models, Order>('db_order', {
   userID: {
     type: DataTypes.INTEGER,
   },
+   orderDate: {
+     type:DataTypes.DATE
+   },
   orderCode: {
     type: DataTypes.STRING,
   },

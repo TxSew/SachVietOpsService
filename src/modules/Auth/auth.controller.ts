@@ -1,35 +1,33 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, Param } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from 'src/submodules/models/UserModel/User';
-import { Models } from './auth.schema';
 import { AccountService } from './auth.service';
 import { LoginRequestDTO } from './dto/loginRequest.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
-
-  @Get('')
-  getAll(): Promise<Models[]> {
-    return this.accountService.getAll();
-  }
-  
-   @Get('current')
-     getCurrent( @Res() result: Request) {
-       this.accountService.getCurrent(result) 
-     }
-
+  // register user
   @Post('register')
   @ApiOperation({ summary: 'Create a new account' })
   @ApiCreatedResponse({ description: 'The cat has been successfully created.' })
-  create(@Body() register: User): Promise<User> {
+  async create(@Body() register: User): Promise<User> {
     return this.accountService.register(register);
   }
+
+  // login User
   @Post('Login')
   @ApiOperation({ summary: 'check login account' })
   @ApiCreatedResponse({ description: ' checkLogin successfully.' })
-  Login(@Body() data: LoginRequestDTO , @Res({passthrough:true}) response:Response) {
-    return this.accountService.checkLogin(data, response);
+  async Login(
+    @Body() loginDto: LoginRequestDTO,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.accountService.checkLogin(loginDto, response);
   }
+   @Post('changePassword')
+    async ChangePassword(@Param('id') id :number, @Body() password :string) {
+      return this.accountService.changePassword(id, password)
+    } 
 }

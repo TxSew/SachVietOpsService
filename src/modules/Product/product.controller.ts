@@ -42,6 +42,10 @@ export class ProductController {
   async updateProduct(@Param('id') id: number, @Body() product: Product) {
     return this.productService.updateProduct(id, product);
   }
+   @Post('search')
+   async searchProduct() {
+     return this.productService.searchProduct() 
+   }
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async removeProduct<T>(@Param('id') id: T) {
