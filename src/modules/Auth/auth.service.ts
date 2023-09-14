@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -15,11 +17,8 @@ import { LoginRequestDTO } from './dto/loginRequest.dto';
 @Injectable()
 export class AccountService {
   constructor(private jwtService: JwtService) {}
-  async getAll(): Promise<Models[]> {
-    const data = await UserModel.findAll({});
-    return data;
-  }
-  async register(account: Partial<User>): Promise<User> {
+    // register
+    async register(account: Partial<User>): Promise<User> {
     const existingUser = await UserModel.findOne({
       where: { email: account.email },
     });
@@ -34,29 +33,30 @@ export class AccountService {
   }
   async checkLogin(loginRequestDTO: LoginRequestDTO, response: Response) {
     //validate login request
-    const user = await this.validateUser(loginRequestDTO);
-    console.log('user: ' + user.email);
+     try {
+     const user = await this.validateUser(loginRequestDTO);
     // create access token  sign
     const payload = { email: user.email, role: user.userGroup };
-    const expiresIn: string = await process.env.JWT_ExpiresIn;
-    console.log(expiresIn);
-    const sign = await this.jwtService.sign(payload, {
+    const expiresIn: string =  process.env.JWT_ExpiresIn;
+    const sign = this.jwtService.sign(payload, {
       secret: expiresIn,
-       expiresIn:"20000"
+      expiresIn: "20000"
     });
     const cookie = await response.cookie('jwt', sign, { httpOnly: true });
-    console.log(cookie);
     //return data
     const { password, ...rest } = await user.dataValues;
-    console.log(rest);
-    console.log(sign);
     // if (rest.userGroup == 0) {
     //   return { user: rest, token: sign };
     // }
     // if (rest.userGroup == 2) {
     //   return { user: rest, token: sign };
     // }
-    return { user: rest , token:sign };
+    return { user: rest , token:sign };  
+     }
+      catch(err) {
+         throw new HttpException(err, HttpStatus.FORBIDDEN)
+      }
+    
   }
 
   private async validateUser(loginRequestDTO: LoginRequestDTO) {
@@ -76,14 +76,8 @@ export class AccountService {
     }
     return user;
   }
-  async getCurrent(result: Request) {
-    console.log(result.cookies);
-
-    console.log();
-  }
-
-  async changePassword(changePasswordDTO: ChangePasswordDTO) {
-    const { id, password, newPassword, repeatNewPassword } = changePasswordDTO;
-    return { message: 'Password changed successfully.' };
+ 
+  async changePassword(id:number, password:string) {
+     return
   }
 }

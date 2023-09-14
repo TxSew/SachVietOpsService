@@ -1,4 +1,9 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import {
   Product,
   TProductResponse,
@@ -10,27 +15,22 @@ import { ProductModel } from './product.schema';
 export class ProductService {
   //find all products
   async findAll(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit = query.limit || 10;
-    const page = query.page || 1;
-    const offset = (page - 1) * limit;
-const findOptions: any = {
-      // where: {
-      //   deleteAt: 1,
-      // },
-      limit,
+    const limit:number = query.limit || 2;
+    const page = query.page || 2;
+    const offset = (Number(page) - 1) * limit;
+    const lm = Number(limit) 
+    const findOptions: any = {
+      lm,
       offset,
-      order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
+       order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
     };
-
-     try {
-       
-       const data = await ProductModel.findAndCountAll(findOptions);
-       const { rows: db_products, count: total } = data;
-       return { total, limit, page, products: db_products };
-     }
-      catch(err){
-         throw new Error(err);
-      }
+    try {
+      const Product = await ProductModel.findAndCountAll(findOptions);
+      const { rows: db_products, count: total } = Product;
+      return { total, limit, page, products: db_products };
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
   }
   // find One or more products
   async findOne(slug: string): Promise<Product> {
@@ -47,28 +47,31 @@ const findOptions: any = {
     }
   }
   // create a new Product
-  async createProduct(data: Partial<Product>): Promise<Product> {
+  async createProduct(Product: Partial<Product>): Promise<Product> {
     try {
-      if (!data) {
-       throw "product creating not value"
+      if (!Product) {
+        throw 'product creating not value';
       }
-      const productData = await ProductModel.create(data);
+      const productData = await ProductModel.create(Product);
       return productData;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.ACCEPTED);
-    
     }
   }
   // update a Product
-  async updateProduct(id: number, data: Partial<Product>) {
+  async updateProduct(id: number, product: Partial<Product>) {
     try {
-      const updated = await ProductModel.update(data, {
+      const updated = await ProductModel.update(product, {
         where: { id: id },
       });
       return updated;
     } catch (errors) {
-      throw new BadRequestException(errors.message); 
+      throw new BadRequestException(errors.message);
     }
+  }
+  //  search a Product
+  async searchProduct() {
+    return;
   }
   //delete a Product
   async trashRemoveProduct(id: number) {

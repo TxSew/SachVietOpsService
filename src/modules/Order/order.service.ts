@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderModel } from './order.schema';
@@ -16,50 +17,44 @@ export class OrderService {
     }
   }
 
-  async createOrder(data: OrderDto) {
-    console.log(data);
-    const resultOrder = data.orders[0];
-    const dataDetail = data.orderDetail;
-    console.log(dataDetail);
-    console.log('existing order', resultOrder);
-    let result = await OrderModel.create(resultOrder);
-    console.log(result);
-    let Id = await result.get().id;
-    console.log('id', Id);
-    const dataResult = await this.createOrderDetail(dataDetail, Id);
-    console.log(dataResult);
+  async createOrder(orderDto: OrderDto): Promise<any> {
+    try {
+      const resultOrder = orderDto.orders[0];
+      const dataDetail: any[] = orderDto.orderDetail;
 
-    return dataResult;
-  }
-
-  async createOrderDetail(data: any[], Id: number): Promise<any[]> {
-    this.changeProductId(data, Id);
-    console.log(data);
-    const detailData = await OrderDetailModel.bulkCreate(data);
-    console.log(detailData);
-    return detailData;
-  }
-  async changeProductId(array: any[], newProductId: number) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].orderID = newProductId;
+      let result = await OrderModel.create(resultOrder);
+      let Id = await result.get().id;
+      for (var i = 0; i < dataDetail.length; i++) {
+        dataDetail[i].orderID = Id;
+      }
+      const detailData = await OrderDetailModel.bulkCreate(dataDetail);
+      return { result, detailData };
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
   }
+  async getOrderDetailByOrder(id: number): Promise<any> {
+    const detalOrder = await SequelizeBase.query(`
+                     SELECT * FROM db_order od JOIN db_orderdetail dt on od.id=dt.orderID join db_products prd on prd.id=dt.productId WHERE od.id = ${id}
+                     `);
+    return detalOrder[0];
+  }
   //  get order by current
-   async getOrderByCurrent(id:number) {
-      const orderCurrent = await OrderModel.findOne({
-       where:{userID : id}
-     }) 
-      return orderCurrent
-   }
-    // remove order
-     async RemoveOrder( id:number) {
-           const destroyOrder = await OrderModel.destroy({
-             where:{id }
-           })  
-            return destroyOrder
-     }
-}
+  async getOrderByCurrent(id: number): Promise<any> {
+    const orderCurrent = await OrderModel.findAll({
+      where: { userID: id },
+    });
 
+    return orderCurrent;
+  }
+  // remove order
+  async RemoveOrder(id: number) {
+    const destroyOrder = await OrderModel.destroy({
+      where: { id },
+    });
+    return destroyOrder;
+  }
+}
 
 //  const order: Order = {
 //   address: "",

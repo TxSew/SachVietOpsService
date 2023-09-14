@@ -20,18 +20,13 @@ export class producerService {
     return producerData;
   }
 
-  async update(id: string, data: Partial<Producer>): Promise<Producer> {
-    ProducerModel.update(data, {
+  async update(id: string, Producer: Partial<Producer>): Promise<any> {
+   const ProducerData = await  ProducerModel.update(Producer, {
       where: {
         id: { id },
       },
-    }).then((result) => {
-      console.log(result);
-    });
-    // if (!updatedProducer) {
-    //   throw 'Producer not found';
-    // }
-    return;
+    })
+     return ProducerData
   }
   async remove(id: number) {
  const destroy = await ProducerModel.destroy({
