@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-
 import { AxiosConfig } from '../interface/axiosConfig';
 class HttpProductController {
   private axiosInstance: AxiosInstance;
@@ -19,6 +18,17 @@ class HttpProductController {
       throw error;
     }
   }
+   async getOne<T>(url: string, params: {[key:string]: any}= {}) : Promise<T> {
+     try {
+       const response: AxiosResponse<T> = await this.axiosInstance.get(url, {
+         params
+       }) 
+        return response.data
+     } 
+      catch (err) {
+         throw err
+      }
+   }
 
   async post<T>(url: string, data: T): Promise<T> {
     try {
@@ -31,10 +41,25 @@ class HttpProductController {
       throw error;
     }
   }
-
-  async delete<T>(url: string): Promise<T> {
+  async put<T>(id: T, data: T): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.delete(url);
+      const response: AxiosResponse<T> = await this.axiosInstance.put(
+        'update',
+        id,
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async delete<T>(url: string, id: T): Promise<T> {
+    try {
+      const response: AxiosResponse<T> = await this.axiosInstance.delete(
+        url,
+        id,
+      );
       return response.data;
     } catch (error) {
       throw error;

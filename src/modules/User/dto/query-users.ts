@@ -1,7 +1,7 @@
 import { IsOptional, IsInt, Min, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class ProductQueryDto {
+export class UserQueryDto {
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsInt()
@@ -18,11 +18,5 @@ export class ProductQueryDto {
   @IsString()
   keyword: string;
 
-  @IsOptional()
-  @IsString()
-  category: string;
 
-  @IsOptional()
-  @IsString()
-  title: string;
 }

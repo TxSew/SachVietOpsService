@@ -2,6 +2,7 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Order } from 'src/submodules/models/OrderModel/Order';
+import { OrderDetailModel } from './dto/orderDetail.schema';
 
 
 
@@ -51,4 +52,7 @@ export const OrderModel = SequelizeBase.define<Models, Order>('db_order', {
 } , {
      freezeTableName:true
 });
-
+OrderModel.hasMany(OrderDetailModel, {
+  foreignKey: 'orderID',
+   as :'orderDetail'
+} );

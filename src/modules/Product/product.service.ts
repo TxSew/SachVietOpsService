@@ -10,6 +10,8 @@ import {
 } from 'src/submodules/models/ProductModel/Product';
 import { ProductQueryDto } from './dto/query-product';
 import { ProductModel } from './product.schema';
+import { OrderModel } from '../Order/order.schema';
+import { ImagesProductModel } from './dto/listImage.schema';
 
 @Injectable()
 export class ProductService {
@@ -52,7 +54,11 @@ export class ProductService {
       if (!Product) {
         throw 'product creating not value';
       }
-      const productData = await ProductModel.create(Product);
+       const Products = {
+         Product, 
+         imagesProduct: Product
+       }
+      const productData = await ProductModel.create(Products);
       return productData;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.ACCEPTED);
@@ -64,35 +70,53 @@ export class ProductService {
       const updated = await ProductModel.update(product, {
         where: { id: id },
       });
-      return updated;
+      return updated
     } catch (errors) {
       throw new BadRequestException(errors.message);
     }
   }
   //  search a Product
-  async searchProduct() {
-    return;
-  }
-  //delete a Product
   async trashRemoveProduct(id: number) {
     const trashed = await ProductModel.update(
       {
-        deleteAt: 0,
+       deleteAt: 0,
       },
       {
-        where: { id: id },
+       where: { id: id },
       },
     );
-    console.log(trashed);
     if (trashed) {
       return { message: 'Item moved to trash' };
     }
     {
       return ' product not found';
     }
-    // Set the 'deletedAt' timestamp to mark the item as deleted
-
-    // Save the item with the 'deletedAt' timestamp
   }
-  async removed() {}
+   async RemoveProduct(id: number) {
+     const removeProduct = await OrderModel.destroy({
+      where: { 
+        id: id
+       },
+     }) 
+      return removeProduct
+   }
+
+ async getInventory( query:ProductQueryDto):Promise<TProductResponse> {
+   const limit:number = query.limit || 3;
+    const page = query.page || 1;
+    const offset = (Number(page) - 1) * limit;
+    const lm = Number(limit) 
+    const findOptions: any = {
+      lm,
+      offset,
+       order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
+    };
+    try {
+      const Product = await ProductModel.findAndCountAll(findOptions);
+      const { rows: db_products, count: total } = Product;
+      return { total, limit, page, products: db_products };
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
+   }
 }

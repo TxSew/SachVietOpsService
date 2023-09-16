@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 import { AxiosConfig } from '../interface/axiosConfig';
+import { Product } from 'src/submodules/models/ProductModel/Product';
 class HttpAccountController {
   private axiosInstance: AxiosInstance;
 
@@ -20,11 +21,11 @@ class HttpAccountController {
     }
   }
 
-  async post<T>(url: string, data: T): Promise<T> {
+  async post<T>( products:Product): Promise<Product> {
     try {
       const response: AxiosResponse<T> = await this.axiosInstance.post(
-        url,
-        data,
+        'store',
+        products,
       );
       return response.data;
     } catch (error) {

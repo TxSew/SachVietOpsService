@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UserModel } from '../Auth/auth.schema';
 import { User } from 'src/submodules/models/UserModel/User';
+import { UserModel } from '../Auth/auth.schema';
+import { UserQueryDto } from './dto/query-users';
 
 @Injectable()
 export class UserService {
-  async getUsers(query: any): Promise<any> {
+  async getUsers(query: UserQueryDto): Promise<User[]> {
     const limit = query.limit || 10;
     const page = query.page || 1;
     const offset = (page - 1) * limit;
@@ -16,7 +17,7 @@ export class UserService {
     try {
       const GetUsers = await UserModel.findAll(findOptions);
       if (!GetUsers) {
-        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+       throw new HttpException('User not found', HttpStatus.FORBIDDEN);
       }
       return GetUsers;
     } catch (err) {
@@ -29,12 +30,12 @@ export class UserService {
        where: { id: id }
      })  
       if(!userCurrent) {
-         throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
       }
-       return userCurrent
+        return userCurrent
      }
       catch(err) {
-         throw new HttpException(err, HttpStatus.FORBIDDEN)
+        throw new HttpException(err, HttpStatus.FORBIDDEN)
       }
    }
    async updateUserCurrent(id:number, userCurrent: User): Promise<any> {
