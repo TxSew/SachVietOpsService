@@ -1,5 +1,6 @@
 import { BaseModel } from "../BaseModel";
 import { Modified } from "../BaseModel/contanst";
+import { Product } from "../ProductModel/Product";
 
 export interface Order extends BaseModel , Modified {
   orderCode?: string;
@@ -13,23 +14,28 @@ export interface Order extends BaseModel , Modified {
   province?: string;
   district?: string;
   address?: string;
-
+   orderDetail? : OrderDetail[]
 }
-
+  export interface TOrderResponse {
+  result: Order,
+  detailData:OrderDetail[]
+ }
  export type OrderHistory = Omit<Order, "province"| "district"| "orderDate" | "price_ship">
 
- export interface orderDetail extends Modified {
+ export interface OrderDetail extends Modified {
    productId?: number;
    orderID?: number;
     count?:number;
    price?:number;
+   product? : Product[]
+
    
  }
 
 
  export interface OrderDto {
   orders?: Order;
-  orderDetail?: orderDetail[]
+  orderDetail?: OrderDetail[]
  }
 // orderDto {
 //   order:Order,

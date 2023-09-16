@@ -18,6 +18,8 @@ import { StatisticalController } from './modules/Statistical/statistical.control
 import { StatisticalService } from './modules/Statistical/statistical.service';
 import { UserController } from './modules/User/user.controller';
 import { UserService } from './modules/User/user.service';
+import { DiscountController } from './modules/Discount/discount.controller';
+import { DiscountService } from './modules/Discount/discount.service';
 
 
 @Module({
@@ -45,7 +47,9 @@ import { UserService } from './modules/User/user.service';
     ProducerController,
      OrderController,
      StatisticalController,
-     UserController
+     UserController,
+      DiscountController
+
   ],
   providers: [
     AppService,
@@ -55,7 +59,8 @@ import { UserService } from './modules/User/user.service';
     producerService,
     OrderService,
     StatisticalService,
-    UserService
+    UserService,
+     DiscountService
   ],
 })
 export class AppModule {}

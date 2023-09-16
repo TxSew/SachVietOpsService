@@ -11,11 +11,12 @@ export interface Product extends BaseModel, Modified {
   price_sale?: number;
   image?: string;
   listImage?: string;
+   productId?:number
 }
 
 export interface TProductResponse {
-  products?: Product[];
   page?: number;
   limit?: number;
   total?: number;
+  products?: Product[];
 }

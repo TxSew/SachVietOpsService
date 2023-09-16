@@ -22,10 +22,14 @@ import { ProductService } from './product.service';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-  @Get()
+  @Get('')
   async findAll(@Query() query: ProductQueryDto): Promise<TProductResponse> {
     return this.productService.findAll(query);
   }
+  @Get('inventory/sort')
+   async Inventory ( @Query() query: ProductQueryDto):Promise<TProductResponse> {
+      return this.productService.getInventory(query);
+   } 
   @Get(':id')
   async findOne(@Param('id') slug: string): Promise<Product> {
     return this.productService.findOne(slug);
@@ -42,10 +46,8 @@ export class ProductController {
   async updateProduct(@Param('id') id: number, @Body() product: Product) {
     return this.productService.updateProduct(id, product);
   }
-   @Post('search')
-   async searchProduct() {
-     return this.productService.searchProduct() 
-   }
+ 
+     
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async removeProduct<T>(@Param('id') id: T) {

@@ -4,6 +4,7 @@ import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { convertToSlug } from 'src/helpers/helpers';
 import { Product } from 'src/submodules/models/ProductModel/Product';
+import { ImagesProductModel } from './dto/listImage.schema';
 export interface Models extends Product, Model {}
 export const ProductModel = SequelizeBase.define<Models>('db_products', {
   ...baseAttributes,
@@ -53,3 +54,7 @@ ProductModel.beforeCreate(async (product) => {
     product.title =  convertToSlug(product.title)
   }
 });
+ ProductModel.hasMany(ImagesProductModel, {
+   foreignKey:"productId" ,
+   as: "imagesProduct"
+ })

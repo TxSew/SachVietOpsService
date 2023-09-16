@@ -1,12 +1,12 @@
 const fs = require('fs');
 
-module.exports = {
+export const ConfigDatabase = {
   development: {
-    username: 'database_dev',
-    password: 'database_dev',
-    database: 'database_dev',
-    host: '127.0.0.1',
-    port: 3306,
+    username: 'root',
+    password: '',
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    port: process.env.PORT,
     dialect: 'mysql',
     dialectOptions: {
       bigNumberStrings: true,

@@ -1,14 +1,14 @@
 import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
-import { OrderDto } from 'src/submodules/models/OrderModel/Order';
+import { Order, OrderDto, TOrderResponse } from 'src/submodules/models/OrderModel/Order';
 
 @ApiTags('order')
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
   @Get('')
-  getOrderHistory() {
+  getOrderHistory():Promise<Order[]> {
     return this.orderService.getOrderAll();
   }
    @Get('orderDetail/:id')
@@ -22,7 +22,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Order product' })
   @ApiCreatedResponse({ description: ' Order successfully.' })
   @Post('store')
-  addOrder(@Body() OrderDto: OrderDto):Promise<any> {
+  addOrder(@Body() OrderDto: OrderDto):Promise<TOrderResponse> {
     return this.orderService.createOrder(OrderDto);
   }
    @Delete('id')

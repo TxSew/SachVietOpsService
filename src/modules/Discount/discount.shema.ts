@@ -3,18 +3,31 @@ import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Producer } from 'src/submodules/models/producerModel/producer';
 export interface ProducerSchema extends Producer, Model {}
-export const ProducerModel = SequelizeBase.define<ProducerSchema>(
+export const DiscountModel = SequelizeBase.define<ProducerSchema>(
   'db_discount',
   {
     ...baseAttributes,
-    name: {
+    discount: {
       type: DataTypes.STRING,
     },
     code: {
       type: DataTypes.STRING,
     },
-    keyword: {
+    limit_number: {
+      type: DataTypes.INTEGER,
+    },
+
+    payment_limit: {
+      type: DataTypes.INTEGER,
+    },
+    number_used: {
+      type: DataTypes.INTEGER,
+    },
+    desc: {
       type: DataTypes.STRING,
+    },
+    expiration_date: {
+      type: DataTypes.DATE,
     },
     status: {
       type: DataTypes.INTEGER,
@@ -24,4 +37,3 @@ export const ProducerModel = SequelizeBase.define<ProducerSchema>(
     freezeTableName: true,
   },
 );
- 
