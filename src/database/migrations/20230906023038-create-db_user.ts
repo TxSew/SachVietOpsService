@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deleteAt: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DATE,
       },
       status: {
         type: Sequelize.INTEGER,

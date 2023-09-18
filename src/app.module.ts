@@ -7,19 +7,18 @@ import { AccountController } from './modules/Auth/auth.controller';
 import { AccountService } from './modules/Auth/auth.service';
 import { CategoryController } from './modules/Category/category.controller';
 import { CategoryService } from './modules/Category/category.service';
+import { DiscountController } from './modules/Discount/discount.controller';
+import { DiscountService } from './modules/Discount/discount.service';
+import { OrderController } from './modules/Order/order.controller';
+import { OrderService } from './modules/Order/order.service';
 import { ProducerController } from './modules/Producer/producer.controller';
 import { producerService } from './modules/Producer/producer.service';
 import { ProductController } from './modules/Product/product.controller';
 import { ProductService } from './modules/Product/product.service';
-import { OrderController } from './modules/Order/order.controller';
-import { OrderService } from './modules/Order/order.service';
-import { StatisticalModule } from './modules/Statistical/statistical.module';
 import { StatisticalController } from './modules/Statistical/statistical.controller';
 import { StatisticalService } from './modules/Statistical/statistical.service';
 import { UserController } from './modules/User/user.controller';
 import { UserService } from './modules/User/user.service';
-import { DiscountController } from './modules/Discount/discount.controller';
-import { DiscountService } from './modules/Discount/discount.service';
 
 
 @Module({
@@ -48,7 +47,7 @@ import { DiscountService } from './modules/Discount/discount.service';
      OrderController,
      StatisticalController,
      UserController,
-      DiscountController
+     DiscountController
 
   ],
   providers: [
@@ -60,7 +59,7 @@ import { DiscountService } from './modules/Discount/discount.service';
     OrderService,
     StatisticalService,
     UserService,
-     DiscountService
+    DiscountService
   ],
 })
 export class AppModule {}

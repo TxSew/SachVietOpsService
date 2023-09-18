@@ -1,11 +1,7 @@
 import {
-  CreationOptional,
   DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
+  Model
 } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { User } from 'src/submodules/models/UserModel/User';
 export interface Models extends User, Model {}
@@ -39,7 +35,7 @@ export const UserModel = SequelizeBase.define<Models>(
         }
      },
     deleteAt: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.DATE,
       defaultValue: 1,
     },
     status: {

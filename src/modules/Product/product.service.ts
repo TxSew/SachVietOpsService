@@ -76,10 +76,10 @@ export class ProductService {
     }
   }
   //  search a Product
-  async trashRemoveProduct(id: number) {
+  async removeProduct(id: number) {
     const trashed = await ProductModel.update(
       {
-       deleteAt: 0,
+       deleteAt: Date.now(),
       },
       {
        where: { id: id },
@@ -88,19 +88,9 @@ export class ProductService {
     if (trashed) {
       return { message: 'Item moved to trash' };
     }
-    {
       return ' product not found';
-    }
   }
-   async RemoveProduct(id: number) {
-     const removeProduct = await OrderModel.destroy({
-      where: { 
-        id: id
-       },
-     }) 
-      return removeProduct
-   }
-
+ 
  async getInventory( query:ProductQueryDto):Promise<TProductResponse> {
    const limit:number = query.limit || 3;
     const page = query.page || 1;

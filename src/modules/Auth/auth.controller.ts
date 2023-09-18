@@ -1,14 +1,16 @@
-import { Body, Controller, Post, Res, Param } from '@nestjs/common';
+import { Body, Controller, Post, Res, Param, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { User } from 'src/submodules/models/UserModel/User';
 import { AccountService } from './auth.service';
 import { LoginRequestDTO } from './dto/loginRequest.dto';
+import { JwtAuthGuard } from 'src/guard/jwt.guard';
 @ApiTags('Auth')
 @Controller('auth')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
   // register user
+  @UseGuards(JwtAuthGuard)
   @Post('register')
   @ApiOperation({ summary: 'Create a new account' })
   @ApiCreatedResponse({ description: 'The cat has been successfully created.' })
