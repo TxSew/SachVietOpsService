@@ -1,10 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
+import { User } from 'src/submodules/models/UserModel/User';
 import { AxiosConfig } from '../interface/axiosConfig';
-import { Product } from 'src/submodules/models/ProductModel/Product';
 class HttpAccountController {
   private axiosInstance: AxiosInstance;
-
   constructor(axiosConfig: AxiosConfig) {
     // Create an Axios instance with the provided configuration
     this.axiosInstance = axios.create(axiosConfig);
@@ -21,11 +20,23 @@ class HttpAccountController {
     }
   }
 
-  async post<T>( products:Product): Promise<Product> {
+async login<T>( account:User) {
     try {
       const response: AxiosResponse<T> = await this.axiosInstance.post(
-        'store',
-        products,
+        'auth/login',
+        account,
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async register<T>( account:User): Promise<User> {
+    try {
+      const response: AxiosResponse<T> = await this.axiosInstance.post(
+        'auth/register',
+        account,
       );
       return response.data;
     } catch (error) {
@@ -43,5 +54,4 @@ class HttpAccountController {
   }
 }
 // Usage of the HttpController
-
 export default HttpAccountController;

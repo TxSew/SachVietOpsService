@@ -51,6 +51,6 @@ export class ProductController {
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async removeProduct<T>(@Param('id') id: T) {
-    return this.productService.trashRemoveProduct(Number(id));
+    return this.productService.removeProduct(Number(id));
   }
 }

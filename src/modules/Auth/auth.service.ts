@@ -2,16 +2,14 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Injectable,
-  NotFoundException,
+  Injectable
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from 'src/submodules/models/UserModel/User';
-import { Models, UserModel } from './auth.schema';
-import { ChangePasswordDTO } from './dto/changePassword.dto';
+import { UserModel } from './auth.schema';
 import { LoginRequestDTO } from './dto/loginRequest.dto';
 
 @Injectable()
@@ -23,7 +21,9 @@ export class AccountService {
       where: { email: account.email },
     });
     if (existingUser) {
-      throw 'Email already exists';
+      throw new HttpException({
+        message: "Email already exists"
+      }, HttpStatus.FORBIDDEN)
     }
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(account.password, saltOrRounds);
@@ -33,16 +33,17 @@ export class AccountService {
   }
   async checkLogin(loginRequestDTO: LoginRequestDTO, response: Response) {
     //validate login request
-     try {
+     console.log(loginRequestDTO);
+     
      const user = await this.validateUser(loginRequestDTO);
+     try {
     // create access token  sign
-    const payload = { email: user.email, role: user.userGroup };
+    const payload = await { email: user.email, role: user.userGroup };
     const expiresIn: string =  process.env.JWT_ExpiresIn;
     const sign = this.jwtService.sign(payload, {
       secret: expiresIn,
-      expiresIn: "20000"
+      expiresIn: "1d"
     });
-    const cookie = await response.cookie('jwt', sign, { httpOnly: true });
     //return data
     const { password, ...rest } = await user.dataValues;
     // if (rest.userGroup == 0) {
@@ -54,9 +55,8 @@ export class AccountService {
     return { user: rest , token:sign };  
      }
       catch(err) {
-         throw new HttpException(err, HttpStatus.FORBIDDEN)
+         throw new HttpException("error", HttpStatus.FORBIDDEN)
       }
-    
   }
 
   private async validateUser(loginRequestDTO: LoginRequestDTO) {
@@ -64,11 +64,11 @@ export class AccountService {
       where: { email: loginRequestDTO.email },
     });
     if (!user) {
-      throw new NotFoundException('User not found. Invalid email.');
+      throw new HttpException("invalid email", HttpStatus.FORBIDDEN)
     }
     const isPasswordValid = await bcrypt.compare(
-      loginRequestDTO.password,
-      user.password,
+     loginRequestDTO.password,
+     user.password,
     );
 
     if (!isPasswordValid) {
