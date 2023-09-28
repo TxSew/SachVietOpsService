@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { User } from '../../models/UserModel/User';
-class HttpAccountController {
+class HttpCategoryController {
   private axiosInstance: AxiosInstance;
 
   constructor(axiosConfig: any) {
@@ -26,10 +26,9 @@ class HttpAccountController {
       },
     );
   }
-
-  async getById(id: number): Promise<any> {
+  async getOne(id: number): Promise<any> {
     try {
-      const response = await this.axiosInstance.get('/');
+      const response = await this.axiosInstance.get(`/category/${id}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -63,4 +62,4 @@ class HttpAccountController {
   }
 }
 
-export default HttpAccountController;
+export default HttpCategoryController;

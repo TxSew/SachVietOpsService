@@ -1,35 +1,48 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ResponseError } from 'src/helpers/ResponseError';
 import {
   Product,
+  TProduct,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
+import CategoryModel from '../Category/category.schema';
+import { ProducerModel } from '../Producer/producer.schema';
+import { ImagesProductModel } from './dto/listImage.schema';
 import { ProductQueryDto } from './dto/query-product';
 import { ProductModel } from './product.schema';
-import { OrderModel } from '../Order/order.schema';
-import { ImagesProductModel } from './dto/listImage.schema';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProductService {
   //find all products
   async findAll(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit:number = query.limit || 2;
-    const page = query.page || 2;
-    const offset = (Number(page) - 1) * limit;
-    const lm = Number(limit) 
+    const limit: number = query.limit || 2;
+    const page = Number(query.page) || 1;
+    const limited = Number(limit);
+    const offset = (Number(page) - 1) * limited;
     const findOptions: any = {
-      lm,
+      limit: limited,
       offset,
-       order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
+      order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
+      include: [
+        {
+          model: ImagesProductModel,
+          as: 'productImage',
+        },
+        {
+          model: CategoryModel,
+          as: 'category',
+        },
+        {
+          model: ProducerModel,
+          as: 'producer',
+        },
+      ],
     };
     try {
       const Product = await ProductModel.findAndCountAll(findOptions);
       const { rows: db_products, count: total } = Product;
-      return { total, limit, page, products: db_products };
+      return { total, limit: limited, page, products: db_products };
     } catch (err) {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
@@ -38,6 +51,21 @@ export class ProductService {
   async findOne(slug: string): Promise<Product> {
     try {
       const findOne = await ProductModel.findOne({
+        include: [
+          {
+            model: ImagesProductModel,
+            as: 'productImage',
+          },
+          {
+            model: CategoryModel,
+            as: 'category',
+          },
+
+          {
+            model: ProducerModel,
+            as: 'producer',
+          },
+        ],
         where: { slug: slug },
       });
       if (!findOne) {
@@ -48,58 +76,98 @@ export class ProductService {
       return err;
     }
   }
-  // create a new Product
-  async createProduct(Product: Partial<Product>): Promise<Product> {
+
+  // find One or more products
+  async findOneUpdate(id: string): Promise<Product> {
     try {
-      if (!Product) {
+      const findOne = await ProductModel.findOne({
+        include: [
+          {
+            model: ImagesProductModel,
+            as: 'productImage',
+          },
+        ],
+        where: { id: id },
+      });
+      if (!findOne) {
+        throw 'Product not found';
+      }
+      return findOne;
+    } catch (err) {
+      return err;
+    }
+  }
+  // create a new Product
+  async createProduct(TProduct: TProduct): Promise<any> {
+    console.log(TProduct);
+    try {
+      const Products: any = TProduct.product;
+      const ProductImages: any[] = TProduct.productImages;
+      if (!Products) {
         throw 'product creating not value';
       }
-       const Products = {
-         Product, 
-         imagesProduct: Product
-       }
-      const productData = await ProductModel.create(Products);
-      return productData;
+      const ProductData = await ProductModel.create(Products);
+
+      let Id = await ProductData.get().id;
+      for (var i = 0; i < ProductImages.length; i++) {
+        ProductImages[i].productId = Id;
+      }
+      console.log('sjdjskdjd', ProductImages);
+      const data = await ImagesProductModel.bulkCreate(ProductImages);
+      return {
+        ProductImages: data,
+        Product: ProductData,
+      };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.ACCEPTED);
     }
   }
   // update a Product
-  async updateProduct(id: number, product: Partial<Product>) {
-    try {
-      const updated = await ProductModel.update(product, {
-        where: { id: id },
+  async updateProduct(id: number, TProduct: TProduct) {
+    console.log('id', id);
+    const parInt = Number(id);
+    console.log(TProduct);
+    const Products: any = TProduct.product;
+    const ProductImages: any[] = TProduct.productImages;
+    if (ProductImages.length > 0) {
+      const destroy = await ImagesProductModel.destroy({
+        where: { productId: parInt },
       });
-      return updated
+      console.log(destroy);
+    }
+
+    try {
+      const updated = await ProductModel.update(Products, {
+        where: { id: parInt },
+      });
+
+      for (var i = 0; i < ProductImages.length; i++) {
+        ProductImages[i].productId = parInt;
+        const data = await ImagesProductModel.bulkCreate(ProductImages);
+        return updated;
+      }
     } catch (errors) {
-      throw new BadRequestException(errors.message);
+      throw ResponseError.badInput('Product update failed');
     }
   }
   //  search a Product
   async removeProduct(id: number) {
-    const trashed = await ProductModel.update(
-      {
-       deleteAt: Date.now(),
-      },
-      {
-       where: { id: id },
-      },
-    );
-    if (trashed) {
-      return { message: 'Item moved to trash' };
-    }
-      return ' product not found';
+    console.log(id);
+    const trashed = await ProductModel.destroy({
+      where: { id: id },
+    });
+    return trashed;
   }
- 
- async getInventory( query:ProductQueryDto):Promise<TProductResponse> {
-   const limit:number = query.limit || 3;
+
+  async getInventory(query: ProductQueryDto): Promise<TProductResponse> {
+    const limit: number = query.limit || 3;
     const page = query.page || 1;
     const offset = (Number(page) - 1) * limit;
-    const lm = Number(limit) 
+    const lm = Number(limit);
     const findOptions: any = {
       lm,
       offset,
-       order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
+      order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
     };
     try {
       const Product = await ProductModel.findAndCountAll(findOptions);
@@ -108,5 +176,5 @@ export class ProductService {
     } catch (err) {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
-   }
+  }
 }

@@ -1,16 +1,32 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { AxiosConfig } from '../interface/axiosConfig';
+import { Product } from '../../models/ProductModel/Product';
 class HttpProductController {
   private axiosInstance: AxiosInstance;
 
   constructor(axiosConfig: AxiosConfig) {
     // Create an Axios instance with the provided configuration
     this.axiosInstance = axios.create(axiosConfig);
+   const token:any =  localStorage.getItem('token')
+       const jwtToken = JSON.parse(token)
+        if (jwtToken) {
+          this.axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${jwtToken}`
+        }
+
+        this.axiosInstance.interceptors.response.use((response) => {
+          return response;
+      }, (error) => {
+              if (error.response.status === 401) {
+                 return window.location.href = '/auth'
+              }
+          return Promise.reject(error);
+      });
+
   }
 
-  async get<T>(url: string, params: { [key: string]: any } = {}): Promise<T> {
+  async getAll( params: { [key: string]: any } = {}): Promise<any> {
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.get(url, {
+      const response = await this.axiosInstance.get('products', {
         params,
       });
       return response.data;
@@ -18,11 +34,9 @@ class HttpProductController {
       throw error;
     }
   }
-   async getOne<T>(url: string, params: {[key:string]: any}= {}) : Promise<T> {
+   async getOne(slug:string) : Promise<any> {
      try {
-       const response: AxiosResponse<T> = await this.axiosInstance.get(url, {
-         params
-       }) 
+       const response = await this.axiosInstance.get(`product/${slug}`) 
         return response.data
      } 
       catch (err) {
@@ -30,23 +44,22 @@ class HttpProductController {
       }
    }
 
-  async post<T>(url: string, data: T): Promise<T> {
+  async post(  product: Product): Promise<any> {
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.post(
-        url,
-        data,
+      const response = await this.axiosInstance.post(
+        `products/store`,
+        product,
       );
       return response.data;
     } catch (error) {
       throw error;
     }
   }
-  async put<T>(id: T, data: T): Promise<T> {
+  async put(id: number, data: Product): Promise<any> {
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.put(
+      const response = await this.axiosInstance.put(
         'update',
         id,
-        data,
       );
       return response.data;
     } catch (error) {
@@ -54,11 +67,10 @@ class HttpProductController {
     }
   }
 
-  async delete<T>(url: string, id: T): Promise<T> {
+  async delete(url: string, id: number): Promise<any> {
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.delete(
+      const response = await this.axiosInstance.delete(
         url,
-        id,
       );
       return response.data;
     } catch (error) {

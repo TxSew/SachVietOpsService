@@ -22,9 +22,8 @@ CategoryModel.init(
       type: DataTypes.STRING,
       defaultValue: '1', // Provide a default value here
     },
-    parentID: {
+    parentId: {
       type: DataTypes.NUMBER,
-      defaultValue: 0, // Provide a default value here
     },
     status: {
       type: DataTypes.INTEGER,

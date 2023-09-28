@@ -1,7 +1,4 @@
-import {
-  DataTypes,
-  Model
-} from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { User } from 'src/submodules/models/UserModel/User';
 export interface Models extends User, Model {}
@@ -24,16 +21,16 @@ export const UserModel = SequelizeBase.define<Models>(
     password: {
       type: DataTypes.STRING,
     },
-    // phone: {
-    //   type: DataTypes.NUMBER,
-    // },
-     userGroup: {
+    phone: {
       type: DataTypes.NUMBER,
-       defaultValue:1,
-        references: {
-           model:"db_userGroup"
-        }
-     },
+    },
+    userGroup: {
+      type: DataTypes.NUMBER,
+      defaultValue: 1,
+      references: {
+        model: 'db_userGroup',
+      },
+    },
     deleteAt: {
       type: DataTypes.DATE,
       defaultValue: 1,

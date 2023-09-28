@@ -22,20 +22,23 @@ export class ProducerController {
   getAll(): Promise<ProducerSchema[]> {
     return this.producerService.getAll();
   }
-
+  @Get(':id')
+  async GetOne(@Param('id') id: number) {
+    return this.producerService.getOne(id);
+  }
   @Post('store')
   create(@Body() data: Producer): Promise<Producer> {
     console.log(data);
     return this.producerService.create(data);
   }
   @Put('update/:id')
-  update(@Param() id: string, @Body() data: Producer): Promise<Producer> {
+  update(@Param() id: any, @Body() data: Producer): Promise<Producer> {
     console.log(data, id);
-    return this.producerService.update(id, data);
+    const Id: number = id.id;
+    return this.producerService.update(Number(Id), data);
   }
   @Delete(':id')
-  remove(@Param('id') id: BaseModel) {
-    const producerID = id.id;
-    return this.producerService.remove(producerID);
+  remove(@Param('id') id: number) {
+    return this.producerService.remove(id);
   }
 }

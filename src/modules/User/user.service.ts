@@ -17,39 +17,37 @@ export class UserService {
     try {
       const GetUsers = await UserModel.findAll(findOptions);
       if (!GetUsers) {
-       throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
       }
       return GetUsers;
     } catch (err) {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
   }
-   async getUserCurrent(id:number): Promise<User> {
-     try {
-     const userCurrent = await UserModel.findOne({
-       where: { id: id }
-     })  
-      if(!userCurrent) {
+  async getUserCurrent(id: number): Promise<User> {
+    try {
+      const userCurrent = await UserModel.findOne({
+        where: { id: id },
+      });
+      if (!userCurrent) {
         throw new HttpException('User not found', HttpStatus.FORBIDDEN);
       }
-        return userCurrent
-     }
-      catch(err) {
-        throw new HttpException(err, HttpStatus.FORBIDDEN)
+      return userCurrent;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
+  }
+  async updateUserCurrent(id: number, userCurrent: User): Promise<any> {
+    try {
+      const UserUpdate = await UserModel.update(userCurrent, {
+        where: { id: id },
+      });
+      if (!UserUpdate) {
+        throw new HttpException('User updated false', HttpStatus.FORBIDDEN);
       }
-   }
-   async updateUserCurrent(id:number, userCurrent: User): Promise<any> {
-     try {
-     const UserUpdate = await UserModel.update(userCurrent, {
-       where: { id: id}
-     })
-      if(!UserUpdate) {
-         throw new HttpException("User updated false", HttpStatus.FORBIDDEN);
-      }
-       return UserUpdate
-     }
-      catch(err) {
-         throw new HttpException(err, HttpStatus.FORBIDDEN) 
-      }
-   }
+      return UserUpdate;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
+  }
 }

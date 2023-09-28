@@ -9,11 +9,18 @@ export interface Product extends BaseModel, Modified {
   slug?: string;
   price?: number;
   price_sale?: number;
-  image?: string;
   listImage?: string;
-   productId?:number
+  quantity?: number;
+  productId?: number;
 }
-
+export interface TProduct {
+  product?: Product;
+  productImages?: ProductImages[];
+}
+interface ProductImages extends Modified {
+  productId?: number;
+  image?: string;
+}
 export interface TProductResponse {
   page?: number;
   limit?: number;

@@ -10,7 +10,7 @@ export class CategoryService {
     WITH RECURSIVE CategoryTree AS (
       SELECT id, parentId, name, slug
       FROM db_category
-      WHERE id = 2
+      WHERE id = 1
       UNION ALL
       SELECT c.id, c.parentId, c.name, c.slug
       FROM db_category c
@@ -19,7 +19,7 @@ export class CategoryService {
     SELECT * FROM CategoryTree;
   `;
     const [results] = await SequelizeBase.query(query);
-console.log(results);
+    console.log(results);
 
     const nestedCategories = this.buildCategoryHierarchy(results);
 
@@ -33,7 +33,7 @@ console.log(results);
       category.subcategories = [];
       categoryMap[category.id] = category;
 
-      if (category.parentId === 1) {
+      if (category.parentId === null) {
         rootCategories.push(category);
       } else {
         const parentCategory = categoryMap[category.parentId];
@@ -44,25 +44,38 @@ console.log(results);
     });
     return rootCategories;
   }
-  //category 
-  async createCategory(category) {
-     try {
-     const existingCategory = await CategoryModel.findOne({
-      where: { name: category.name },
+  async getOne(id) {
+    const Id: number = id.id;
+    const findOne = await CategoryModel.findOne({
+      where: {
+        id: Id,
+      },
     });
-    if (existingCategory) {
-      throw 'Name already exists';
+    if (findOne) {
+      return findOne;
     }
-    const Category = await CategoryModel.create(category);
-    return Category;
-   
-     }
-      catch(err) {
-         throw new HttpException(err, HttpStatus.FORBIDDEN)
+  }
+  //category
+
+  async createCategory(category) {
+    console.log(category);
+    try {
+      const existingCategory = await CategoryModel.findOne({
+        where: { name: category.name },
+      });
+      if (existingCategory) {
+        throw 'Name already exists';
       }
-     }
+      const Category = await CategoryModel.create(category);
+      return Category;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
+  }
 
   async updateCategory(id: number, category: Category) {
+    console.log(id);
+    console.log(category);
     const update = await CategoryModel.update(category, {
       where: { id: id },
     });

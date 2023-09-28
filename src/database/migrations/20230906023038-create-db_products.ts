@@ -18,18 +18,12 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
       },
-      image: {
+      desc: {
         type: Sequelize.STRING,
       },
       slug: {
         type: Sequelize.STRING,
         unique: true,
-      },
-      listImage: {
-        type: Sequelize.STRING,
-      },
-      sortDesc: {
-        type: Sequelize.TEXT,
       },
       producerID: {
         type: Sequelize.INTEGER,
@@ -37,14 +31,17 @@ module.exports = {
           model: 'db_producer',
         },
       },
-      number: {
+      quantity: {
         type: Sequelize.INTEGER(11),
       },
       sale: {
         type: Sequelize.INTEGER(11),
       },
+      price: {
+        type: Sequelize.FLOAT,
+      },
       price_sale: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,
@@ -55,7 +52,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deleteAt: {
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
       },
       status: {
         type: Sequelize.INTEGER,

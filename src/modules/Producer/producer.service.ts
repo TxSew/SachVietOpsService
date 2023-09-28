@@ -6,13 +6,23 @@ import { where } from 'sequelize';
 @Injectable()
 export class producerService {
   async getAll(): Promise<ProducerSchema[]> {
-     try {
-    const data = await ProducerModel.findAll({});
-    return data;
-     }
-      catch(err){
-         throw new HttpException(err, HttpStatus.FORBIDDEN)
-      }
+    try {
+      const data = await ProducerModel.findAll({});
+      return data;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.FORBIDDEN);
+    }
+  }
+  async getOne(id: number) {
+    const detail = await ProducerModel.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (detail) {
+      return detail;
+    }
   }
   async create(producer: Partial<Producer>): Promise<Producer> {
     console.log(producer);
@@ -20,16 +30,20 @@ export class producerService {
     return producerData;
   }
 
-  async update(id: string, Producer: Partial<Producer>): Promise<any> {
-   const ProducerData = await  ProducerModel.update(Producer, {
+  async update(id: number, producer: Producer): Promise<any> {
+    console.log('id', id);
+    console.log(producer);
+
+    const ProducerData = await ProducerModel.update(producer, {
       where: {
-        id: { id },
+        id: id,
       },
-    })
-     return ProducerData
+    });
+    return ProducerData;
   }
   async remove(id: number) {
- const destroy = await ProducerModel.destroy({
+    console.log(id);
+    const destroy = await ProducerModel.destroy({
       where: { id: id },
     });
     return destroy;
