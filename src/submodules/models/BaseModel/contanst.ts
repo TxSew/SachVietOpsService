@@ -1,7 +1,7 @@
 export interface Modified {
   createdAt?: Date;
   updatedAt?: Date;
-  deleteAt?: boolean;
-  status?: string;
+  deleteAt?: Date | null | undefined | boolean | number;
+  status?: number;
 }
-export type DateModified = Omit<Modified, "trashed" | "status"> 
+export type DateModified = Omit<Modified, 'trashed' | 'status'>;

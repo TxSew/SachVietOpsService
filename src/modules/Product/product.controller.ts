@@ -46,7 +46,7 @@ export class ProductController {
   // @UseGuards(JwtAuthGuard)
   @Put('update/:id')
   async updateProduct(@Param('id') id: number, @Body() product: TProduct) {
-    return this.productService.updateProduct(id, product);
+    return this.productService.updateProduct(Number(id), product);
   }
 
   // @UseGuards(JwtAuthGuard)

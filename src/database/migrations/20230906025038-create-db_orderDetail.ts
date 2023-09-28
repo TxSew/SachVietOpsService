@@ -21,6 +21,7 @@ module.exports = {
       price: {
         type: Sequelize.FLOAT,
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -29,8 +30,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deleteAt: {
-        type: Sequelize.INTEGER,
+      deletedAt: {
+        type: Sequelize.DATE,
       },
       status: {
         type: Sequelize.INTEGER,

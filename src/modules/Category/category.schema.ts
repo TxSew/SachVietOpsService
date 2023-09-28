@@ -31,6 +31,7 @@ CategoryModel.init(
     },
   },
   {
+    paranoid: true,
     freezeTableName: true,
     sequelize: SequelizeBase,
     modelName: 'db_category',

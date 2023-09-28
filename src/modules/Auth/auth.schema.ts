@@ -1,16 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { User } from 'src/submodules/models/UserModel/User';
+
+import { baseAttributes } from 'src/helpers/defineModelFactory';
 export interface Models extends User, Model {}
 export const UserModel = SequelizeBase.define<Models>(
   'db_users',
   {
-    id: {
-      type: DataTypes.NUMBER,
-      primaryKey: true,
-      unique: true,
-      autoIncrement: true,
-    },
+    ...baseAttributes,
     fullName: {
       type: DataTypes.STRING,
     },
@@ -31,16 +28,13 @@ export const UserModel = SequelizeBase.define<Models>(
         model: 'db_userGroup',
       },
     },
-    deleteAt: {
-      type: DataTypes.DATE,
-      defaultValue: 1,
-    },
     status: {
       type: DataTypes.NUMBER,
       defaultValue: 1,
     },
   },
   {
+    paranoid: true,
     timestamps: true,
   },
 );
