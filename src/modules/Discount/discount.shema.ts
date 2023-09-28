@@ -12,6 +12,7 @@ export const DiscountModel = SequelizeBase.define<ProducerSchema>(
     },
     code: {
       type: DataTypes.STRING,
+      unique: true,
     },
     limit_number: {
       type: DataTypes.INTEGER,

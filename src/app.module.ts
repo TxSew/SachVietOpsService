@@ -19,7 +19,9 @@ import { StatisticalController } from './modules/Statistical/statistical.control
 import { StatisticalService } from './modules/Statistical/statistical.service';
 import { UserController } from './modules/User/user.controller';
 import { UserService } from './modules/User/user.service';
-
+import { ProvinceController } from './modules/Province/province.controller';
+import { ProvinceService } from './modules/Province/province.service';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -33,10 +35,11 @@ import { UserService } from './modules/User/user.service';
       autoLoadModels: true, // Automatically load models from the 'models' folder
       synchronize: true, // Auto-create and update database tables (not recommended for production)
     }),
-     JwtModule.register({
+    JwtModule.register({
       secret: process.env.JWT_ExpiresIn,
-      signOptions: {expiresIn: '1d'}
-     }),
+      signOptions: { expiresIn: '1d' },
+    }),
+    EmailModule,
   ],
   controllers: [
     AppController,
@@ -44,11 +47,11 @@ import { UserService } from './modules/User/user.service';
     ProductController,
     CategoryController,
     ProducerController,
-     OrderController,
-     StatisticalController,
-     UserController,
-     DiscountController
-
+    OrderController,
+    StatisticalController,
+    UserController,
+    DiscountController,
+    ProvinceController,
   ],
   providers: [
     AppService,
@@ -59,7 +62,8 @@ import { UserService } from './modules/User/user.service';
     OrderService,
     StatisticalService,
     UserService,
-    DiscountService
+    DiscountService,
+    ProvinceService,
   ],
 })
 export class AppModule {}

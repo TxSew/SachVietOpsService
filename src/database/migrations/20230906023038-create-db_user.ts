@@ -24,9 +24,6 @@ module.exports = {
           model: 'db_userGroup',
         },
       },
-      address: {
-        type: Sequelize.STRING,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -35,8 +32,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      phone: {
+        type: Sequelize.STRING,
+      },
+      address: {
+        type: Sequelize.STRING,
+      },
       deleteAt: {
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
       },
       status: {
         type: Sequelize.INTEGER,

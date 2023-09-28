@@ -1,16 +1,15 @@
 import {
-  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { DiscountService } from './discount.service';
-import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { ApiTags } from '@nestjs/swagger';
-import { DiscountModel } from './discount.shema';
+import { Discount } from 'src/submodules/models/DiscountModel/Discount';
+import { DiscountService } from './discount.service';
 
 @ApiTags('discount')
 @Controller('discount')
@@ -21,11 +20,17 @@ export class DiscountController {
     return this.discountService.GetAll();
   }
   @Post('store')
-  async createDiscount(@Body() discount: Discount): Promise<Discount> {
+  async createDiscount(@Body() discount: Discount) {
+    console.log(discount);
+
     return this.discountService.createDiscount(discount);
   }
   @Put('update/:id')
-  async updateDiscount(id: number, discount: Partial<Discount>) {
+  async updateDiscount(@Param('id') id: number, discount: Partial<Discount>) {
     this.discountService.updateDiscount(id, discount);
+  }
+  @Delete(':id')
+  async removeDiscount(@Param('id') id: number) {
+    this.discountService.removeDiscount(id);
   }
 }

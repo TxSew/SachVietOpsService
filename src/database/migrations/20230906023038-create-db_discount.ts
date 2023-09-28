@@ -21,7 +21,7 @@ module.exports = {
       number_used: {
         type: Sequelize.INTEGER(11),
       },
-      expression_date: {
+      expiration_date: {
         type: Sequelize.DATE,
       },
       payment_limit: {

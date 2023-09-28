@@ -15,7 +15,7 @@ module.exports = {
           model: 'db_products',
         },
       },
-      count: {
+      quantity: {
         type: Sequelize.INTEGER,
       },
       price: {
@@ -30,7 +30,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deleteAt: {
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
       },
       status: {
         type: Sequelize.INTEGER,

@@ -7,12 +7,11 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/guard/jwt.guard';
 import {
   Product,
+  TProduct,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
 import { ProductQueryDto } from './dto/query-product';
@@ -27,30 +26,32 @@ export class ProductController {
     return this.productService.findAll(query);
   }
   @Get('inventory/sort')
-   async Inventory ( @Query() query: ProductQueryDto):Promise<TProductResponse> {
-      return this.productService.getInventory(query);
-   } 
+  async Inventory(@Query() query: ProductQueryDto): Promise<TProductResponse> {
+    return this.productService.getInventory(query);
+  }
   @Get(':id')
   async findOne(@Param('id') slug: string): Promise<Product> {
     return this.productService.findOne(slug);
   }
+  @Get('currentUpdate/:id')
+  async findUpdate(@Param('id') slug: string): Promise<Product> {
+    return this.productService.findOneUpdate(slug);
+  }
   // @UseGuards(JwtMiddleware)
   // @UseGuards(JwtAuthGuard)
   @Post('store')
-  async createProduct(@Body() product :Partial<Product>): Promise<Product> {
-    console.log(product);
+  async createProduct(@Body() product: Partial<TProduct>): Promise<any> {
     return this.productService.createProduct(product);
   }
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Put('update/:id')
-  async updateProduct(@Param('id') id: number, @Body() product: Product) {
+  async updateProduct(@Param('id') id: number, @Body() product: TProduct) {
     return this.productService.updateProduct(id, product);
   }
- 
-     
+
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async removeProduct<T>(@Param('id') id: T) {
+  async removeProduct(@Param('id') id: number) {
     return this.productService.removeProduct(Number(id));
   }
 }

@@ -6,37 +6,39 @@ import { ProductModel } from 'src/modules/Product/product.schema';
 
 interface IOrderDetailModel extends Order, Model {}
 
-export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>('db_orderdetail', {
-  orderID: {
-    type: DataTypes.INTEGER,
-    primaryKey: true
-  },
-  productId: {
-    type: DataTypes.INTEGER,
-    primaryKey: true
-  },
-  count: {
-    type: DataTypes.STRING,
-  },
-   price:{
-    type: DataTypes.STRING,
-     
-   },
-    createdAt: {
-       type : DataTypes.STRING,
+export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>(
+  'db_orderdetail',
+  {
+    orderID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
     },
-   updatedAt: {
-    type: DataTypes.STRING,
-   },
+    productId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    quantity: {
+      type: DataTypes.STRING,
+    },
+    price: {
+      type: DataTypes.STRING,
+    },
+    createdAt: {
+      type: DataTypes.STRING,
+    },
+    updatedAt: {
+      type: DataTypes.STRING,
+    },
 
-  deleteAt: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
+    deleteAt: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
   },
-} , {
-  
-     freezeTableName:true
-});
+  {
+    freezeTableName: true,
+  },
+);
 OrderDetailModel.belongsTo(ProductModel, {
   foreignKey: 'productId', // This should match the foreign key in OrderDetail that links to Product
   as: 'product', // Use any alias you prefer
