@@ -22,5 +22,6 @@ export const ProducerModel = SequelizeBase.define<ProducerSchema>(
   },
   {
     freezeTableName: true,
+    paranoid: true,
   },
 );

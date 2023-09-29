@@ -3,9 +3,14 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('db_imagesProduct', {
-      productId: {
+      id: {
         allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+
+      productId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'db_products',
@@ -22,8 +27,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deleteAt: {
-        type: Sequelize.INTEGER,
+      deletedAt: {
+        type: Sequelize.DATE,
       },
       status: {
         type: Sequelize.INTEGER,

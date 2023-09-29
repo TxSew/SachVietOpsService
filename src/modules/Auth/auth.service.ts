@@ -35,25 +35,17 @@ export class AccountService {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(account.password, saltOrRounds);
     account.password = await hash;
-    // const payload = {
-    //   subject: 'welcome email notification',
-    //   to: account.email,
-    //   template: './welcome',
-    //   context: {
-    //     email: account.email,
-    //   },
-    // };
+
     const register = await UserModel.create(account);
     if (register) {
-      const payload = {
+      this.emailService.sendMailTemplate({
         subject: 'welcome email notification',
         to: account.email,
         template: './welcome',
         context: {
           email: account.email,
         },
-      };
-      this.emailService.sendMailTemplate(payload);
+      });
     }
     return register;
   }

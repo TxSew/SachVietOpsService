@@ -1,17 +1,22 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 export const baseAttributes = {
   id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
     allowNull: false,
     autoIncrement: true,
-    primaryKey: true,
-    type: DataTypes.INTEGER,
   },
   createdAt: {
-    allowNull: false,
     type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.fn('now'),
   },
   updatedAt: {
+    type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: Sequelize.fn('now'),
+  },
+  deletedAt: {
     type: DataTypes.DATE,
   },
 };

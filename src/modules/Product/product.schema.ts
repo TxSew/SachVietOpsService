@@ -10,39 +10,44 @@ import { ProducerModel } from '../Producer/producer.schema';
 export interface Models extends Product, Model {
   then(arg0: (data: any) => void): unknown;
 }
-export const ProductModel = SequelizeBase.define<Models>('db_products', {
-  ...baseAttributes,
-  categoryId: {
-    type: DataTypes.INTEGER,
+export const ProductModel = SequelizeBase.define<Models>(
+  'db_products',
+  {
+    ...baseAttributes,
+    categoryId: {
+      type: DataTypes.INTEGER,
+    },
+    title: {
+      type: DataTypes.STRING,
+    },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
+    producerID: {
+      type: DataTypes.INTEGER,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+    },
+    sale: {
+      type: DataTypes.INTEGER,
+    },
+    price_sale: {
+      type: DataTypes.INTEGER,
+    },
+    desc: {
+      type: DataTypes.STRING,
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
   },
-  title: {
-    type: DataTypes.STRING,
+  {
+    freezeTableName: true,
   },
-  slug: {
-    type: DataTypes.STRING,
-    unique: true,
-  },
-  producerID: {
-    type: DataTypes.INTEGER,
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-  },
-  sale: {
-    type: DataTypes.INTEGER,
-  },
-  price_sale: {
-    type: DataTypes.INTEGER,
-  },
-  status: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
-  },
-  deleteAt: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
-  },
-});
+);
 
 ProductModel.beforeCreate((category, opition) => {
   category.slug = slugify(category.title, { lower: true, strict: true });
@@ -53,7 +58,7 @@ ProductModel.beforeUpdate((category) => {
 
 ProductModel.hasMany(ImagesProductModel, {
   foreignKey: 'productId',
-  as: 'productImage',
+  as: 'productImages',
 });
 ProductModel.belongsTo(CategoryModel, {
   foreignKey: 'categoryId',

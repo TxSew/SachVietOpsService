@@ -38,8 +38,8 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      deleteAt: {
-        type: Sequelize.INTEGER,
+      deletedAt: {
+        type: Sequelize.DATE,
       },
       status: {
         type: Sequelize.INTEGER,
