@@ -2,14 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 import slugify from 'slugify';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
-import { convertToSlug } from 'src/helpers/helpers';
 import { Product } from 'src/submodules/models/ProductModel/Product';
-import { ImagesProductModel } from './dto/listImage.schema';
 import CategoryModel from '../Category/category.schema';
 import { ProducerModel } from '../Producer/producer.schema';
-export interface Models extends Product, Model {
-  then(arg0: (data: any) => void): unknown;
-}
+import { ImagesProductModel } from './dto/listImage.schema';
+export interface Models extends Product, Model {}
 export const ProductModel = SequelizeBase.define<Models>(
   'db_products',
   {
@@ -49,7 +46,7 @@ export const ProductModel = SequelizeBase.define<Models>(
   },
 );
 
-ProductModel.beforeCreate((category, opition) => {
+ProductModel.beforeCreate((category) => {
   category.slug = slugify(category.title, { lower: true, strict: true });
 });
 ProductModel.beforeUpdate((category) => {

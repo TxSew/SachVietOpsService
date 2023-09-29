@@ -22,16 +22,17 @@ import { UserService } from './modules/User/user.service';
 import { ProvinceController } from './modules/Province/province.controller';
 import { ProvinceService } from './modules/Province/province.service';
 import { EmailModule } from './modules/email/email.module';
+import { ConfigDatabase } from './configs/config';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'localhost',
+      host: ConfigDatabase.development.host,
       port: 3306,
-      username: 'root',
+      username: ConfigDatabase.development.username,
       password: '',
-      database: 'db_shop',
+      database: ConfigDatabase.development.database,
       autoLoadModels: true, // Automatically load models from the 'models' folder
       synchronize: true, // Auto-create and update database tables (not recommended for production)
     }),

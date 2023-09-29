@@ -110,7 +110,7 @@ export class OrderService {
       { status: status.status },
       {
         where: {
-          id: id,
+          id: Number(id),
         },
       },
     );
