@@ -27,17 +27,14 @@ export class ProductService {
         include: [
           {
             model: ImagesProductModel,
-            attributes: ['image', 'productId'],
             as: 'productImages',
           },
           {
             model: CategoryModel,
-            attributes: ['name'],
             as: 'category',
           },
           {
             model: ProducerModel,
-            attributes: ['name'],
             as: 'producer',
           },
         ],
@@ -57,8 +54,7 @@ export class ProductService {
         include: [
           {
             model: ImagesProductModel,
-            attributes: ['image', 'productId'],
-            as: 'productImage',
+            as: 'productImages',
           },
           {
             model: CategoryModel,
@@ -72,6 +68,8 @@ export class ProductService {
         ],
         where: { slug: slug },
       });
+      console.log(findOne);
+
       if (!findOne) {
         throw 'Product not found';
       }

@@ -30,7 +30,7 @@ export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>(
       type: DataTypes.STRING,
     },
 
-    deleteAt: {
+    deletedAt: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },

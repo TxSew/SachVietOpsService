@@ -1,7 +1,6 @@
-import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
-import { ProducerModel, ProducerSchema } from './producer.schema';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Producer } from 'src/submodules/models/producerModel/producer';
-import { where } from 'sequelize';
+import { ProducerModel, ProducerSchema } from './producer.schema';
 
 @Injectable()
 export class producerService {
