@@ -27,14 +27,17 @@ export class ProductService {
         include: [
           {
             model: ImagesProductModel,
+            attributes: ['image', 'id'],
             as: 'productImages',
           },
           {
             model: CategoryModel,
+            attributes: ['name', 'parentId', 'id'],
             as: 'category',
           },
           {
             model: ProducerModel,
+            attributes: ['name', 'id', 'code'],
             as: 'producer',
           },
         ],
@@ -54,6 +57,7 @@ export class ProductService {
         include: [
           {
             model: ImagesProductModel,
+            attributes: ['image', 'id'],
             as: 'productImages',
           },
           {
