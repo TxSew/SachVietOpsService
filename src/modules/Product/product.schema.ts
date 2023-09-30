@@ -27,6 +27,10 @@ export const ProductModel = SequelizeBase.define<Models>(
     quantity: {
       type: DataTypes.INTEGER,
     },
+
+    price: {
+      type: DataTypes.INTEGER,
+    },
     sale: {
       type: DataTypes.INTEGER,
     },
@@ -43,6 +47,7 @@ export const ProductModel = SequelizeBase.define<Models>(
   },
   {
     freezeTableName: true,
+    paranoid: true,
   },
 );
 

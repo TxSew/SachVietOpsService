@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Op } from 'sequelize';
+import { Op, or } from 'sequelize';
 import { UserModel } from '../Auth/auth.schema';
 import CategoryModel from '../Category/category.schema';
 import { OrderModel } from '../Order/order.schema';
@@ -39,15 +39,21 @@ export class StatisticalService {
           [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
         },
       },
-    });
-    console.log('orders: ' + orders);
-    // Tính toán tổng doanh thu từ các giao dịch
-    const productRevenue = orders.reduce(
-      (totalRevenue: number, transaction :any) => {
+    }).then(async (res) => {
+      const dat = await res.reduce((totalRevenue: number, transaction: any) => {
         return totalRevenue + transaction.money;
-      },
-      0,
-    );
-    return productRevenue;
+      }, 0);
+      return dat;
+    });
+
+    // console.log('orders: ' + orders);
+    // // Tính toán tổng doanh thu từ các giao dịch
+    // const productRevenue = await orders.reduce(
+    //   (totalRevenue: number, transaction: any) => {
+    //     return totalRevenue + transaction.money;
+    //   },
+    //   0,
+    // );
+    return orders;
   }
 }

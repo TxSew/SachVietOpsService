@@ -20,7 +20,6 @@ export class ProvinceService {
   }
   async getDistrict() {
     const district = await DistrictModel.findAll({});
-
     return district;
   }
 }

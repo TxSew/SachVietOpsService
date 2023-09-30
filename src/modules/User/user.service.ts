@@ -2,26 +2,26 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from 'src/submodules/models/UserModel/User';
 import { UserModel } from '../Auth/auth.schema';
 import { UserQueryDto } from './dto/query-users';
+import { ResponseError } from 'src/helpers/ResponseError';
 
 @Injectable()
 export class UserService {
   async getUsers(query: UserQueryDto): Promise<User[]> {
-    const limit = query.limit || 10;
+    const limit = query.limit || 5;
     const page = query.page || 1;
     const offset = (page - 1) * limit;
-    const findOptions: any = {
-      limit,
-      offset,
-      order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
-    };
     try {
-      const GetUsers = await UserModel.findAll(findOptions);
+      const GetUsers = await UserModel.findAll({
+        limit,
+        offset,
+        order: [['createdAt', 'DESC']],
+      });
       if (!GetUsers) {
-        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        throw ResponseError.notFound('USer not found');
       }
       return GetUsers;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
+      throw ResponseError.badInput;
     }
   }
   async getUserCurrent(id: number): Promise<User> {
@@ -30,11 +30,11 @@ export class UserService {
         where: { id: id },
       });
       if (!userCurrent) {
-        throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        throw ResponseError.notFound;
       }
       return userCurrent;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
+      throw ResponseError.badInput('Not Found');
     }
   }
   async updateUserCurrent(id: number, userCurrent: User): Promise<any> {
@@ -43,11 +43,11 @@ export class UserService {
         where: { id: id },
       });
       if (!UserUpdate) {
-        throw new HttpException('User updated false', HttpStatus.FORBIDDEN);
+        throw ResponseError.notFound('Not Found user update');
       }
       return UserUpdate;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
+      throw ResponseError.badInput(`Not Found ${err}`);
     }
   }
 }

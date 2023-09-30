@@ -40,7 +40,7 @@ export class producerService {
     });
     return ProducerData;
   }
-  async remove(id: number) {
+  async removeProducerTrashed(id: number) {
     console.log(id);
     const destroy = await ProducerModel.destroy({
       where: { id: id },
