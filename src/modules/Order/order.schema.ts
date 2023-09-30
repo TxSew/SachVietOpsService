@@ -1,15 +1,9 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Order } from 'src/submodules/models/OrderModel/Order';
-import { OrderDetailModel } from './dto/orderDetail.schema';
 import { UserModel } from '../Auth/auth.schema';
+import { OrderDetailModel } from './dto/orderDetail.schema';
 
 export interface Models extends Order, Model {}
 export const OrderModel = SequelizeBase.define<Models, Order>(

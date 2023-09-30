@@ -8,6 +8,8 @@ import { UserModel } from '../Auth/auth.schema';
 import { ProductModel } from '../Product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderModel } from './order.schema';
+import { Discount } from 'src/submodules/models/DiscountModel/Discount';
+import { DiscountModel } from '../Discount/discount.shema';
 
 @Injectable()
 export class OrderService {
@@ -29,43 +31,44 @@ export class OrderService {
   }
 
   async createOrder(orderDto: OrderDto): Promise<TOrderResponse> {
+    const resultOrder: any = orderDto.orders;
+    const dataDetail: any[] = orderDto.orderDetail;
+    if (resultOrder?.orderCode) {
+      const discount: Discount = await DiscountModel.findOne({
+        where: { orderCode: resultOrder?.orderCode },
+      });
+      if (!discount) {
+        throw new HttpException('discount not found', HttpStatus.FORBIDDEN);
+      }
+      if (discount?.number_used >= discount.limit_number) {
+        throw new HttpException(
+          'discount limited value ',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      if (resultOrder.price < discount.payment_limit) {
+        throw new HttpException(
+          'discount  maximum value',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+    }
     try {
-      const resultOrder: any = orderDto.orders;
-      // if (resultOrder?.orderCode) {
-      //   const discount: Discount = await DiscountModel.findOne({
-      //     where: { orderCode: resultOrder?.orderCode },
-      //   });
-      //   if (!discount) {
-      //     throw new HttpException('discount not found', HttpStatus.FORBIDDEN);
-      //   }
-      //   if (discount?.number_used >= discount.limit_number) {
-      //     throw new HttpException(
-      //       'discount limited value ',
-      //       HttpStatus.FORBIDDEN,
-      //     );
-      //   }
-      //   if (resultOrder.price < discount.payment_limit) {
-      //     throw new HttpException(
-      //       'discount  maximum value',
-      //       HttpStatus.FORBIDDEN,
-      //     );
-      //   }
-      // }
-      const dataDetail: any[] = orderDto.orderDetail;
       const priceTotal = dataDetail.reduce(
         (total, current) => total + current.price * current.count,
         0,
       );
       resultOrder.money = priceTotal;
 
-      let result = await OrderModel.create(resultOrder);
-      let Id = await result.get().id;
-      for (var i = 0; i < dataDetail.length; i++) {
-        dataDetail[i].orderID = Id;
-      }
-
-      const detailData = await OrderDetailModel.bulkCreate(dataDetail);
-      return { result, detailData };
+      let results = await OrderModel.create(resultOrder).then(async (res) => {
+        let Id = await res.get().id;
+        for (var i = 0; i < dataDetail.length; i++) {
+          dataDetail[i].orderID = Id;
+        }
+        const detailData = await OrderDetailModel.bulkCreate(dataDetail);
+        return { result: res, detailData };
+      });
+      return results;
     } catch (err) {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }

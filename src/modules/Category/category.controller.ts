@@ -20,10 +20,10 @@ export class CategoryController {
   getAll() {
     return this.categoryService.getAll();
   }
-   @Get(':id')
-    getOne( @Param() id: number) {
-       return this.categoryService.getOne(id) 
-    }
+  @Get(':id')
+  getOne(@Param() id: number) {
+    return this.categoryService.getOne(id);
+  }
   @Post('store')
   createCategory(@Body() category) {
     console.log(category);
@@ -34,9 +34,9 @@ export class CategoryController {
   updateCategory(@Param('id') id: number, @Body() category: Category) {
     return this.categoryService.updateCategory(Number(id), category);
   }
-   
+
   @Delete(':id')
   removeCategory(@Param('id') id: string) {
-    return this.categoryService.removeCategory(Number(id));
+    return this.categoryService.removeCategoryTrashed(Number(id));
   }
 }

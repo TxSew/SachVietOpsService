@@ -81,7 +81,7 @@ export class CategoryService {
     });
     return update;
   }
-  async removeCategory(id: number) {
+  async removeCategoryTrashed(id: number) {
     try {
       const destroy = await CategoryModel.destroy({
         where: { id: id },

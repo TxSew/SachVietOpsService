@@ -41,13 +41,18 @@ export class ProductService {
             as: 'producer',
           },
         ],
-      }).then((res) => {
-        return JSON.parse(JSON.stringify(res));
-      });
-      const { rows: db_products, count: total } = Product;
+      })
+        .then(async (res) => {
+          return JSON.parse(JSON.stringify(res));
+        })
+        .catch((err) => {
+          throw ResponseError.badInput(`Unable to parse ${err.message}`);
+          // throw new HttpException(err, HttpStatus.FORBIDDEN);
+        });
+      const { rows: db_products, count: total } = await Product;
       return { total, limit: limited, page, products: db_products };
     } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
+      throw ResponseError.unexpected(err);
     }
   }
   // find One or more products
@@ -71,12 +76,14 @@ export class ProductService {
           },
         ],
         where: { slug: slug },
-      });
-      console.log(findOne);
+      })
+        .then(async (res) => {
+          return res;
+        })
+        .catch((err) => {
+          throw ResponseError.badInput(err);
+        });
 
-      if (!findOne) {
-        throw 'Product not found';
-      }
       return findOne;
     } catch (err) {
       return err;
@@ -104,7 +111,7 @@ export class ProductService {
     }
   }
   // create a new Product
-  async createProduct(TProduct: TProduct): Promise<any> {
+  async createProduct(TProduct: TProduct) {
     try {
       const Products: any = TProduct.product;
 
@@ -155,26 +162,29 @@ export class ProductService {
     }
   }
   //  search a Product
-  async removeProduct(id: number) {
-    console.log(id);
+  async removeProductTrashed(id: number) {
     const trashed = await ProductModel.destroy({
+      where: { id: id },
+    });
+    return trashed;
+  }
+  async restoreProductTrashed(id: number) {
+    const trashed = await ProductModel.restore({
       where: { id: id },
     });
     return trashed;
   }
 
   async getInventory(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit: number = query.limit || 3;
+    const limit: number = Number(query.limit) || 3;
     const page = query.page || 1;
     const offset = (Number(page) - 1) * limit;
-    const lm = Number(limit);
-    const findOptions: any = {
-      lm,
-      offset,
-      order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
-    };
     try {
-      const Product = await ProductModel.findAndCountAll(findOptions);
+      const Product = await ProductModel.findAndCountAll({
+        limit,
+        offset,
+        order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
+      });
       const { rows: db_products, count: total } = Product;
       return { total, limit, page, products: db_products };
     } catch (err) {

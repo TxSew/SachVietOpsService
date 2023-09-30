@@ -39,6 +39,6 @@ export class ProducerController {
   }
   @Delete(':id')
   remove(@Param('id') id: number) {
-    return this.producerService.remove(id);
+    return this.producerService.removeProducerTrashed(id);
   }
 }
