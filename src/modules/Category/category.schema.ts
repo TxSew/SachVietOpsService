@@ -1,18 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
-import { baseAttributes } from 'src/helpers/defineModelFactory';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import slugify from 'slugify';
+import { SequelizeBase } from 'src/configs/SequelizeConfig';
+import { baseAttributes } from 'src/helpers/defineModelFactory';
+import { Category } from 'src/submodules/models/ProductModel/Category';
 
-class CategoryModel extends Model {
-  slug: string;
-  name: string;
-}
-CategoryModel.init(
+export interface ModelCategory extends Category, Model {}
+export const CategoryModel = SequelizeBase.define<ModelCategory>(
+  'db_category',
   {
     ...baseAttributes,
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     slug: {
       type: DataTypes.STRING,
@@ -21,6 +19,10 @@ CategoryModel.init(
     level: {
       type: DataTypes.STRING,
       defaultValue: '1', // Provide a default value here
+    },
+    image: {
+      type: DataTypes.STRING,
+      unique: true,
     },
     parentId: {
       type: DataTypes.NUMBER,
@@ -31,17 +33,13 @@ CategoryModel.init(
     },
   },
   {
-    paranoid: true,
     freezeTableName: true,
-    sequelize: SequelizeBase,
-    modelName: 'db_category',
+    paranoid: true,
   },
 );
-CategoryModel.beforeCreate((category, opition) => {
+CategoryModel.beforeCreate((category) => {
   category.slug = slugify(category.name, { lower: true });
 });
 CategoryModel.beforeUpdate((category) => {
   category.slug = slugify(category.name, { lower: true });
 });
-
-export default CategoryModel;

@@ -21,9 +21,15 @@ module.exports = {
       desc: {
         type: Sequelize.STRING,
       },
+      author: {
+        type: Sequelize.STRING,
+      },
       slug: {
         type: Sequelize.STRING,
         unique: true,
+      },
+      image: {
+        type: Sequelize.STRING,
       },
       producerID: {
         type: Sequelize.INTEGER,

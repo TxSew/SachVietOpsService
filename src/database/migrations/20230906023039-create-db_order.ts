@@ -64,7 +64,6 @@ module.exports = {
       },
       status: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
     });
   },

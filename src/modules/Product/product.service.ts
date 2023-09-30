@@ -5,11 +5,11 @@ import {
   TProduct,
   TProductResponse,
 } from 'src/submodules/models/ProductModel/Product';
-import CategoryModel from '../Category/category.schema';
 import { ProducerModel } from '../Producer/producer.schema';
 import { ImagesProductModel } from './dto/listImage.schema';
 import { ProductQueryDto } from './dto/query-product';
 import { ProductModel } from './product.schema';
+import { CategoryModel } from '../Category/category.schema';
 
 @Injectable()
 export class ProductService {

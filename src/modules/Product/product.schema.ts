@@ -3,9 +3,9 @@ import slugify from 'slugify';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Product } from 'src/submodules/models/ProductModel/Product';
-import CategoryModel from '../Category/category.schema';
 import { ProducerModel } from '../Producer/producer.schema';
 import { ImagesProductModel } from './dto/listImage.schema';
+import { CategoryModel } from '../Category/category.schema';
 export interface Models extends Product, Model {}
 export const ProductModel = SequelizeBase.define<Models>(
   'db_products',
