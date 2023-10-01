@@ -114,7 +114,7 @@ export class ProductService {
   async createProduct(TProduct: TProduct) {
     try {
       const Products: any = TProduct.product;
-
+      console.log(Products);
       const ProductImages: any[] = TProduct.productImages;
       if (!Products) {
         throw 'product creating not value';

@@ -27,7 +27,9 @@ export const ProductModel = SequelizeBase.define<Models>(
     quantity: {
       type: DataTypes.INTEGER,
     },
-
+    image: {
+      type: DataTypes.STRING,
+    },
     price: {
       type: DataTypes.INTEGER,
     },

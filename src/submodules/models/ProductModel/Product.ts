@@ -8,6 +8,7 @@ export interface Product extends BaseModel, Modified {
   categoryId?: number;
   slug?: string;
   price?: number;
+  image?: string;
   price_sale?: number;
   listImage?: string;
   quantity?: number;
