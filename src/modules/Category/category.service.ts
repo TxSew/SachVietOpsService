@@ -1,18 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
+import { CategoryModel } from './category.schema';
 import { Category } from 'src/submodules/models/ProductModel/Category';
-import CategoryModel from './category.schema';
 
 @Injectable()
 export class CategoryService {
   async getAll() {
     const query = `
     WITH RECURSIVE CategoryTree AS (
-      SELECT id, parentId, name, slug
+      SELECT id, parentId, name, slug, image
       FROM db_category
       WHERE id = 1
       UNION ALL
-      SELECT c.id, c.parentId, c.name, c.slug
+      SELECT c.id, c.parentId, c.name, c.slug, c.image
       FROM db_category c
       JOIN CategoryTree ct ON c.parentId = ct.id
     )
@@ -20,9 +20,7 @@ export class CategoryService {
   `;
     const [results] = await SequelizeBase.query(query);
     console.log(results);
-
     const nestedCategories = this.buildCategoryHierarchy(results);
-
     return nestedCategories;
   }
 
@@ -32,8 +30,7 @@ export class CategoryService {
     categories.forEach((category) => {
       category.subcategories = [];
       categoryMap[category.id] = category;
-
-      if (category.parentId === null) {
+      if (category.parentId === 1) {
         rootCategories.push(category);
       } else {
         const parentCategory = categoryMap[category.parentId];
@@ -44,7 +41,41 @@ export class CategoryService {
     });
     return rootCategories;
   }
-  async getOne(id) {
+  async getListCategory() {
+    const query = `
+    WITH RECURSIVE CategoryTree AS (
+      SELECT
+        c.id,
+        c.parentId,
+        c.name,
+        c.slug,
+        c.deletedAt,
+        c.image,
+        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+      FROM db_category c
+      LEFT JOIN db_category p ON c.parentId = p.id
+      WHERE c.id = 1 AND c.deletedAt IS NULL
+      UNION ALL
+      SELECT
+        c.id,
+        c.parentId,
+        c.name,
+        c.slug,
+        c.deletedAt,
+        c.image,
+        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+      FROM db_category c
+      JOIN CategoryTree ct ON c.parentId = ct.id
+      LEFT JOIN db_category p ON c.parentId = p.id
+      WHERE c.deletedAt IS NULL
+    )
+    SELECT * FROM CategoryTree;
+    
+  `;
+    const [results] = await SequelizeBase.query(query);
+    return results;
+  }
+  async getOne(id): Promise<any> {
     const Id: number = id.id;
     const findOne = await CategoryModel.findOne({
       where: {
@@ -57,7 +88,7 @@ export class CategoryService {
   }
   //category
 
-  async createCategory(category) {
+  async createCategory(category: Partial<Category>): Promise<any> {
     console.log(category);
     try {
       const existingCategory = await CategoryModel.findOne({

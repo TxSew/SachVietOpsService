@@ -20,7 +20,6 @@ export class AccountController {
   async create(@Body() register: User): Promise<User> {
     return this.accountService.register(register);
   }
-
   // login User
   @Post('Login')
   @ApiOperation({ summary: 'check login account' })

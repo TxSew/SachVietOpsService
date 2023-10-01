@@ -18,7 +18,6 @@ export class producerService {
         id: id,
       },
     });
-
     if (detail) {
       return detail;
     }

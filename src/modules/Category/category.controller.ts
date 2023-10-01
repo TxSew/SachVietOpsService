@@ -1,16 +1,15 @@
 import {
-  Delete,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
-import { Category } from 'src/submodules/models/ProductModel/Category';
-import { BaseModel } from 'src/submodules/models/BaseModel';
 import { ApiTags } from '@nestjs/swagger';
+import { Category } from 'src/submodules/models/ProductModel/Category';
+import { CategoryService } from './category.service';
 @ApiTags('category')
 @Controller('category')
 export class CategoryController {
@@ -20,14 +19,16 @@ export class CategoryController {
   getAll() {
     return this.categoryService.getAll();
   }
+  @Get('/listCategory')
+  getListCategory() {
+    return this.categoryService.getListCategory();
+  }
   @Get(':id')
-  getOne(@Param() id: number) {
+  getOne(@Param() id: number): Promise<any> {
     return this.categoryService.getOne(id);
   }
   @Post('store')
-  createCategory(@Body() category) {
-    console.log(category);
-
+  createCategory(@Body() category: Partial<Category>): Promise<any> {
     return this.categoryService.createCategory(category);
   }
   @Put('update/:id')
@@ -36,7 +37,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  removeCategory(@Param('id') id: string) {
+  removeCategory(@Param('id') id: number) {
     return this.categoryService.removeCategoryTrashed(Number(id));
   }
 }
