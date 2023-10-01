@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Op, or } from 'sequelize';
 import { UserModel } from '../Auth/auth.schema';
-import CategoryModel from '../Category/category.schema';
-import { OrderModel } from '../Order/order.schema';
 import { ProducerModel } from '../Producer/producer.schema';
 import { ProductModel } from '../Product/product.schema';
 import { StatisticalDto } from 'src/submodules/models/Statistical/Statistical';
+import { CategoryModel } from '../Category/category.schema';
+import { OrderModel } from '../Order/order.schema';
 
 @Injectable()
 export class StatisticalService {
