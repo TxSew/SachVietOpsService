@@ -8,20 +8,36 @@ export class CategoryService {
   async getAll() {
     const query = `
     WITH RECURSIVE CategoryTree AS (
-      SELECT id, parentId, name, slug, image
-      FROM db_category
-      WHERE id = 1
+      SELECT
+        c.id,
+        c.parentId,
+        c.name,
+        c.slug,
+        c.deletedAt,
+        c.image,
+        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+      FROM db_category c
+      LEFT JOIN db_category p ON c.parentId = p.id
+      WHERE c.id = 1 AND c.deletedAt IS NULL
       UNION ALL
-      SELECT c.id, c.parentId, c.name, c.slug, c.image
+      SELECT
+        c.id,
+        c.parentId,
+        c.name,
+        c.slug,
+        c.deletedAt,
+        c.image,
+        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
       FROM db_category c
       JOIN CategoryTree ct ON c.parentId = ct.id
+      LEFT JOIN db_category p ON c.parentId = p.id
+      WHERE c.deletedAt IS NULL
     )
-    SELECT * FROM CategoryTree;
-  `;
+    SELECT * FROM CategoryTree;`
     const [results] = await SequelizeBase.query(query);
-    console.log(results);
-    const nestedCategories = this.buildCategoryHierarchy(results);
-    return nestedCategories;
+    return results;
+    // const nestedCategories = this.buildCategoryHierarchy(results);
+    // return nestedCategories;
   }
 
   async buildCategoryHierarchy(categories) {

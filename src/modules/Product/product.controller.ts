@@ -25,13 +25,10 @@ export class ProductController {
   async findAll(@Query() query: ProductQueryDto): Promise<TProductResponse> {
     return this.productService.findAll(query);
   }
-  @Get('inventory/sort')
-  async Inventory(@Query() query: ProductQueryDto): Promise<TProductResponse> {
-    return this.productService.getInventory(query);
-  }
+
   @Get(':id')
   async findOne(@Param('id') slug: string): Promise<Product> {
-    return this.productService.findOne(slug);
+    return this.productService.findOneWithRelatedProducts(slug);
   }
   @Get('currentUpdate/:id')
   async findUpdate(@Param('id') slug: string): Promise<Product> {

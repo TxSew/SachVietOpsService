@@ -10,17 +10,19 @@ import { ImagesProductModel } from './dto/listImage.schema';
 import { ProductQueryDto } from './dto/query-product';
 import { ProductModel } from './product.schema';
 import { CategoryModel } from '../Category/category.schema';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProductService {
   //find all products
   async findAll(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit = query.limit || 6;
+    const limit = query.limit || 3;
     const page = query.page || 1;
     const limited = Number(limit);
     const offset = (Number(page) - 1) * limited;
+    const products = await ProductModel.findAll({});
     try {
-      const Product = await ProductModel.findAndCountAll({
+      const Product = await ProductModel.findAll({
         limit: limited,
         offset,
         order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
@@ -47,18 +49,18 @@ export class ProductService {
         })
         .catch((err) => {
           throw ResponseError.badInput(`Unable to parse ${err.message}`);
-          // throw new HttpException(err, HttpStatus.FORBIDDEN);
         });
-      const { rows: db_products, count: total } = await Product;
-      return { total, limit: limited, page, products: db_products };
+      const totalPage = Math.round(products.length / limited);
+      return { totalPage, limit: limited, page, products: Product };
     } catch (err) {
       throw ResponseError.unexpected(err);
     }
   }
   // find One or more products
-  async findOne(slug: string): Promise<Product> {
+  async findOneWithRelatedProducts(slug: string): Promise<any> {
     try {
-      const findOne = await ProductModel.findOne({
+      // Find the product with the provided slug
+      const product = await ProductModel.findOne({
         include: [
           {
             model: ImagesProductModel,
@@ -69,22 +71,39 @@ export class ProductService {
             model: CategoryModel,
             as: 'category',
           },
-
           {
             model: ProducerModel,
             as: 'producer',
           },
         ],
         where: { slug: slug },
-      })
-        .then(async (res) => {
-          return res;
-        })
-        .catch((err) => {
-          throw ResponseError.badInput(err);
-        });
+      });
 
-      return findOne;
+      if (!product) {
+        throw ResponseError.notFound('Product not found');
+      }
+      // Find related products based on the same category
+      const relatedProducts = await ProductModel.findAll({
+        include: [
+          {
+            model: ImagesProductModel,
+            attributes: ['image', 'id'],
+            as: 'productImages',
+          },
+          {
+            model: CategoryModel,
+            as: 'category',
+          },
+          {
+            model: ProducerModel,
+            as: 'producer',
+          },
+        ],
+        where: { categoryId: product.categoryId, id: { [Op.not]: product.id } }, // Exclude the current product
+        limit: 5, // You can adjust the limit as needed
+      });
+
+      return { product, relatedProducts };
     } catch (err) {
       return err;
     }
@@ -173,22 +192,5 @@ export class ProductService {
       where: { id: id },
     });
     return trashed;
-  }
-
-  async getInventory(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit: number = Number(query.limit) || 3;
-    const page = query.page || 1;
-    const offset = (Number(page) - 1) * limit;
-    try {
-      const Product = await ProductModel.findAndCountAll({
-        limit,
-        offset,
-        order: [['number', 'ASC']], // Sorting by purchasedDate in descending order
-      });
-      const { rows: db_products, count: total } = Product;
-      return { total, limit, page, products: db_products };
-    } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
-    }
   }
 }

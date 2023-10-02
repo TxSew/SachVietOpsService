@@ -25,6 +25,6 @@ interface ProductImages extends Modified {
 export interface TProductResponse {
   page?: number;
   limit?: number;
-  total?: number;
+  totalPage?: number;
   products?: Product[];
 }
