@@ -1,23 +1,16 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Category } from 'src/submodules/models/ProductModel/Category';
 import { CategoryService } from './category.service';
+import { CategoryQueryDto } from './dto/Category.schema';
 @ApiTags('category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
-  getAll() {
-    return this.categoryService.getAll();
+  getAll(@Query() query: CategoryQueryDto) :Promise<any> {
+    return this.categoryService.getAll(query);
   }
   @Get('/listCategory')
   getListCategory() {

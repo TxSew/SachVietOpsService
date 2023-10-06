@@ -1,7 +1,8 @@
+import {Model} from 'sequelize';
 import { BaseModel } from '../BaseModel';
 import { Modified } from '../BaseModel/contanst';
 
-export interface Discount extends BaseModel, Modified {
+export interface Discount extends BaseModel, Modified  , Model{
   code?: string;
   discount?: string;
   limit_number?: number;

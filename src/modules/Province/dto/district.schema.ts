@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import {DataTypes, InferAttributes, Model} from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 export interface Models extends Model {}
 export const DistrictModel = SequelizeBase.define<Models>(

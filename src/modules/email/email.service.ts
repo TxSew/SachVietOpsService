@@ -1,4 +1,4 @@
-import { MailerService } from '@nestjs-modules/mailer';
+import {MailerService} from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';

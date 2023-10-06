@@ -1,46 +1,61 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ResponseError } from 'src/helpers/ResponseError';
+import { Injectable } from "@nestjs/common";
+import { Op } from "sequelize";
+import { ResponseError } from "src/helpers/ResponseError";
 import {
   Product,
   TProduct,
   TProductResponse,
-} from 'src/submodules/models/ProductModel/Product';
-import { ProducerModel } from '../Producer/producer.schema';
-import { ImagesProductModel } from './dto/listImage.schema';
-import { ProductQueryDto } from './dto/query-product';
-import { ProductModel } from './product.schema';
-import { CategoryModel } from '../Category/category.schema';
-import { Op } from 'sequelize';
+} from "src/submodules/models/ProductModel/Product";
+import { CategoryModel } from "../Category/category.schema";
+import { ProducerModel } from "../Producer/producer.schema";
+import { ImagesProductModel } from "./dto/listImage.schema";
+import { ProductQueryDto } from "./dto/query-product";
+import { ProductModel } from "./product.schema";
 
 @Injectable()
 export class ProductService {
   //find all products
   async findAll(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit = query.limit || 3;
+    const limit = query.limit || 6;
     const page = query.page || 1;
     const limited = Number(limit);
     const offset = (Number(page) - 1) * limited;
-    const products = await ProductModel.findAll({});
+    const minPrice = query.sortMinPrice || 1;
+    const maxPrice = query.sortMaxPrice || 200000000000;
+    const searchQuery = query.keyword || "";
+    const categoryFilter = query.categoryFilter || null;
+    const orderWith =
+      (query.sortWith || "asc").toLocaleLowerCase() == "asc" ? "DESC" : "ASC"; // You can pass 'asc' or 'desc' in the query
+    const whereClause: any = {
+      [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
+      price_sale: {
+        [Op.between]: [minPrice, maxPrice],
+      },
+    };
+    if (categoryFilter) {
+      whereClause.categoryId = categoryFilter;
+    }
     try {
-      const Product = await ProductModel.findAll({
+      const Product = await ProductModel.findAndCountAll({
+        where: whereClause,
         limit: limited,
         offset,
-        order: [['createdAt', 'DESC']], // Sorting by purchasedDate in descending order
+        order: [[query.sortBy || "createdAt", orderWith]],
         include: [
           {
             model: ImagesProductModel,
-            attributes: ['image', 'id'],
-            as: 'productImages',
+            attributes: ["image", "id"],
+            as: "productImages",
           },
           {
             model: CategoryModel,
-            attributes: ['name', 'parentId', 'id'],
-            as: 'category',
+            attributes: ["name", "parentId", "id"],
+            as: "category",
           },
           {
             model: ProducerModel,
-            attributes: ['name', 'id', 'code'],
-            as: 'producer',
+            attributes: ["name", "id", "code"],
+            as: "producer",
           },
         ],
       })
@@ -50,56 +65,63 @@ export class ProductService {
         .catch((err) => {
           throw ResponseError.badInput(`Unable to parse ${err.message}`);
         });
-      const totalPage = Math.round(products.length / limited);
-      return { totalPage, limit: limited, page, products: Product };
+      let totalPage = Math.ceil(Product.count / limited);
+      return { totalPage, limit: limited, page, products: Product.rows };
     } catch (err) {
       throw ResponseError.unexpected(err);
     }
   }
+  //get by category
+  async getByCategory(categry) {
+    const products = ProductModel.findAll({});
+  }
   // find One or more products
-  async findOneWithRelatedProducts(slug: string): Promise<any> {
+  async findOneWithRelatedProducts(slug: string) {
     try {
       // Find the product with the provided slug
       const product = await ProductModel.findOne({
         include: [
           {
             model: ImagesProductModel,
-            attributes: ['image', 'id'],
-            as: 'productImages',
+            attributes: ["image", "id"],
+            as: "productImages",
           },
           {
             model: CategoryModel,
-            as: 'category',
+            as: "category",
           },
           {
             model: ProducerModel,
-            as: 'producer',
+            as: "producer",
           },
         ],
         where: { slug: slug },
       });
 
       if (!product) {
-        throw ResponseError.notFound('Product not found');
+        throw ResponseError.notFound("Product not found");
       }
       // Find related products based on the same category
       const relatedProducts = await ProductModel.findAll({
         include: [
           {
             model: ImagesProductModel,
-            attributes: ['image', 'id'],
-            as: 'productImages',
+            attributes: ["image", "id"],
+            as: "productImages",
           },
           {
             model: CategoryModel,
-            as: 'category',
+            as: "category",
           },
           {
             model: ProducerModel,
-            as: 'producer',
+            as: "producer",
           },
         ],
-        where: { categoryId: product.categoryId, id: { [Op.not]: product.id } }, // Exclude the current product
+        where: {
+          categoryId: product.get().categoryId,
+          id: { [Op.not]: product.get().id },
+        }, // Exclude the current product
         limit: 5, // You can adjust the limit as needed
       });
 
@@ -108,21 +130,22 @@ export class ProductService {
       return err;
     }
   }
-
   // find One or more products
-  async findOneUpdate(id: string): Promise<Product> {
+  async findOneUpdate(id: number): Promise<Product> {
+    console.log(id);
+
     try {
       const findOne = await ProductModel.findOne({
         include: [
           {
             model: ImagesProductModel,
-            as: 'productImage',
+            as: "productImage",
           },
         ],
         where: { id: id },
       });
       if (!findOne) {
-        throw 'Product not found';
+        throw "Product not found";
       }
       return findOne;
     } catch (err) {
@@ -130,54 +153,52 @@ export class ProductService {
     }
   }
   // create a new Product
-  async createProduct(TProduct: TProduct) {
+  async createProduct(TProduct: Partial<TProduct>): Promise<TProduct> {
     try {
-      const Products: any = TProduct.product;
-      console.log(Products);
-      const ProductImages: any[] = TProduct.productImages;
-      if (!Products) {
-        throw 'product creating not value';
+      const { product, productImages } = TProduct;
+      if (!product) {
+        throw "product creating not value";
       }
-      const ProductData = await ProductModel.create(Products);
-
-      let Id = await ProductData.get().id;
-      for (var i = 0; i < ProductImages.length; i++) {
-        ProductImages[i].productId = Id;
-      }
-      const data = await ImagesProductModel.bulkCreate(ProductImages);
+      //  logic % price
+      const { sale, price } = product;
+      const priceSale = price - (sale / 100) * price;
+      product.price_sale = priceSale;
+      //create product
+      const ProductData = await ProductModel.create(product);
+      //create product images
+      let id = ProductData.get().id;
+      productImages.map((product) => (product.productId = id));
+      const data = await ImagesProductModel.bulkCreate(productImages);
       return {
-        ProductImages: data,
-        Product: ProductData,
+        productImages: data,
+        product: ProductData,
       };
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.ACCEPTED);
+      throw ResponseError.badInput(err.message);
     }
   }
   // update a Product
   async updateProduct(id: number, TProduct: TProduct) {
     const parInt = id;
     console.log(TProduct);
-    const Products: any = TProduct.product;
-    const ProductImages: any[] = TProduct.productImages;
-    if (ProductImages.length > 0) {
+    const { product, productImages } = TProduct;
+    if (productImages.length > 0) {
       const destroy = await ImagesProductModel.destroy({
         where: { productId: parInt },
       });
       console.log(destroy);
     }
-
     try {
-      const updated = await ProductModel.update(Products, {
+      const updated = await ProductModel.update(product, {
         where: { id: parInt },
       });
-
-      for (var i = 0; i < ProductImages.length; i++) {
-        ProductImages[i].productId = parInt;
-        const data = await ImagesProductModel.bulkCreate(ProductImages);
+      for (var i = 0; i < productImages.length; i++) {
+        productImages[i].productId = parInt;
+        const data = await ImagesProductModel.bulkCreate(productImages);
         return updated;
       }
     } catch (errors) {
-      throw ResponseError.badInput('Product update failed');
+      throw ResponseError.badInput("Product update failed");
     }
   }
   //  search a Product

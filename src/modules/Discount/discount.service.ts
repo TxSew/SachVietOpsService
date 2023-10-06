@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { DiscountModel } from './discount.shema';
 
@@ -45,4 +40,5 @@ export class DiscountService {
       where: { id: id },
     });
   }
+      
 }

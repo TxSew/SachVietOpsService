@@ -1,8 +1,10 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Producer } from 'src/submodules/models/producerModel/producer';
-export interface ProducerSchema extends Producer, Model {}
+
+// export class productModel extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {}
+export interface ProducerSchema extends  Model<InferAttributes<Producer> , InferCreationAttributes<Producer>> {}
 export const ProducerModel = SequelizeBase.define<ProducerSchema>(
   'db_producer',
   {

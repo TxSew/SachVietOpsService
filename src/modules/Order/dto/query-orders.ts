@@ -2,7 +2,7 @@ import { IsOptional, IsInt, Min, IsString } from "class-validator";
 import { Transform } from "class-transformer";
 ``;
 
-export class ProductQueryDto {
+export class OrderQueryDto {
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsInt()
@@ -39,8 +39,4 @@ export class ProductQueryDto {
   @IsOptional()
   @IsString()
   sortMaxPrice: string;
-
-  @IsOptional()
-  @IsString()
-  categoryFilter: string;
 }

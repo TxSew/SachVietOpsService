@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
@@ -12,7 +12,7 @@ import { DiscountService } from './modules/Discount/discount.service';
 import { OrderController } from './modules/Order/order.controller';
 import { OrderService } from './modules/Order/order.service';
 import { ProducerController } from './modules/Producer/producer.controller';
-import { producerService } from './modules/Producer/producer.service';
+import { ProducerService } from './modules/Producer/producer.service';
 import { ProductController } from './modules/Product/product.controller';
 import { ProductService } from './modules/Product/product.service';
 import { StatisticalController } from './modules/Statistical/statistical.controller';
@@ -59,7 +59,7 @@ import { ConfigDatabase } from './configs/config';
     AccountService,
     ProductService,
     CategoryService,
-    producerService,
+    ProducerService,
     OrderService,
     StatisticalService,
     UserService,

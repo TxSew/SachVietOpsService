@@ -1,70 +1,84 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Discount } from "src/submodules/models/DiscountModel/Discount";
 import {
   Order,
   OrderDto,
   TOrderResponse,
-} from 'src/submodules/models/OrderModel/Order';
-import { UserModel } from '../Auth/auth.schema';
-import { ProductModel } from '../Product/product.schema';
-import { OrderDetailModel } from './dto/orderDetail.schema';
-import { OrderModel } from './order.schema';
-import { Discount } from 'src/submodules/models/DiscountModel/Discount';
-import { DiscountModel } from '../Discount/discount.shema';
+  TOrders,
+} from "src/submodules/models/OrderModel/Order";
+import { UserModel } from "../Auth/auth.schema";
+import { DiscountModel } from "../Discount/discount.shema";
+import { ProductModel } from "../Product/product.schema";
+import { OrderDetailModel } from "./dto/orderDetail.schema";
+import { OrderQueryDto } from "./dto/query-orders";
+import { OrderModel } from "./order.schema";
 
 @Injectable()
 export class OrderService {
-  //  constructor (private order: OrderController){}
-  async getOrderAll(): Promise<Order[]> {
+  async getOrderAll(query: OrderQueryDto): Promise<TOrders> {
+    const limit = query.limit || 6;
+    const page = query.page || 1;
+    const limited = Number(limit);
+    const offset = (Number(page) - 1) * limited;
+    const searchQuery = query.keyword || "";
+    const orders = await OrderModel.findAll({});
     try {
-      const listOrder = await OrderModel.findAll({
+      const listOrder: Order[] = await OrderModel.findAll({
+        limit: limited,
+        offset,
         include: [
           {
             model: UserModel,
-            as: 'users',
+            as: "users",
           },
         ],
       });
-      return listOrder;
+      const totalPage = Math.round((await orders.length) / limited);
+      return {
+        totalPage: totalPage,
+        limit: limited,
+        page: page,
+        orders: listOrder,
+      };
     } catch (error) {
-      throw 'errors: ' + error;
+      throw "errors: " + error;
     }
   }
-
-  async createOrder(orderDto: OrderDto): Promise<TOrderResponse> {
+  async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
     const resultOrder: any = orderDto.orders;
     const dataDetail: any[] = orderDto.orderDetail;
+    let coupon: number = 0;
     if (resultOrder?.orderCode) {
       const discount: Discount = await DiscountModel.findOne({
-        where: { orderCode: resultOrder?.orderCode },
+        where: { code: resultOrder?.orderCode },
       });
       if (!discount) {
-        throw new HttpException('discount not found', HttpStatus.FORBIDDEN);
+        throw new HttpException("discount not found", HttpStatus.FORBIDDEN);
       }
       if (discount?.number_used >= discount.limit_number) {
+        throw new HttpException("discount limited value", HttpStatus.FORBIDDEN);
+      }
+      if (resultOrder.money < discount.payment_limit) {
         throw new HttpException(
-          'discount limited value ',
-          HttpStatus.FORBIDDEN,
+          "discount  maximum value",
+          HttpStatus.FORBIDDEN
         );
       }
-      if (resultOrder.price < discount.payment_limit) {
-        throw new HttpException(
-          'discount  maximum value',
-          HttpStatus.FORBIDDEN,
-        );
-      }
+      coupon = Number(discount.discount);
     }
+    resultOrder.coupon = coupon;
     try {
       const priceTotal = dataDetail.reduce(
-        (total, current) => total + current.price * current.count,
-        0,
+        (total, current) => total + current.price * current.quantity,
+        0
       );
       resultOrder.money = priceTotal;
-
+      // resultOrder.price_ship = resultOrder.money - resultOrder.coupon;
       let results = await OrderModel.create(resultOrder).then(async (res) => {
-        let Id = await res.get().id;
-        for (var i = 0; i < dataDetail.length; i++) {
-          dataDetail[i].orderID = Id;
-        }
+        let id = await res.get().id;
+        dataDetail.map((dataDetail) => {
+          return (dataDetail.orderID = id);
+        });
         const detailData = await OrderDetailModel.bulkCreate(dataDetail);
         return { result: res, detailData };
       });
@@ -79,11 +93,11 @@ export class OrderService {
       include: [
         {
           model: OrderDetailModel,
-          as: 'orderDetail',
+          as: "orderDetail",
           include: [
             {
               model: ProductModel,
-              as: 'product',
+              as: "product",
             },
           ],
         },
@@ -92,7 +106,6 @@ export class OrderService {
         id: id,
       },
     });
-    console.log(detailedOrder);
     return detailedOrder[0];
   }
   //  get order by current
@@ -115,24 +128,7 @@ export class OrderService {
         where: {
           id: Number(id),
         },
-      },
+      }
     );
   }
 }
-
-//  const order: Order = {
-//   address: "",
-//   OrderDetails: [
-//     {
-//       orderID: null,
-//       price: 2,
-//     }
-//   ]
-//  }
-
-// const toCreateOrder = await OrderModel.create({...order}, {
-//   include: [{
-//     model: OrderDetailModel,
-//     as: "OrderDetailModel"
-//   }]
-//  })

@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('db_order', {
+    await queryInterface.createTable("db_order", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,12 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       orderCode: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.STRING,
       },
       userID: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'db_users',
+          model: "db_users",
         },
       },
       orderDate: {
@@ -39,13 +39,13 @@ module.exports = {
       province: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'db_province',
+          model: "db_province",
         },
       },
       district: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'db_district',
+          model: "db_district",
         },
       },
       address: {
@@ -68,6 +68,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('db_order');
+    await queryInterface.dropTable("db_order");
   },
 };
