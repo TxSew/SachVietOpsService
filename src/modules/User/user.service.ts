@@ -36,11 +36,11 @@ export class UserService {
       throw ResponseError.badInput(err.message);
     }
   }
-  async getUserCurrent(id: number): Promise<User> {
+  async getUserCurrent(email: string): Promise<User> {
     try {
       const userCurrent = await UserModel.findOne({
         where: {
-          id: id,
+          email: email,
         },
       });
       if (!userCurrent) {

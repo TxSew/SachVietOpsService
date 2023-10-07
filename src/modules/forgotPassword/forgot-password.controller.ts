@@ -1,14 +1,12 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { OtpService } from "./forgot-password.service";
 import { MailDto } from "./dto/mailDto";
-import { forgetPasswordService } from "./forgot-password.service";
 
-@Controller("forgetPassword")
-export class ForgetPasswordController {
-  constructor(private forgetPassword: forgetPasswordService) {}
-  @Post("forgot-password")
-  @ApiResponse({
-    status: 200,
-  })
-  async getEmail(@Body() mailDto: MailDto) {}
+Controller("otp");
+export class OtpController {
+  constructor(private readonly OtpService: OtpService) {}
+  @Post("getEmail")
+  async getEmail(@Body() emailDto: MailDto): Promise<any> {
+    return this.OtpService.getEmail(emailDto);
+  }
 }
