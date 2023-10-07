@@ -4,7 +4,7 @@ import { UserModel } from "../Auth/auth.schema";
 import { UserQueryDto } from "./dto/query-users";
 import { ResponseError } from "src/helpers/ResponseError";
 import { Op } from "sequelize";
-
+import * as bcrypt from "bcrypt";
 @Injectable()
 export class UserService {
   async getUsers(query: UserQueryDto): Promise<TUser> {
@@ -51,17 +51,42 @@ export class UserService {
       throw ResponseError.badInput("Not Found");
     }
   }
-  async updateUserCurrent(id: number, userCurrent: User) {
+  async updateUserCurrent(id: number, userCurrent: any) {
     try {
-      const UserUpdate = await UserModel.update(userCurrent, {
-        where: { id: id },
-      });
+      const UserUpdate = await UserModel.update(
+        {
+          password: userCurrent,
+        },
+        {
+          where: { id: id },
+        }
+      );
       if (!UserUpdate) {
         throw ResponseError.notFound("Not Found user update");
       }
       return UserUpdate;
     } catch (err) {
       throw ResponseError.badInput(`Not Found ${err}`);
+    }
+  }
+  async updateNewPassword(id: number, newPassword: string): Promise<any> {
+    try {
+      const user = await UserModel.findOne({
+        where: {
+          id: id,
+        },
+      });
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword, saltOrRounds);
+      const updatePass = await UserModel.update(
+        { password: hashedPassword },
+        {
+          where: { id: user.get().id },
+        }
+      );
+      return updatePass;
+    } catch (error) {
+      console.log(error);
     }
   }
 }
