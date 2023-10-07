@@ -1,11 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { User } from 'src/submodules/models/UserModel/User';
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { SequelizeBase } from "src/configs/SequelizeConfig";
+import { User } from "src/submodules/models/UserModel/User";
 
-import { baseAttributes } from 'src/helpers/defineModelFactory';
-export interface Models extends User, Model {}
-export const UserModel = SequelizeBase.define<Models>(
-  'db_users',
+import { baseAttributes } from "src/helpers/defineModelFactory";
+
+export class Users extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {}
+export const UserModel = SequelizeBase.define<Users>(
+  "db_users",
   {
     ...baseAttributes,
     fullName: {
@@ -25,7 +34,7 @@ export const UserModel = SequelizeBase.define<Models>(
       type: DataTypes.NUMBER,
       defaultValue: 1,
       references: {
-        model: 'db_userGroup',
+        model: "db_userGroup",
       },
     },
     status: {
@@ -36,5 +45,5 @@ export const UserModel = SequelizeBase.define<Models>(
   {
     paranoid: true,
     timestamps: true,
-  },
+  }
 );

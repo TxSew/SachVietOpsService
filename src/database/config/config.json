@@ -2,7 +2,7 @@
     "development": {
       "username": "root",
       "password": "",
-      "database": "db_shop",
+      "database": "db_books",
       "host": "localhost",
       "dialect": "mysql"
     },

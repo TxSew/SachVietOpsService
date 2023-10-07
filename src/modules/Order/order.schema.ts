@@ -1,13 +1,13 @@
-import { DataTypes, Model } from 'sequelize';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { baseAttributes } from 'src/helpers/defineModelFactory';
-import { Order } from 'src/submodules/models/OrderModel/Order';
-import { UserModel } from '../Auth/auth.schema';
-import { OrderDetailModel } from './dto/orderDetail.schema';
+import { DataTypes, Model } from "sequelize";
+import { SequelizeBase } from "src/configs/SequelizeConfig";
+import { baseAttributes } from "src/helpers/defineModelFactory";
+import { Order } from "src/submodules/models/OrderModel/Order";
+import { UserModel } from "../Auth/auth.schema";
+import { OrderDetailModel } from "./dto/orderDetail.schema";
 
 export interface Models extends Order, Model {}
-export const OrderModel = SequelizeBase.define<Models, Order>(
-  'db_order',
+export const OrderModel = SequelizeBase.define<Models>(
+  "db_order",
   {
     ...baseAttributes,
     userID: {
@@ -51,13 +51,13 @@ export const OrderModel = SequelizeBase.define<Models, Order>(
   },
   {
     freezeTableName: true,
-  },
+  }
 );
 OrderModel.hasMany(OrderDetailModel, {
-  foreignKey: 'orderID',
-  as: 'orderDetail',
+  foreignKey: "orderID",
+  as: "orderDetail",
 });
 OrderModel.belongsTo(UserModel, {
-  foreignKey: 'userID',
-  as: 'users',
+  foreignKey: "userID",
+  as: "users",
 });

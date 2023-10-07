@@ -1,7 +1,8 @@
+import { Model } from 'sequelize';
 import { BaseModel } from '../BaseModel';
 import { Modified } from '../BaseModel/contanst';
 
-export interface Product extends BaseModel, Modified {
+export interface Product extends BaseModel, Model,Modified {
   title?: string;
   desc?: string;
   producerID?: number;
@@ -13,12 +14,13 @@ export interface Product extends BaseModel, Modified {
   listImage?: string;
   quantity?: number;
   productId?: number;
+  sale?: number;
 }
 export interface TProduct {
   product?: Product;
   productImages?: ProductImages[];
 }
-interface ProductImages extends Modified {
+ export interface ProductImages extends Modified ,Model {
   productId?: number;
   image?: string;
 }

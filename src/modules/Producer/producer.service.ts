@@ -1,13 +1,30 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Producer } from 'src/submodules/models/producerModel/producer';
-import { ProducerModel, ProducerSchema } from './producer.schema';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  Producer,
+  TProducer,
+} from "src/submodules/models/producerModel/producer";
+import { ProducerModel, ProducerSchema } from "./producer.schema";
+import { ProducerQueyDto } from "./dto/query-producer";
 
 @Injectable()
-export class producerService {
-  async getAll(): Promise<ProducerSchema[]> {
+export class ProducerService {
+  async getAll(query: ProducerQueyDto): Promise<TProducer> {
+    const limited = Number(query.limit) || 2;
+    const page = query.page || 1;
+    const offset = (Number(page) - 1) * limited;
+    const findAllProducer = await ProducerModel.findAll({});
     try {
-      const data = await ProducerModel.findAll({});
-      return data;
+      const data = await ProducerModel.findAll({
+        limit: limited,
+        offset: offset,
+      });
+      const pageTotal = Math.ceil(findAllProducer.length / limited);
+      return {
+        page: page,
+        totalPage: pageTotal,
+        limit: limited,
+        producers: data,
+      };
     } catch (err) {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
@@ -28,10 +45,8 @@ export class producerService {
     return producerData;
   }
 
-  async update(id: number, producer: Producer): Promise<any> {
-    console.log('id', id);
+  async update(id: number, producer: Producer) {
     console.log(producer);
-
     const ProducerData = await ProducerModel.update(producer, {
       where: {
         id: id,

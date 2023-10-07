@@ -1,8 +1,9 @@
-import { BaseModel } from '../BaseModel';
-import { Modified } from '../BaseModel/contanst';
-import { Product } from '../ProductModel/Product';
+import { Model } from "sequelize";
+import { BaseModel } from "../BaseModel";
+import { Modified } from "../BaseModel/contanst";
+import { Product } from "../ProductModel/Product";
 
-export interface Order extends BaseModel, Modified {
+export interface Order extends BaseModel, Modified, Model {
   orderCode?: string;
   userID?: number;
   orderDate?: string;
@@ -20,9 +21,15 @@ export interface TOrderResponse {
   result: Order;
   detailData: OrderDetail[];
 }
+export interface TOrders {
+  totalPage?: number;
+  page?: number;
+  limit?: number;
+  orders?: Order[];
+}
 export type OrderHistory = Omit<
   Order,
-  'province' | 'district' | 'orderDate' | 'price_ship'
+  "province" | "district" | "orderDate" | "price_ship"
 >;
 
 export interface OrderDetail extends Modified {

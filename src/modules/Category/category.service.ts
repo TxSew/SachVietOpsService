@@ -1,12 +1,21 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { CategoryModel } from './category.schema';
-import { Category } from 'src/submodules/models/ProductModel/Category';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { SequelizeBase } from "src/configs/SequelizeConfig";
+import { CategoryModel } from "./category.schema";
+import { Category } from "src/submodules/models/ProductModel/Category";
+import { ResponseError } from "src/helpers/ResponseError";
+import { CategoryQueryDto } from "./dto/Category.schema";
 
 @Injectable()
 export class CategoryService {
-  async getAll() {
-    const query = `
+  async getAll(query: CategoryQueryDto): Promise<any> {
+    const limit = query.limit || 5;
+    const page = query.page || 1;
+    console.log(page);
+
+    const limited = Number(limit);
+    const offset = (Number(page) - 1) * limited;
+    const categoryList = await this.getListCategory();
+    const qr = `
     WITH RECURSIVE CategoryTree AS (
       SELECT
         c.id,
@@ -33,9 +42,11 @@ export class CategoryService {
       LEFT JOIN db_category p ON c.parentId = p.id
       WHERE c.deletedAt IS NULL
     )
-    SELECT * FROM CategoryTree;`
-    const [results] = await SequelizeBase.query(query);
-    return results;
+    SELECT * FROM CategoryTree LIMIT ${limited} OFFSET ${offset}
+    `;
+    const [results] = await SequelizeBase.query(qr);
+    const totalPage = Math.ceil(categoryList.length / limited);
+    return { totalPage, limit: limited, page, category: results };
     // const nestedCategories = this.buildCategoryHierarchy(results);
     // return nestedCategories;
   }
@@ -111,12 +122,12 @@ export class CategoryService {
         where: { name: category.name },
       });
       if (existingCategory) {
-        throw 'Name already exists';
+        throw "Name already exists";
       }
       const Category = await CategoryModel.create(category);
       return Category;
     } catch (err) {
-      throw new HttpException(err, HttpStatus.FORBIDDEN);
+      throw ResponseError.badInput(err);
     }
   }
 

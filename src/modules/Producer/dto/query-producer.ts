@@ -2,7 +2,7 @@ import { IsOptional, IsInt, Min, IsString } from "class-validator";
 import { Transform } from "class-transformer";
 ``;
 
-export class ProductQueryDto {
+export class ProducerQueyDto {
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
   @IsInt()
