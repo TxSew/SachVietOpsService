@@ -13,13 +13,13 @@ interface TOpt
   extends Model<InferAttributes<Opt>, InferCreationAttributes<Opt>> {}
 
 export const OptModel = SequelizeBase.define<TOpt>(
-  "db_token",
+  "db_otpToken",
   {
     ...baseAttributes,
     email: {
       type: DataTypes.STRING,
     },
-    token: {
+    code: {
       type: DataTypes.STRING,
     },
   },

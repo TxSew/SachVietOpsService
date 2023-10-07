@@ -3,7 +3,7 @@ import { Model } from "sequelize";
 
 export interface Opt extends Model {
   email?: string;
-  token?: string;
+  code?: string;
 }
 export interface CreateEmail extends Omit<Opt, "token"> {
   code?: string;

@@ -36,8 +36,4 @@ export class AccountController {
   async ChangePassword(@Body() changePasswordDto: ChangePasswordDTO) {
     return this.accountService.changePassword(changePasswordDto);
   }
-  @Put("forgetPassword")
-  async ForgetPassword(@Body() ForgetPassword: RefreshDTO) {
-    return this.accountService.ForgetPassword(ForgetPassword);
-  }
 }

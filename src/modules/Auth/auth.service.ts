@@ -115,7 +115,6 @@ export class AccountService {
     }
   }
   // forget password
-  async ForgetPassword(forgetPassword: RefreshDTO) {}
   // private function handle
   private validatePasswordChange(newPassword, repeatNewPassword) {
     if (newPassword !== repeatNewPassword) {
