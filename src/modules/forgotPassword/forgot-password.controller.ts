@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Post } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
-import { MailDto } from "./dto/mailDto";
+import { EmailDto } from "src/submodules/models/OptModel/Opt";
 import { NewPasswordDTO } from "./dto/newPasswordDto";
 import { OtpCodeDto } from "./dto/otpCodeDto";
 import { OtpService } from "./forgot-password.service";
@@ -10,7 +10,7 @@ import { OtpService } from "./forgot-password.service";
 export class OtpController {
   constructor(private readonly OtpService: OtpService) {}
   @Post("")
-  async getEmail(@Body() emailDto: Partial<MailDto>): Promise<any> {
+  async getEmail(@Body() emailDto: Partial<EmailDto>): Promise<unknown> {
     return this.OtpService.getEmail(emailDto);
   }
   @Post("/verify/:token")
@@ -21,8 +21,6 @@ export class OtpController {
     @Body() otpCodeDto: OtpCodeDto,
     @Param("token") token: string
   ): Promise<any> {
-    console.log(otpCodeDto);
-
     return this.OtpService.verifyOtp(Number(otpCodeDto.otp), token);
   }
   @Post("/resetPassword/:token")

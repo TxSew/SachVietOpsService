@@ -4,14 +4,12 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import slugify from "slugify";
 import { SequelizeBase } from "src/configs/SequelizeConfig";
 import { baseAttributes } from "src/helpers/defineModelFactory";
-import { Opt } from "src/submodules/models/OptModel/Opt";
+import { Otp } from "src/submodules/models/OptModel/Opt";
 
 interface TOpt
-  extends Model<InferAttributes<Opt>, InferCreationAttributes<Opt>> {}
-
+ extends Model<InferAttributes<Otp>, InferCreationAttributes<Otp>> {}
 export const OptModel = SequelizeBase.define<TOpt>(
   "db_otpToken",
   {
@@ -25,6 +23,5 @@ export const OptModel = SequelizeBase.define<TOpt>(
   },
   {
     freezeTableName: true,
-    paranoid: true,
   }
 );

@@ -3,9 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 import { EmailService } from "../email/email.service";
 import { UserService } from "../User/user.service";
 import { OptModel } from "./forgotPasswordSchema";
-import { Opt } from "src/submodules/models/OptModel/Opt";
+import { EmailDto, Otp } from "src/submodules/models/OptModel/Opt";
 import { ResponseError } from "src/helpers/ResponseError";
-import { MailDto } from "./dto/mailDto";
 import { CreateOtpDto } from "./dto/create-otp";
 import { CreateEmailDto } from "../email/dto/create-email";
 import { MyConfigService } from "src/myConfig.service";
@@ -19,8 +18,8 @@ export class OtpService {
     private readonly emailService: EmailService,
     private readonly myConfigService: MyConfigService
   ) {}
-  async getEmail(emailDto: Partial<MailDto>): Promise<any> {
-    console.log("email");
+  async getEmail(emailDto: Partial<EmailDto>): Promise<any> {
+    console.log("email", emailDto);
     const user = await this.usersService.getUserCurrent(emailDto.email);
     if (!user) {
       throw ResponseError.badInput("User not found");
@@ -28,8 +27,7 @@ export class OtpService {
     const otp = new CreateOtpDto();
     otp.email = user.email;
     otp.code = this.generateOTP();
-    console.log(otp);
-    const createToken = await this.createOtp(otp);
+    await this.createOtp(otp);
     const email = new CreateEmailDto();
     email.to = user.email;
     const data = {
@@ -56,7 +54,6 @@ export class OtpService {
     otp: number,
     token: string
   ): Promise<{ reset_password_token: string }> {
-    console.log("sdsds s" + token);
     try {
       if (!token) {
         throw ResponseError.badInput("Token not found");
@@ -64,21 +61,16 @@ export class OtpService {
       const decoded = await this.jwtService.verify(token, {
         secret: "forgotPassword",
       });
-
       const user = await this.usersService.getUserCurrent(decoded.email);
-
       if (!user) {
         throw ResponseError.notFound("User not found");
       }
-
       const otpItem = await this.findOtpByEmail(user.email);
-
       if (otp !== Number(otpItem.code)) {
         throw ResponseError.conflict("Invalid OTP Code");
       }
       await this.removeOtpByEmail(user.email);
       const payload = { email: user.email };
-
       const resetPasswordToken = this.jwtService.sign(payload, {
         secret: "resetPasswordToken",
         expiresIn: "1d",
@@ -137,7 +129,7 @@ export class OtpService {
     }
     return otp;
   }
-  private async findOtpByEmail(email: string): Promise<Opt> {
+  private async findOtpByEmail(email: string): Promise<Otp> {
     const otp = await OptModel.findOne({ where: { email: email } });
     if (!otp) {
       throw ResponseError.badInput("OTP not found");

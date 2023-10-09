@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import { Op } from "sequelize";
+import { ResponseError } from "src/helpers/ResponseError";
 import { TUser, User } from "src/submodules/models/UserModel/User";
 import { UserModel } from "../Auth/auth.schema";
 import { UserQueryDto } from "./dto/query-users";
-import { ResponseError } from "src/helpers/ResponseError";
-import { Op } from "sequelize";
-import * as bcrypt from "bcrypt";
 @Injectable()
 export class UserService {
-  async getUsers(query: UserQueryDto): Promise<TUser> {
+  public async getUsers(query: UserQueryDto): Promise<TUser> {
     const search = query.keyword || "";
     const limit: number = Number(query.limit) || 5;
     const page: number = Number(query.page) || 1;
@@ -51,7 +51,7 @@ export class UserService {
       throw ResponseError.badInput("Not Found");
     }
   }
-  async updateUserCurrent(id: number, userCurrent: any) {
+  public async updateUserCurrent(id: number, userCurrent: any) {
     try {
       const UserUpdate = await UserModel.update(
         {
@@ -69,7 +69,10 @@ export class UserService {
       throw ResponseError.badInput(`Not Found ${err}`);
     }
   }
-  async updateNewPassword(id: number, newPassword: string): Promise<any> {
+  public async updateNewPassword(
+    id: number,
+    newPassword: string
+  ): Promise<unknown> {
     try {
       const user = await UserModel.findOne({
         where: {

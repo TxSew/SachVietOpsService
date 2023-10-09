@@ -1,10 +1,10 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import slugify from 'slugify';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Category } from 'src/submodules/models/ProductModel/Category';
 
-export interface ModelCategory extends Category, Model {}
+export interface ModelCategory extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {}
 export const CategoryModel = SequelizeBase.define<ModelCategory>(
   'db_category',
   {
@@ -37,9 +37,9 @@ export const CategoryModel = SequelizeBase.define<ModelCategory>(
     paranoid: true,
   },
 );
-CategoryModel.beforeCreate((category) => {
+CategoryModel.beforeCreate((category:Category) => {
   category.slug = slugify(category.name, { lower: true });
 });
-CategoryModel.beforeUpdate((category) => {
+CategoryModel.beforeUpdate((category:Category) => {
   category.slug = slugify(category.name, { lower: true });
 });

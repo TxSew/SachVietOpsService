@@ -1,6 +1,6 @@
 import { Model } from "sequelize";
 import { BaseModel } from "../BaseModel";
-import { Modified } from "../BaseModel/contanst";
+import { Modified } from "../BaseModel/constanst";
 import { Product } from "../ProductModel/Product";
 
 export interface Order extends BaseModel, Modified, Model {
@@ -27,10 +27,6 @@ export interface TOrders {
   limit?: number;
   orders?: Order[];
 }
-export type OrderHistory = Omit<
-  Order,
-  "province" | "district" | "orderDate" | "price_ship"
->;
 
 export interface OrderDetail extends Modified {
   productId?: number;
@@ -44,7 +40,3 @@ export interface OrderDto {
   orders?: Order;
   orderDetail?: OrderDetail[];
 }
-// orderDto {
-//   order:Order,
-//   orderDetail:or[]
-// }

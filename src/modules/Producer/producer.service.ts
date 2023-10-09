@@ -3,7 +3,7 @@ import {
   Producer,
   TProducer,
 } from "src/submodules/models/producerModel/producer";
-import { ProducerModel, ProducerSchema } from "./producer.schema";
+import { ProducerModel  } from "./producer.schema";
 import { ProducerQueyDto } from "./dto/query-producer";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class ProducerService {
       throw new HttpException(err, HttpStatus.FORBIDDEN);
     }
   }
-  async getOne(id: number) {
+  async getOne(id: number):Promise<Producer> {
     const detail = await ProducerModel.findOne({
       where: {
         id: id,

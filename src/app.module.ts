@@ -25,6 +25,8 @@ import { UserService } from "./modules/User/user.service";
 import { EmailModule } from "./modules/email/email.module";
 import { OtpController } from "./modules/forgotPassword/forgot-password.controller";
 import { OtpService } from "./modules/forgotPassword/forgot-password.service";
+import { PaymentController } from "./modules/payment/payment.controller";
+import { PaymentService } from "./modules/payment/payment.service";
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { OtpService } from "./modules/forgotPassword/forgot-password.service";
     DiscountController,
     ProvinceController,
     OtpController,
+    PaymentController,
   ],
   providers: [
     AppService,
@@ -70,6 +73,7 @@ import { OtpService } from "./modules/forgotPassword/forgot-password.service";
     DiscountService,
     ProvinceService,
     OtpService,
+    PaymentService,
   ],
 })
 export class AppModule {}

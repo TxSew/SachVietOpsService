@@ -7,7 +7,6 @@ import { CategoryQueryDto } from './dto/Category.schema';
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-
   @Get()
   getAll(@Query() query: CategoryQueryDto) :Promise<any> {
     return this.categoryService.getAll(query);

@@ -7,14 +7,11 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
-import { Response } from "express";
-import { User } from "src/submodules/models/UserModel/User";
+import { ResponseError } from "src/helpers/ResponseError";
+import { LoginDto, User } from "src/submodules/models/UserModel/User";
 import { EmailService } from "../email/email.service";
 import { UserModel } from "./auth.schema";
 import { ChangePasswordDTO } from "./dto/changePassword.dto";
-import { LoginRequestDTO } from "./dto/loginRequest.dto";
-import { ResponseError } from "src/helpers/ResponseError";
-import { RefreshDTO } from "./dto/refresh.dto";
 
 @Injectable()
 export class AccountService {
@@ -38,7 +35,6 @@ export class AccountService {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(account.password, saltOrRounds);
     account.password = await hash;
-
     const register = await UserModel.create(account);
     if (register) {
       this.emailService.sendMailTemplate({
@@ -52,9 +48,10 @@ export class AccountService {
     }
     return register;
   }
-  async checkLogin(loginRequestDTO: LoginRequestDTO, response: Response) {
+  async checkLogin(loginRequestDTO: LoginDto) {
     //validate login request
     const user = await this.validateUser(loginRequestDTO);
+    console.log(user.get().email);
     try {
       // create access token  sign
       const payload = await {
@@ -123,7 +120,7 @@ export class AccountService {
     return true;
   }
 
-  private async validateUser(loginRequestDTO: LoginRequestDTO) {
+  private async validateUser(loginRequestDTO: LoginDto) {
     const user = await UserModel.findOne({
       where: { email: loginRequestDTO.email },
     });

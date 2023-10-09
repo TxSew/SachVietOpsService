@@ -28,9 +28,8 @@ export class AccountController {
   @ApiCreatedResponse({ description: " checkLogin successfully." })
   async Login(
     @Body() loginDto: LoginRequestDTO,
-    @Res({ passthrough: true }) response: Response
   ) {
-    return this.accountService.checkLogin(loginDto, response);
+    return this.accountService.checkLogin(loginDto );
   }
   @Put("changePassword")
   async ChangePassword(@Body() changePasswordDto: ChangePasswordDTO) {

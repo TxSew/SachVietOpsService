@@ -133,13 +133,12 @@ export class ProductService {
   // find One or more products
   async findOneUpdate(id: number): Promise<Product> {
     console.log(id);
-
     try {
       const findOne = await ProductModel.findOne({
         include: [
           {
             model: ImagesProductModel,
-            as: "productImage",
+            as: "productImages",
           },
         ],
         where: { id: id },
@@ -161,6 +160,9 @@ export class ProductService {
       }
       //  logic % price
       const { sale, price } = product;
+       if(sale >100 && sale < 1) {
+         throw ResponseError.badInput('sale not must be greater than 100'); 
+       }
       const priceSale = price - (sale / 100) * price;
       product.price_sale = priceSale;
       //create product
@@ -180,8 +182,13 @@ export class ProductService {
   // update a Product
   async updateProduct(id: number, TProduct: TProduct) {
     const parInt = id;
-    console.log(TProduct);
     const { product, productImages } = TProduct;
+      const { sale, price } = product;
+      if(sale >100 && sale < 1) {
+         throw ResponseError.badInput('sale not must be greater than 100'); 
+       } 
+      const priceSale = price - (sale / 100) * price;
+      product.price_sale = priceSale;
     if (productImages.length > 0) {
       const destroy = await ImagesProductModel.destroy({
         where: { productId: parInt },
@@ -192,11 +199,13 @@ export class ProductService {
       const updated = await ProductModel.update(product, {
         where: { id: parInt },
       });
+       console.log(updated);
+       
       for (var i = 0; i < productImages.length; i++) {
         productImages[i].productId = parInt;
         const data = await ImagesProductModel.bulkCreate(productImages);
-        return updated;
       }
+      return updated;
     } catch (errors) {
       throw ResponseError.badInput("Product update failed");
     }

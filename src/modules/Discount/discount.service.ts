@@ -4,22 +4,17 @@ import { DiscountModel } from './discount.shema';
 
 @Injectable()
 export class DiscountService {
-  async GetAll() {
+  async GetAll():Promise<Discount[]> {
     const discountData = await DiscountModel.findAll({});
     console.log(discountData);
-
     return discountData;
   }
-
-  async createDiscount(discount: Discount) {
-    const discountDto: any = discount;
+  async createDiscount(discount: Discount):Promise<Discount> {
     try {
       if (!discount) {
         throw 'discount creating not value';
       }
-      console.log('dius', discount);
-
-      const discountData = await DiscountModel.create(discountDto);
+      const discountData = await DiscountModel.create(discount);
       return discountData;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.ACCEPTED);

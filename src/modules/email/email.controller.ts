@@ -15,7 +15,9 @@ export class EmailController {
 
   @Post()
   // @Roles('ADMIN')
-  async sendMail(@Body() createEmailDto: CreateEmailDto): Promise<any> {
+  async sendMail(@Body() createEmailDto: CreateEmailDto): Promise<{
+    message: string
+  }> {
     try {
       this.emailService.sendMail(createEmailDto);
       return { message: 'Email is sent...' };
@@ -28,7 +30,9 @@ export class EmailController {
   @Post('multiple')
   async sendMultipleMail(
     @Body() CreateEmailMultipleDto: CreateEmailMultipleDto,
-  ): Promise<any> {
+  ): Promise<{
+    message:string
+  }> {
     try {
       this.emailService.sendMultipleEmails(CreateEmailMultipleDto);
       return { message: 'Email is sent...' };
@@ -41,7 +45,9 @@ export class EmailController {
   @Post('template')
   async sendMaiTemplate(
     @Body() createEmailTemplateDto: CreateEmailTemplateDto,
-  ): Promise<any> {
+  ): Promise<{
+    message:string
+  }> {
     try {
       this.emailService.sendMailTemplate(createEmailTemplateDto);
       return { message: 'Email is sent...' };
