@@ -18,12 +18,7 @@ export class ResponseError extends Error {
   static alreadyExists(message: string): ResponseError {
     throw new HttpException(message || 'not found', 430);
   }
-  static errorVersion(message: string): ResponseError {
-    throw new HttpException(
-      'Bạn đang sử dụng version cũ, vui lòng cập nhật version mới',
-      HttpStatus.HTTP_VERSION_NOT_SUPPORTED,
-    );
-  }
+
   static notFound(message: string): ResponseError {
     throw new HttpException(message || 'not found', HttpStatus.NOT_FOUND);
   }
@@ -39,14 +34,12 @@ export class ResponseError extends Error {
   static lengthRequired(message: string): ResponseError {
     throw new HttpException(message || 'not found', HttpStatus.LENGTH_REQUIRED);
   }
-
   static unexpected(message: string): ResponseError {
     throw new HttpException(
       message || 'not found',
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
-
   static unauthenticated(message: string): ResponseError {
     throw new HttpException(
       message || 'Authenticated',

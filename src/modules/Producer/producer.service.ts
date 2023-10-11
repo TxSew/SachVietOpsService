@@ -40,13 +40,11 @@ export class ProducerService {
     }
   }
   async create(producer: Partial<Producer>): Promise<Producer> {
-    console.log(producer);
     const producerData = await ProducerModel.create(producer);
     return producerData;
   }
 
   async update(id: number, producer: Producer) {
-    console.log(producer);
     const ProducerData = await ProducerModel.update(producer, {
       where: {
         id: id,
@@ -55,7 +53,6 @@ export class ProducerService {
     return ProducerData;
   }
   async removeProducerTrashed(id: number) {
-    console.log(id);
     const destroy = await ProducerModel.destroy({
       where: { id: id },
     });

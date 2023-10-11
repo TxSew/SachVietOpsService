@@ -1,14 +1,14 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { EmailService } from "../email/email.service";
-import { UserService } from "../User/user.service";
-import { OptModel } from "./forgotPasswordSchema";
-import { EmailDto, Otp } from "src/submodules/models/OptModel/Opt";
 import { ResponseError } from "src/helpers/ResponseError";
-import { CreateOtpDto } from "./dto/create-otp";
-import { CreateEmailDto } from "../email/dto/create-email";
 import { MyConfigService } from "src/myConfig.service";
+import { EmailDto, Otp } from "src/submodules/models/OptModel/Opt";
+import { UserService } from "../User/user.service";
+import { CreateEmailDto } from "../email/dto/create-email";
+import { EmailService } from "../email/email.service";
+import { CreateOtpDto } from "./dto/create-otp";
 import { NewPasswordDTO } from "./dto/newPasswordDto";
+import { OptModel } from "./forgotPasswordSchema";
 
 @Injectable()
 export class OtpService {

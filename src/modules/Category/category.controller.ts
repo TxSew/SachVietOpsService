@@ -27,7 +27,6 @@ export class CategoryController {
   updateCategory(@Param('id') id: number, @Body() category: Category) {
     return this.categoryService.updateCategory(Number(id), category);
   }
-
   @Delete(':id')
   removeCategory(@Param('id') id: number) {
     return this.categoryService.removeCategoryTrashed(Number(id));

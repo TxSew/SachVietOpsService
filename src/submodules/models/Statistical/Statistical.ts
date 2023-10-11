@@ -7,3 +7,11 @@
          UserCount : number
      }
  }
+
+  export interface StatisticalToday {
+    totalMoney: number;
+    orderCount: number;
+    orderCountPending: number;
+    orderCountByCustomer: number;
+    totalMoneyByCustomer: number;
+  }

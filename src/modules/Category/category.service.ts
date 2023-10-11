@@ -95,7 +95,6 @@ export class CategoryService {
       WHERE c.deletedAt IS NULL
     )
     SELECT * FROM CategoryTree;
-    
   `;
     const [results] = await SequelizeBase.query(query);
     return results;

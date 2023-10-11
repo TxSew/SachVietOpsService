@@ -43,4 +43,7 @@ export class ProductQueryDto {
   @IsOptional()
   @IsString()
   categoryFilter: string;
+  @IsOptional()
+  @IsString()
+  slug: string;
 }

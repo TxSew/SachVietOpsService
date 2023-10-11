@@ -16,8 +16,9 @@ interface subcategories {
 interface Subcategories extends Category {
   subcategories: subcategories[];
 }
-interface TOrderResponse {
+ export interface TOrderResponse {
   Category: Category;
-
   SubCategory: Subcategories[];
 }
+
+

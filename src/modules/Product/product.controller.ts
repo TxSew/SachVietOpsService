@@ -37,14 +37,13 @@ export class ProductController {
   // @UseGuards(JwtAuthGuard)
   @Post("store")
   async createProduct(@Body() product: Partial<TProduct>) {
-    return this.productService.createProduct(product);
+   return this.productService.createProduct(product);
   }
   // @UseGuards(JwtAuthGuard)
   @Put("update/:id")
   async updateProduct(@Param("id") id: number, @Body() product: TProduct) {
-    return this.productService.updateProduct(Number(id), product);
+   return this.productService.updateProduct(Number(id), product);
   }
-
   // @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async removeProduct(@Param("id") id: number) {

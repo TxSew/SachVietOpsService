@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { Op } from "sequelize";
-import { StatisticalDto } from "src/submodules/models/Statistical/Statistical";
+import { Order } from "src/submodules/models/OrderModel/Order";
+import { StatisticalDto, StatisticalToday } from "src/submodules/models/Statistical/Statistical";
 import { UserModel } from "../Auth/auth.schema";
 import { CategoryModel } from "../Category/category.schema";
 import { OrderModel } from "../Order/order.schema";
+import { OrderService } from "../Order/order.service";
 import { ProducerModel } from "../Producer/producer.schema";
 import { ProductModel } from "../Product/product.schema";
-import { OrderService } from "../Order/order.service";
 
 @Injectable()
 export class StatisticalService {
@@ -37,22 +38,46 @@ export class StatisticalService {
     const orders = await OrderModel.findAll({
       where: {
         createdAt: {
-          [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
+         [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
         },
       },
     }).then(async (res) => {
       const dat = await res.reduce((totalRevenue: number, transaction: any) => {
-        return totalRevenue + transaction.money;
+       return totalRevenue + transaction.money;
       }, 0);
       return dat;
     });
     return orders;
   }
-  async getStatistical(date: Date) {
-    const orders = await OrderModel.findAll({}).then(async (res) => {
-      const dat = await res.reduce((totalRevenue: number, transaction: any) => {
-        return totalRevenue + transaction.money;
-      }, 0);
+
+  async getStatisticalToday(): Promise<StatisticalToday> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const orders: Order[] = await OrderModel.findAll({
+      where: {
+        createdAt: {
+         [Op.gte]: today,
+         [Op.lt]: tomorrow,
+        },
+        //  status: 2
+      },
     });
+    const totalRevenue = (status: string | number) => {
+      return orders.filter((e) => e.status == status);
+    };
+    const totalMoney = (status: string | number) => {
+    return orders
+       .filter((e) => e.status === status)
+       .reduce((total: number, current: any) => total + current.money, 0);
+    };
+    return {
+     totalMoney: totalMoney(null),
+     totalMoneyByCustomer: totalMoney(2),
+     orderCountPending: totalRevenue(1).length,
+     orderCount: totalRevenue(null).length,
+     orderCountByCustomer: totalRevenue(2).length,
+    };
   }
 }

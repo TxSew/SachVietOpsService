@@ -39,7 +39,6 @@ export const UserModel = SequelizeBase.define<Users>(
     },
     status: {
       type: DataTypes.NUMBER,
-      defaultValue: 1,
     },
   },
   {
