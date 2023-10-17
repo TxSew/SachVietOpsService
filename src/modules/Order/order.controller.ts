@@ -22,7 +22,7 @@ import { OrderQueryDto } from "./dto/query-orders";
 export class OrderController {
   constructor(private orderService: OrderService) {}
   @Get("")
-  getOrderHistory(@Query() query: OrderQueryDto): Promise<TOrders> {
+  retOrderHistory(@Query() query: OrderQueryDto): Promise<TOrders> {
     return this.orderService.getOrderAll(query);
   }
   @Get("orderDetail/:id")
@@ -30,7 +30,7 @@ export class OrderController {
     return this.orderService.getOrderDetailByOrder(id);
   }
   @Get("current/:id")
-  getOrderCUrrent(@Param("id") id: number): Promise<any> {
+  getOrderCUrrent(@Param("id") id: number): Promise<OrderDto[]> {
     return this.orderService.getOrderByCurrent(Number(id));
   }
   @ApiOperation({ summary: "Order product" })

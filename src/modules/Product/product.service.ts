@@ -16,13 +16,14 @@ import { ProductModel } from "./product.schema";
 export class ProductService {
   //find all products
   async findAll(query: ProductQueryDto): Promise<TProductResponse> {
-    const limit = query.limit || 6;
+    const limit = query.limit || 10;
     const page = query.page || 1;
     const limited = Number(limit);
     const offset = (Number(page) - 1) * limited;
     const minPrice = query.sortMinPrice || 1;
     const maxPrice = query.sortMaxPrice || 200000000000;
     const searchQuery = query.keyword || "";
+    const slug = query.slug? {slug: query.slug}:{}
     const categoryFilter = query.categoryFilter || null;
     const orderWith =
       (query.sortWith || "asc").toLocaleLowerCase() == "asc" ? "DESC" : "ASC"; // You can pass 'asc' or 'desc' in the query
@@ -51,6 +52,7 @@ export class ProductService {
             model: CategoryModel,
             attributes: ["name", "parentId", "id"],
             as: "category",
+            where: slug
           },
           {
             model: ProducerModel,
@@ -72,7 +74,7 @@ export class ProductService {
     }
   }
   //get by category
-  async getByCategory(categry) {
+  async getByCategory() {
     const products = ProductModel.findAll({});
   }
   // find One or more products
@@ -130,16 +132,17 @@ export class ProductService {
       return err;
     }
   }
+  //find product by category
+
   // find One or more products
   async findOneUpdate(id: number): Promise<Product> {
     console.log(id);
-
     try {
       const findOne = await ProductModel.findOne({
         include: [
           {
             model: ImagesProductModel,
-            as: "productImage",
+            as: "productImages",
           },
         ],
         where: { id: id },
@@ -161,6 +164,9 @@ export class ProductService {
       }
       //  logic % price
       const { sale, price } = product;
+      if (sale > 100 && sale < 1) {
+        throw ResponseError.badInput("sale not must be greater than 100");
+      }
       const priceSale = price - (sale / 100) * price;
       product.price_sale = priceSale;
       //create product
@@ -180,8 +186,13 @@ export class ProductService {
   // update a Product
   async updateProduct(id: number, TProduct: TProduct) {
     const parInt = id;
-    console.log(TProduct);
     const { product, productImages } = TProduct;
+    const { sale, price } = product;
+    if (sale > 100 && sale < 1) {
+      throw ResponseError.badInput("sale not must be greater than 100");
+    }
+    const priceSale = price - (sale / 100) * price;
+    product.price_sale = priceSale;
     if (productImages.length > 0) {
       const destroy = await ImagesProductModel.destroy({
         where: { productId: parInt },
@@ -192,11 +203,13 @@ export class ProductService {
       const updated = await ProductModel.update(product, {
         where: { id: parInt },
       });
+      console.log(updated);
+
       for (var i = 0; i < productImages.length; i++) {
         productImages[i].productId = parInt;
         const data = await ImagesProductModel.bulkCreate(productImages);
-        return updated;
       }
+      return updated;
     } catch (errors) {
       throw ResponseError.badInput("Product update failed");
     }

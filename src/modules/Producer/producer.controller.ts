@@ -9,7 +9,6 @@ import {
   Delete,
 } from "@nestjs/common";
 import { ProducerService } from "./producer.service";
-import { ProducerSchema } from "./producer.schema";
 import {
   Producer,
   TProducer,

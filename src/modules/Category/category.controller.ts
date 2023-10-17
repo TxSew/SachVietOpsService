@@ -7,7 +7,6 @@ import { CategoryQueryDto } from './dto/Category.schema';
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-
   @Get()
   getAll(@Query() query: CategoryQueryDto) :Promise<any> {
     return this.categoryService.getAll(query);
@@ -28,7 +27,6 @@ export class CategoryController {
   updateCategory(@Param('id') id: number, @Body() category: Category) {
     return this.categoryService.updateCategory(Number(id), category);
   }
-
   @Delete(':id')
   removeCategory(@Param('id') id: number) {
     return this.categoryService.removeCategoryTrashed(Number(id));

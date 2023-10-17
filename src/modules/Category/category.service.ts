@@ -10,8 +10,6 @@ export class CategoryService {
   async getAll(query: CategoryQueryDto): Promise<any> {
     const limit = query.limit || 5;
     const page = query.page || 1;
-    console.log(page);
-
     const limited = Number(limit);
     const offset = (Number(page) - 1) * limited;
     const categoryList = await this.getListCategory();
@@ -97,7 +95,6 @@ export class CategoryService {
       WHERE c.deletedAt IS NULL
     )
     SELECT * FROM CategoryTree;
-    
   `;
     const [results] = await SequelizeBase.query(query);
     return results;
@@ -114,8 +111,7 @@ export class CategoryService {
     }
   }
   //category
-
-  async createCategory(category: Partial<Category>): Promise<any> {
+  async createCategory(category: Partial<Category>): Promise<Category> {
     console.log(category);
     try {
       const existingCategory = await CategoryModel.findOne({
@@ -130,7 +126,6 @@ export class CategoryService {
       throw ResponseError.badInput(err);
     }
   }
-
   async updateCategory(id: number, category: Category) {
     console.log(id);
     console.log(category);

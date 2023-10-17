@@ -18,7 +18,6 @@ export const ImagesProductModel = SequelizeBase.define<Models>(
     },
     status: {
       type: DataTypes.INTEGER,
-      defaultValue: 1,
     },
   },
   {

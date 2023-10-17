@@ -2,10 +2,7 @@ import {DataTypes, InferAttributes, InferCreationAttributes, Model} from 'sequel
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
-import { Producer } from 'src/submodules/models/producerModel/producer';
-
- class discount extends Model<InferAttributes<Discount>, InferCreationAttributes<Discount>> {}
-
+class discount extends Model<InferAttributes<Discount>, InferCreationAttributes<Discount>> {}
 export const DiscountModel = SequelizeBase.define<discount>(
   'db_discount',
   {

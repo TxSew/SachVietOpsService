@@ -41,7 +41,6 @@ export const OrderModel = SequelizeBase.define<Models>(
     district: {
       type: DataTypes.INTEGER,
     },
-
     address: {
       type: DataTypes.STRING,
     },
