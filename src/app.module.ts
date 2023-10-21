@@ -1,8 +1,6 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { ConfigDatabase } from "./configs/config";
 import { AccountController } from "./modules/Auth/auth.controller";
 import { AccountService } from "./modules/Auth/auth.service";
@@ -48,7 +46,6 @@ import { PaymentService } from "./modules/payment/payment.service";
     // ForgotPasswordModule,
   ],
   controllers: [
-    AppController,
     AccountController,
     ProductController,
     CategoryController,
@@ -62,7 +59,6 @@ import { PaymentService } from "./modules/payment/payment.service";
     PaymentController,
   ],
   providers: [
-    AppService,
     AccountService,
     ProductService,
     CategoryService,

@@ -6,7 +6,7 @@ import { ApiTags } from "@nestjs/swagger";
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
   @Get("/payment-url")
-  public async getPayment(@Req() req, @Res() res) {
-    return this.paymentService.getPayment(req, res);
+  public async getPayment() {
+    return this.paymentService.getPayment();
   }
 }
