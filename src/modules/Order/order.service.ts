@@ -9,15 +9,13 @@ import {
 import { UserModel } from "../Auth/auth.schema";
 import { DiscountModel } from "../Discount/discount.shema";
 import { ProductModel } from "../Product/product.schema";
+import { PaymentService } from "../payment/payment.service";
 import { OrderDetailModel } from "./dto/orderDetail.schema";
 import { OrderQueryDto } from "./dto/query-orders";
 import { OrderModel } from "./order.schema";
-import { PaymentService } from "../payment/payment.service";
-import { PaymentController } from "../payment/payment.controller";
 
 @Injectable()
 export class OrderService {
-  constructor(private payment: PaymentService) {}
   async getOrderAll(query: OrderQueryDto): Promise<TOrders> {
     const limit = query.limit || 6;
     const page = query.page || 1;
@@ -47,9 +45,20 @@ export class OrderService {
       throw "errors: " + error;
     }
   }
-  async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
+  public async createOrder(
+    orderDto: Partial<OrderDto>
+  ): Promise<TOrderResponse> {
     const resultOrder: any = orderDto.orders;
+    console.log("service create order", orderDto);
+
     const dataDetail: any[] = orderDto.orderDetail;
+    const detailDt = dataDetail.map((e) => {
+      return {
+        productId: e.productId,
+        price: e.price,
+        quantity: e.quantity,
+      };
+    });
     let coupon: number = 0;
 
     if (resultOrder?.orderCode) {
@@ -83,7 +92,7 @@ export class OrderService {
         dataDetail.map((dataDetail) => {
           return (dataDetail.orderID = id);
         });
-        const detailData = await OrderDetailModel.bulkCreate(dataDetail);
+        const detailData = await OrderDetailModel.bulkCreate(detailDt);
         return { result: res, detailData };
       });
       return results;

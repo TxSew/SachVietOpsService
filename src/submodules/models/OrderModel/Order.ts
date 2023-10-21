@@ -32,6 +32,7 @@ export interface OrderDetail extends Modified {
   productId?: number;
   orderID?: number;
   quantity?: number;
+  image?: string;
   price?: number;
   product?: Product[];
 }
@@ -39,4 +40,5 @@ export interface OrderDetail extends Modified {
 export interface OrderDto {
   orders?: Order;
   orderDetail?: OrderDetail[];
+  paymentMethod?: string;
 }

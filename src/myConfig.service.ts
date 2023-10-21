@@ -26,6 +26,9 @@ export class MyConfigService {
   get getEmailHost(): string {
     return this.configService.get<string>("EMAIL_HOST");
   }
+  get getStripeSecretKey(): string {
+    return this.configService.get<string>("SECRET_KEY_STRIPE");
+  }
 
   // Other getters for other config values
 }
