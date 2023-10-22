@@ -11,7 +11,11 @@ export class PaymentService {
   ) {}
   async getPayment(orderDto: OrderDto) {
     if (orderDto.paymentMethod == "COD") {
-      return await this.orderService.createOrder(orderDto);
+      const order = await this.orderService.createOrder(orderDto);
+      return {
+        paymentMethod: "COD",
+        data: order,
+      };
     }
     console.log(orderDto);
     if (orderDto.paymentMethod == "Visa") {
@@ -34,10 +38,13 @@ export class PaymentService {
         };
       });
 
+      // Pass the appearance object to the Elements instance
+
       const session = await stripe.checkout.sessions.create({
         invoice_creation: {
           enabled: true,
         },
+        customer_email: "thanhdq2003@gmail.com",
         shipping_options: [
           {
             shipping_rate_data: {
@@ -60,14 +67,47 @@ export class PaymentService {
             },
           },
         ],
+
         line_items: [...line_items],
         mode: "payment",
-        success_url: "https://localhost:8005/checkout/payment",
+        success_url: "http://localhost:3000/checkout/payment",
         cancel_url: "https://books-client-phi.vercel.app/checkout/payment",
       });
-      await this.orderService.createOrder(orderDto);
+
+      // console.log(paymentIntent);
+      console.log(session);
+
+      // const data = await this.orderService.createOrder(orderDto);
       console.log(session.url);
-      return session.url;
+
+      return {
+        paymentMethod: "Visa",
+        message: "Order by Visa successfully",
+        url: session.url,
+        // data: data,
+      };
     }
+  }
+  async webhook(request, response) {
+    const event = request.body;
+    console.log(event);
+
+    // Handle the event
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntent = event.data.object;
+        console.log("PaymentIntent was successful!");
+        break;
+      case "payment_method.attached":
+        const paymentMethod = event.data.object;
+        console.log("PaymentMethod was attached to a Customer!");
+        break;
+      // ... handle other event types
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    response.json({ received: true });
   }
 }

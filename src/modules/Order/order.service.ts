@@ -48,11 +48,8 @@ export class OrderService {
     orderDto: Partial<OrderDto>
   ): Promise<TOrderResponse> {
     const resultOrder: any = orderDto.orders;
-
     const dataDetail: any[] = orderDto.orderDetail;
-    console.log("orders", orderDto);
-
-    const detailDt = dataDetail.map((e) => {
+    const detailDt: any[] = dataDetail.map((e) => {
       return {
         productId: e.productId,
         price: e.price,
@@ -81,7 +78,7 @@ export class OrderService {
     }
     resultOrder.coupon = coupon;
     try {
-      const priceTotal = dataDetail.reduce(
+      const priceTotal = detailDt.reduce(
         (total, current) => total + current.price * current.quantity,
         0
       );
@@ -89,8 +86,8 @@ export class OrderService {
       // resultOrder.price_ship = resultOrder.money - resultOrder.coupon;
       let results = await OrderModel.create(resultOrder).then(async (res) => {
         let id = await res.get().id;
-        dataDetail.map((dataDetail) => {
-          return (dataDetail.orderID = id);
+        detailDt.map((detailDt) => {
+          return (detailDt.orderID = id);
         });
         const detailData = await OrderDetailModel.bulkCreate(detailDt);
         return { result: res, detailData };
@@ -122,8 +119,29 @@ export class OrderService {
     return detailedOrder[0];
   }
   //  get order by current
-  async getOrderByCurrent(id: number): Promise<OrderDto[]> {
-    const orderCurrent = await OrderModel.findAll({});
+  async getOrderByUser(id: number): Promise<OrderDto[]> {
+    const orderCurrent = await OrderModel.findAll({
+      include: [
+        {
+          model: UserModel,
+          as: "users",
+        },
+        {
+          model: OrderDetailModel,
+          as: "orderDetail",
+          include: [
+            {
+              model: ProductModel,
+              as: "product",
+            },
+          ],
+        },
+      ],
+
+      where: {
+        userID: id,
+      },
+    });
     return orderCurrent;
   }
   // remove order
