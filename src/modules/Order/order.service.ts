@@ -9,7 +9,6 @@ import {
 import { UserModel } from "../Auth/auth.schema";
 import { DiscountModel } from "../Discount/discount.shema";
 import { ProductModel } from "../Product/product.schema";
-import { PaymentService } from "../payment/payment.service";
 import { OrderDetailModel } from "./dto/orderDetail.schema";
 import { OrderQueryDto } from "./dto/query-orders";
 import { OrderModel } from "./order.schema";
@@ -49,9 +48,10 @@ export class OrderService {
     orderDto: Partial<OrderDto>
   ): Promise<TOrderResponse> {
     const resultOrder: any = orderDto.orders;
-    console.log("service create order", orderDto);
 
     const dataDetail: any[] = orderDto.orderDetail;
+    console.log("orders", orderDto);
+
     const detailDt = dataDetail.map((e) => {
       return {
         productId: e.productId,

@@ -1,13 +1,18 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
-import slugify from 'slugify';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { baseAttributes } from 'src/helpers/defineModelFactory';
-import { Category } from 'src/submodules/models/ProductModel/Category';
-import { ProductModel } from '../Product/product.schema';
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import slugify from "slugify";
+import { SequelizeBase } from "src/configs/SequelizeConfig";
+import { baseAttributes } from "src/helpers/defineModelFactory";
+import { Category } from "src/submodules/models/ProductModel/Category";
 
-export interface ModelCategory extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {}
+export interface ModelCategory
+  extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {}
 export const CategoryModel = SequelizeBase.define<ModelCategory>(
-  'db_category',
+  "db_category",
   {
     ...baseAttributes,
     name: {
@@ -19,7 +24,7 @@ export const CategoryModel = SequelizeBase.define<ModelCategory>(
     },
     level: {
       type: DataTypes.STRING,
-      defaultValue: '1', // Provide a default value here
+      defaultValue: "1", // Provide a default value here
     },
     image: {
       type: DataTypes.STRING,
@@ -36,12 +41,12 @@ export const CategoryModel = SequelizeBase.define<ModelCategory>(
   {
     freezeTableName: true,
     paranoid: true,
-  },
+  }
 );
 
-CategoryModel.beforeCreate((category:Category) => {
+CategoryModel.beforeCreate((category: Category) => {
   category.slug = slugify(category.name, { lower: true });
 });
-CategoryModel.beforeUpdate((category:Category) => {
+CategoryModel.beforeUpdate((category: Category) => {
   category.slug = slugify(category.name, { lower: true });
 });

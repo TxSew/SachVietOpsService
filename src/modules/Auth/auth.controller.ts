@@ -10,7 +10,7 @@ import { LoginRequestDTO } from "./dto/loginRequest.dto";
 export class AccountController {
   constructor(
     private readonly accountService: AccountService,
-    private emailService: EmailService,
+    private emailService: EmailService
   ) {}
   // register user
   // @UseGuards(JwtAuthGuard)
