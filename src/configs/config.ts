@@ -1,10 +1,10 @@
 export const ConfigDatabase = {
   development: {
-    username: 'root',
-    password: '',
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    port: process.env.PORT,
+    port: process.env.PORT || 3306,
     dialect: 'mysql',
     dialectOptions: {
       bigNumberStrings: true,
