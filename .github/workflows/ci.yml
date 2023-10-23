@@ -2,10 +2,10 @@ name: "Build and push to ECR"
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
     types:
       - closed
 
@@ -13,9 +13,9 @@ jobs:
   BuildAndPushImageToDocker:
     name: "Build and Push to Docker"
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     steps:
-        
+
       - name: Run commands over SSH
         uses: appleboy/ssh-action@master
         with:

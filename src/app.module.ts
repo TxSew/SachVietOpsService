@@ -25,7 +25,9 @@ import { OtpController } from "./modules/forgotPassword/forgot-password.controll
 import { OtpService } from "./modules/forgotPassword/forgot-password.service";
 import { PaymentController } from "./modules/payment/payment.controller";
 import { PaymentService } from "./modules/payment/payment.service";
+import * as dotenv from "dotenv";
 
+dotenv.config();
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -33,7 +35,7 @@ import { PaymentService } from "./modules/payment/payment.service";
       host: ConfigDatabase.development.host,
       port: 3306,
       username: ConfigDatabase.development.username,
-      password: "",
+      password: ConfigDatabase.development.password,
       database: ConfigDatabase.development.database,
       autoLoadModels: true, // Automatically load models from the 'models' folder
       synchronize: true, // Auto-create and update database tables (not recommended for production)
