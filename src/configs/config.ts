@@ -1,3 +1,6 @@
+
+console.log("process.env.DB_USERNAME", process.env.DB_USERNAME);
+
 export const ConfigDatabase = {
   development: {
     username: process.env.DB_USERNAME,
