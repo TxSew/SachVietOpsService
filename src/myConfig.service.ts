@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class MyConfigService {
   constructor(private configService: ConfigService) {}
+  // send mail
   get getEmail(): string {
     return this.configService.get<string>("EMAIL_NAME");
   }
@@ -11,6 +12,12 @@ export class MyConfigService {
     return this.configService.get<string>("EMAIL_PASS");
   }
 
+  get getEmailHost(): string {
+    return this.configService.get<string>("EMAIL_HOST");
+  }
+
+
+  //jwt 
   get getExpiresIn(): string {
     return this.configService.get<string>("JWT_EXPIRES_IN");
   }
@@ -23,12 +30,18 @@ export class MyConfigService {
     return this.configService.get<string>("ENVIRONMENTS");
   }
 
-  get getEmailHost(): string {
-    return this.configService.get<string>("EMAIL_HOST");
-  }
+  // stripe
   get getStripeSecretKey(): string {
     return this.configService.get<string>("SECRET_KEY_STRIPE");
   }
+  get getStripeSuccessUrl(): string {
+    return this.configService.get<string>("STRIPE_SUCCESS_URL");
+  }
+
+  get getStripeCancelUrl(): string {
+    return this.configService.get<string>("STRIPE_CANCEL_URL");
+  }
+
 
   // Other getters for other config values
 }

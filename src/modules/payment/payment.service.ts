@@ -1,20 +1,19 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
-import { OrderService } from "../Order/order.service";
-import { OrderDto } from "src/submodules/models/OrderModel/Order";
+import { Injectable } from "@nestjs/common";
 import { MyConfigService } from "src/myConfig.service";
+import { OrderDto } from "src/submodules/models/OrderModel/Order";
+import { OrderService } from "../Order/order.service";
 
 @Injectable()
 export class PaymentService {
   constructor(
     private orderService: OrderService,
+    private configService: MyConfigService,
     private config: MyConfigService
   ) {}
   async getPayment(orderDto: OrderDto) {
     if (orderDto.paymentMethod == "COD") {
       return await this.orderService.createOrder(orderDto);
     }
-    console.log(orderDto);
     if (orderDto.paymentMethod == "Visa") {
       const stripe = require("stripe")(this.config.getStripeSecretKey);
       const session = await stripe.checkout.sessions.create({
@@ -31,8 +30,8 @@ export class PaymentService {
           },
         ],
         mode: "payment",
-        success_url: "https://localhost:8005/checkout/payment",
-        cancel_url: "https://books-client-phi.vercel.app/checkout/payment",
+        success_url: this.configService.getStripeSuccessUrl,
+        cancel_url: this.configService.getStripeCancelUrl,
       });
       await this.orderService.createOrder(orderDto);
       console.log(session.url);

@@ -136,7 +136,6 @@ export class ProductService {
 
   // find One or more products
   async findOneUpdate(id: number): Promise<Product> {
-    console.log(id);
     try {
       const findOne = await ProductModel.findOne({
         include: [

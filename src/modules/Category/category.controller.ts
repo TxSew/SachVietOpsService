@@ -8,7 +8,7 @@ import { CategoryQueryDto } from './dto/Category.schema';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @Get()
-  getAll(@Query() query: CategoryQueryDto) :Promise<any> {
+  getAll(@Query() query: CategoryQueryDto)  {
     return this.categoryService.getAll(query);
   }
   @Get('/listCategory')
@@ -16,11 +16,11 @@ export class CategoryController {
     return this.categoryService.getListCategory();
   }
   @Get(':id')
-  getOne(@Param() id: number): Promise<any> {
+  getOne(@Param() id: number) {
     return this.categoryService.getOne(id);
   }
   @Post('store')
-  createCategory(@Body() category: Partial<Category>): Promise<any> {
+  createCategory(@Body() category: Partial<Category>) {
     return this.categoryService.createCategory(category);
   }
   @Put('update/:id')
