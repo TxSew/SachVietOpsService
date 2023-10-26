@@ -31,7 +31,7 @@ export class OrderController {
   }
   @Get("current/:id")
   getOrderCUrrent(@Param("id") id: number): Promise<OrderDto[]> {
-    return this.orderService.getOrderByCurrent(Number(id));
+    return this.orderService.getOrderByUser(Number(id));
   }
   @ApiOperation({ summary: "Order product" })
   @ApiCreatedResponse({ description: " Order successfully." })

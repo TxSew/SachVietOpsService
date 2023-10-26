@@ -1,14 +1,14 @@
-import { DataTypes, Model } from 'sequelize';
-import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { Order } from 'src/submodules/models/OrderModel/Order';
-import { OrderModel } from '../order.schema';
-import { ProductModel } from 'src/modules/Product/product.schema';
-import { baseAttributes } from 'src/helpers/defineModelFactory';
+import { DataTypes, Model } from "sequelize";
+import { SequelizeBase } from "src/configs/SequelizeConfig";
+import { Order } from "src/submodules/models/OrderModel/Order";
+import { OrderModel } from "../order.schema";
+import { ProductModel } from "src/modules/Product/product.schema";
+import { baseAttributes } from "src/helpers/defineModelFactory";
 
 interface IOrderDetailModel extends Order, Model {}
 
 export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>(
-  'db_orderdetail',
+  "db_orderdetail",
   {
     ...baseAttributes,
     orderID: {
@@ -28,9 +28,9 @@ export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>(
   },
   {
     freezeTableName: true,
-  },
+  }
 );
 OrderDetailModel.belongsTo(ProductModel, {
-  foreignKey: 'productId', // This should match the foreign key in OrderDetail that links to Product
-  as: 'product', // Use any alias you prefer
+  foreignKey: "productId", // This should match the foreign key in OrderDetail that links to Product
+  as: "product", // Use any alias you prefer
 });
