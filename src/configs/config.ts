@@ -10,7 +10,7 @@ export const ConfigDatabase = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.PORT || 3306,
-    dialect: 'mysql',
+    dialect: "mysql",
     dialectOptions: {
       bigNumberStrings: true,
     },
@@ -19,9 +19,9 @@ export const ConfigDatabase = {
     username: process.env.CI_DB_USERNAME,
     password: process.env.CI_DB_PASSWORD,
     database: process.env.CI_DB_NAME,
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     port: 3306,
-    dialect: 'mysql',
+    dialect: "mysql",
     dialectOptions: {
       bigNumberStrings: true,
     },
@@ -32,7 +32,7 @@ export const ConfigDatabase = {
     database: process.env.PROD_DB_NAME,
     host: process.env.PROD_DB_HOSTNAME,
     port: process.env.PROD_DB_PORT,
-    dialect: 'mysql',
+    dialect: "mysql",
     dialectOptions: {
       bigNumberStrings: true,
     },

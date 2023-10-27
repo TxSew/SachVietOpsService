@@ -23,7 +23,7 @@ export class ProductService {
     const minPrice = query.sortMinPrice || 1;
     const maxPrice = query.sortMaxPrice || 200000000000;
     const searchQuery = query.keyword || "";
-    const slug = query.slug? {slug: query.slug}:{}
+    const slug = query.slug ? { slug: query.slug } : {};
     const categoryFilter = query.categoryFilter || null;
     const orderWith =
       (query.sortWith || "asc").toLocaleLowerCase() == "asc" ? "DESC" : "ASC"; // You can pass 'asc' or 'desc' in the query
@@ -52,7 +52,7 @@ export class ProductService {
             model: CategoryModel,
             attributes: ["name", "parentId", "id"],
             as: "category",
-            where: slug
+            where: slug,
           },
           {
             model: ProducerModel,

@@ -1,5 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { User } from "../../models/UserModel/User";
+import axios, { AxiosInstance } from "axios";
 class HttpCategoryController {
   private axiosInstance: AxiosInstance;
 
