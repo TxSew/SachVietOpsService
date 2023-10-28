@@ -1,16 +1,16 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { User } from '../../models/UserModel/User';
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { User } from "../../models/UserModel/User";
 class HttpAccountController {
   private axiosInstance: AxiosInstance;
 
   constructor(axiosConfig: any) {
     // Create an Axios instance with the provided configuration
     this.axiosInstance = axios.create(axiosConfig);
-    const token: any = localStorage.getItem('token');
+    const token: any = localStorage.getItem("token");
     const jwtToken = JSON.parse(token);
     if (jwtToken) {
       this.axiosInstance.defaults.headers.common[
-        'Authorization'
+        "Authorization"
       ] = `Bearer ${jwtToken}`;
     }
 
@@ -20,16 +20,23 @@ class HttpAccountController {
       },
       (error) => {
         if (error.response.status === 401) {
-          return (window.location.href = '/auth');
+          return (window.location.href = "/auth");
         }
         return Promise.reject(error);
-      },
+      }
     );
   }
-
+  async getAll(page: number = 1) {
+    try {
+      const response = await this.axiosInstance.get(`/users?page=${page}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   async getById(id: number): Promise<any> {
     try {
-      const response = await this.axiosInstance.get('/');
+      const response = await this.axiosInstance.get("/");
       return response.data;
     } catch (error) {
       throw error;
@@ -37,7 +44,7 @@ class HttpAccountController {
   }
   async login(account: User) {
     try {
-      const response = await this.axiosInstance.post('auth/login', account);
+      const response = await this.axiosInstance.post("auth/login", account);
       return response.data;
     } catch (error) {
       throw error;
@@ -46,7 +53,7 @@ class HttpAccountController {
 
   async register(account: User) {
     try {
-      const response = await this.axiosInstance.post('auth/register', account);
+      const response = await this.axiosInstance.post("auth/register", account);
       return response.data;
     } catch (error) {
       throw error;

@@ -12,7 +12,7 @@ import { ProductModel } from "../Product/product.schema";
 @Injectable()
 export class StatisticalService {
   constructor(private readonly OrderService: OrderService) {}
-  async GetTotal(): Promise<StatisticalDto> {
+  async getTotal(): Promise<StatisticalDto> {
     const [orderCount, productCount, categoryCount, producerCount, UserCount] =
       await Promise.all([
         await OrderModel.count({}),

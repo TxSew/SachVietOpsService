@@ -1,8 +1,13 @@
 import axios, { AxiosInstance } from "axios";
-class HttpPaymentController {
+import { TProductResponse } from "../../models/ProductModel/Product";
+import { AxiosConfig } from "../interface/axiosConfig";
+class HttpStatisticalController {
+  get(): TProductResponse | PromiseLike<TProductResponse> {
+    throw new Error("Method not implemented.");
+  }
   private axiosInstance: AxiosInstance;
 
-  constructor(axiosConfig: any) {
+  constructor(axiosConfig: AxiosConfig) {
     // Create an Axios instance with the provided configuration
     this.axiosInstance = axios.create(axiosConfig);
     const token: any = localStorage.getItem("token");
@@ -25,17 +30,13 @@ class HttpPaymentController {
       }
     );
   }
-  async getPayment(data: any): Promise<any> {
+  async getStatistical(): Promise<any> {
     try {
-      const response = await this.axiosInstance.post(
-        `/payment/payment-url`,
-        data
-      );
+      const response = await this.axiosInstance.get("/statistical");
       return response.data;
     } catch (error) {
       throw error;
     }
   }
 }
-
-export default HttpPaymentController;
+export default HttpStatisticalController;

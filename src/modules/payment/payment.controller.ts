@@ -7,7 +7,7 @@ import { PaymentService } from "./payment.service";
 @Controller("payment")
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
-  @Post("/payment-url")
+  @Post("/stripe-payment")
   public async getPayment(@Body() orderDto: OrderDto) {
     return this.paymentService.getPayment(orderDto);
   }

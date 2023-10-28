@@ -23,6 +23,7 @@ export class OtpController {
   ): Promise<any> {
     return this.OtpService.verifyOtp(Number(otpCodeDto.otp), token);
   }
+
   @Post("/resetPassword/:token")
   async resetPassword(
     @Param("token") token: string,

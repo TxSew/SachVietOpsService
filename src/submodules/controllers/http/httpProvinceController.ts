@@ -1,8 +1,7 @@
-import axios, { AxiosInstance } from "axios";
-import { Category } from "../../models/ProductModel/Category";
-import { Product, TProductResponse } from "../../models/ProductModel/Product";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { AxiosConfig } from "../interface/axiosConfig";
-class HttpCategoryController {
+import { Product, TProductResponse } from "../../models/ProductModel/Product";
+class HttpProviceController {
   get(): TProductResponse | PromiseLike<TProductResponse> {
     throw new Error("Method not implemented.");
   }
@@ -24,7 +23,7 @@ class HttpCategoryController {
         return response;
       },
       (error) => {
-        if (error.response?.status === 401) {
+        if (error.response.status === 401) {
           return (window.location.href = "/auth");
         }
         return Promise.reject(error);
@@ -32,47 +31,57 @@ class HttpCategoryController {
     );
   }
 
-  async getCategory(): Promise<any> {
+  async getAll(): Promise<any> {
     try {
-      const response = await this.axiosInstance.get("category/listCategory");
+      const response = await this.axiosInstance.get("/province");
       return response.data;
     } catch (error) {
       throw error;
     }
   }
-  async getAll(page: number = 1): Promise<any> {
+  async getDistrict(): Promise<any> {
     try {
-      const response = await this.axiosInstance.get(`category?page=${page}`);
+      const response = await this.axiosInstance.get("/province/district");
       return response.data;
     } catch (error) {
       throw error;
     }
   }
-  async getOne(id: number): Promise<any> {
+
+  async getOrderDetail(id: number): Promise<any> {
     try {
-      const response = await this.axiosInstance.get(`category/${id}`);
+      const response = await this.axiosInstance.get(`order/orderDetail/${id}`);
       return response.data;
     } catch (err) {
       throw err;
     }
   }
-
-  async store(category: Category): Promise<any> {
+  async getOneUpdate(id: number) {
+    try {
+      const response = await this.axiosInstance.get(
+        `products/currentUpdate/${id}`
+      );
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async post(discount: any): Promise<any> {
     try {
       const response = await this.axiosInstance.post(
-        `category/store`,
-        category
+        `discount/store`,
+        discount
       );
       return response.data;
     } catch (error) {
       throw error;
     }
   }
-  async put(id: number, data: Product): Promise<any> {
+  async put(id: number, status: any) {
     try {
-      const response = await this.axiosInstance.put(
-        `/category/update/${id}`,
-        data
+      const response = await this.axiosInstance.post(
+        `order/update/${id}`,
+        status
       );
       return response.data;
     } catch (error) {
@@ -81,12 +90,13 @@ class HttpCategoryController {
   }
 
   async delete(id: number): Promise<any> {
+    console.log(id);
     try {
-      const response = await this.axiosInstance.delete(`category/${id}`);
+      const response = await this.axiosInstance.delete(`/order/${id}`);
       return response.data;
     } catch (error) {
       throw error;
     }
   }
 }
-export default HttpCategoryController;
+export default HttpProviceController;

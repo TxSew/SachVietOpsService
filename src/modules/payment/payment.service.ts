@@ -18,6 +18,7 @@ export class PaymentService {
         data: order,
       };
     }
+    
     if (orderDto.paymentMethod == "Visa") {
       const stripe = require("stripe")(this.config.getStripeSecretKey);
       const line_items = orderDto.orderDetail.map((order) => {
