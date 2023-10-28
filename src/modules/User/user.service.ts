@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { Op } from "sequelize";
 import { ResponseError } from "src/helpers/ResponseError";
@@ -6,7 +6,8 @@ import { TUser, User } from "src/submodules/models/UserModel/User";
 import { UserModel } from "../Auth/auth.schema";
 import { UserQueryDto } from "./dto/query-users";
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
+  onModuleInit() {}
   public async getUsers(query: UserQueryDto): Promise<TUser> {
     const search = query.keyword || "";
     const limit: number = Number(query.limit) || 5;
@@ -44,7 +45,7 @@ export class UserService {
         },
       });
       if (!userCurrent) {
-        throw ResponseError.notFound;
+        throw ResponseError.notFound("User not found");
       }
       return userCurrent;
     } catch (err) {

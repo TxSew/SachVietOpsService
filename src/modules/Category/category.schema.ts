@@ -44,9 +44,9 @@ export const CategoryModel = SequelizeBase.define<ModelCategory>(
   }
 );
 
-CategoryModel.beforeCreate((category: Category) => {
-  category.slug = slugify(category.name, { lower: true });
-});
-CategoryModel.beforeUpdate((category: Category) => {
-  category.slug = slugify(category.name, { lower: true });
-});
+// CategoryModel.beforeCreate((category: Category) => {
+//   category.slug = slugify(category.name, { lower: true });
+// });
+// CategoryModel.beforeUpdate((category: Category) => {
+//   category.slug = slugify(category.name, { lower: true });
+// });
