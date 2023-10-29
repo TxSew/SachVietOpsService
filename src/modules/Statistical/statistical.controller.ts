@@ -15,8 +15,9 @@ export class StatisticalController {
   GetRevenue(@Param("year") year: number, @Param("month") month: number) {
     return this.statisticalService.calculateProductRevenueByMonth(year, month);
   }
-   @Get('/RevenueToday')
-    getStatisticalByDate ():Promise<any>{
-       return this.statisticalService.getStatisticalToday() 
-    }
+
+  @Get("/revenueToday")
+  getStatisticalByDate(): Promise<any> {
+    return this.statisticalService.getStatisticalToday();
+  }
 }

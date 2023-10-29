@@ -7,10 +7,12 @@ import { PaymentService } from "./payment.service";
 @Controller("payment")
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
+
   @Post("/payment-url")
   public async getPayment(@Body() orderDto: OrderDto) {
     return this.paymentService.getPayment(orderDto);
   }
+
   @Post("/webhook")
   public async webhook(@Request() request, @Response() response) {
     return this.paymentService.webhook(request, response);

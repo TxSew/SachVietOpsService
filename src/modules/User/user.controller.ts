@@ -9,10 +9,12 @@ import { UserQueryDto } from "./dto/query-users";
 @Controller(serviceName.users)
 export class UserController {
   constructor(private userService: UserService) {}
+
   @Get("")
   public GetUser(@Query() query: UserQueryDto) {
     return this.userService.getUsers(query);
   }
+
   @Get("CurrentUser")
   public GetUserCurrent(@Body() email: string): Promise<User> {
     return this.userService.getUserCurrent(email);

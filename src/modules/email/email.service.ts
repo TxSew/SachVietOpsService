@@ -9,6 +9,7 @@ import { CreateEmailTemplateDto } from "./dto/create-email-template";
 @Injectable()
 export class EmailService {
   private transporter;
+
   constructor(
     private readonly configService: ConfigService,
     private readonly mailerService: MailerService,
@@ -25,7 +26,6 @@ export class EmailService {
     });
   }
 
-  // @UseGuards(AuthGuard('jwt'))
   async sendMail(email: CreateEmailDto): Promise<void> {
     const mailOptions = {
       from: this.myConfigService.getEmail,
@@ -36,6 +36,7 @@ export class EmailService {
 
     await this.transporter.sendMail(mailOptions);
   }
+
   async sendMailTemplate(email: CreateEmailTemplateDto): Promise<void> {
     const mailOptions = {
       from: this.myConfigService.getEmail,
@@ -49,6 +50,7 @@ export class EmailService {
       .then((result) => console.log(result))
       .catch((error) => console.log(error));
   }
+
   async sendMultipleEmails(emailData: CreateEmailMultipleDto): Promise<void> {
     const mailPromises = emailData.emails.map((toEmail) => {
       const mailOptions = {

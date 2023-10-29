@@ -9,22 +9,25 @@ import { OtpService } from "./forgot-password.service";
 @Controller("forgotPassword")
 export class OtpController {
   constructor(private readonly OtpService: OtpService) {}
+
   @Post("")
   async getEmail(@Body() emailDto: Partial<EmailDto>): Promise<unknown> {
     return this.OtpService.getEmail(emailDto);
   }
+
   @Post("/verify/:token")
   @ApiResponse({
     status: 200,
   })
-  async verifyOtp(
+  verifyOtp(
     @Body() otpCodeDto: OtpCodeDto,
     @Param("token") token: string
   ): Promise<any> {
     return this.OtpService.verifyOtp(Number(otpCodeDto.otp), token);
   }
+
   @Post("/resetPassword/:token")
-  async resetPassword(
+  resetPassword(
     @Param("token") token: string,
     @Body() newPasswordDTO: NewPasswordDTO
   ) {

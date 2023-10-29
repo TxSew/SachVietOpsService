@@ -12,8 +12,7 @@ export class AccountController {
     private readonly accountService: AccountService,
     private emailService: EmailService
   ) {}
-  // register user
-  // @UseGuards(JwtAuthGuard)
+
   @Post("register")
   @ApiOperation({ summary: "Create a new account" })
   @ApiCreatedResponse({ description: "The cat has been successfully created." })
@@ -29,15 +28,16 @@ export class AccountController {
     });
     return dataRegis;
   }
-  // login User
+
   @Post("Login")
   @ApiOperation({ summary: "check login account" })
   @ApiCreatedResponse({ description: " checkLogin successfully." })
-  async Login(@Body() loginDto: LoginRequestDTO) {
+  Login(@Body() loginDto: LoginRequestDTO) {
     return this.accountService.checkLogin(loginDto);
   }
+
   @Put("changePassword")
-  async ChangePassword(@Body() changePasswordDto: ChangePasswordDTO) {
+  ChangePassword(@Body() changePasswordDto: ChangePasswordDTO) {
     return this.accountService.changePassword(changePasswordDto);
   }
 }

@@ -119,10 +119,11 @@ export class OrderService {
     return detailedOrder[0];
   }
   //  get order by current
-  async getOrderByUser(id: number): Promise<OrderDto[]> {
+  async OrderByUser(id: number): Promise<OrderDto[]> {
     const orderCurrent = await OrderModel.findAll({
       include: [
         {
+          attributes: ["fullName"],
           model: UserModel,
           as: "users",
         },

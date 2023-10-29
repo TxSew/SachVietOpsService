@@ -14,7 +14,6 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @Post()
-  // @Roles('ADMIN')
   async sendMail(@Body() createEmailDto: CreateEmailDto): Promise<{
     message: string;
   }> {

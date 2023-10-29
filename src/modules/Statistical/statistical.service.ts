@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Op } from "sequelize";
 import { Order } from "src/submodules/models/OrderModel/Order";
-import { StatisticalDto, StatisticalToday } from "src/submodules/models/Statistical/Statistical";
+import {
+  StatisticalDto,
+  StatisticalToday,
+} from "src/submodules/models/Statistical/Statistical";
 import { UserModel } from "../Auth/auth.schema";
 import { CategoryModel } from "../Category/category.schema";
 import { OrderModel } from "../Order/order.schema";
@@ -15,11 +18,11 @@ export class StatisticalService {
   async GetTotal(): Promise<StatisticalDto> {
     const [orderCount, productCount, categoryCount, producerCount, UserCount] =
       await Promise.all([
-        await OrderModel.count({}),
-        await ProductModel.count({}),
-        await CategoryModel.count({}),
-        await ProducerModel.count({}),
-        await UserModel.count({}),
+        OrderModel.count({}),
+        ProductModel.count({}),
+        CategoryModel.count({}),
+        ProducerModel.count({}),
+        UserModel.count({}),
       ]);
     return {
       Statistical: {
@@ -31,6 +34,7 @@ export class StatisticalService {
       },
     };
   }
+
   async calculateProductRevenueByMonth(month: number, year: number) {
     const startDate = new Date(year, month - 1, 1); // Lấy
     const endDate = new Date(year, month, 0); // Lấy ngày cuối cùng của tháng
@@ -38,12 +42,12 @@ export class StatisticalService {
     const orders = await OrderModel.findAll({
       where: {
         createdAt: {
-         [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
+          [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
         },
       },
     }).then(async (res) => {
       const dat = await res.reduce((totalRevenue: number, transaction: any) => {
-       return totalRevenue + transaction.money;
+        return totalRevenue + transaction.money;
       }, 0);
       return dat;
     });
@@ -58,26 +62,25 @@ export class StatisticalService {
     const orders: Order[] = await OrderModel.findAll({
       where: {
         createdAt: {
-         [Op.gte]: today,
-         [Op.lt]: tomorrow,
+          [Op.gte]: today,
+          [Op.lt]: tomorrow,
         },
-        //  status: 2
       },
     });
     const totalRevenue = (status: string | number) => {
       return orders.filter((e) => e.status == status);
     };
     const totalMoney = (status: string | number) => {
-    return orders
-       .filter((e) => e.status === status)
-       .reduce((total: number, current: any) => total + current.money, 0);
+      return orders
+        .filter((e) => e.status === status)
+        .reduce((total: number, current: any) => total + current.money, 0);
     };
     return {
-     totalMoney: totalMoney(null),
-     totalMoneyByCustomer: totalMoney(2),
-     orderCountPending: totalRevenue(1).length,
-     orderCount: totalRevenue(null).length,
-     orderCountByCustomer: totalRevenue(2).length,
+      totalMoney: totalMoney(null),
+      totalMoneyByCustomer: totalMoney(2),
+      orderCountPending: totalRevenue(1).length,
+      orderCount: totalRevenue(null).length,
+      orderCountByCustomer: totalRevenue(2).length,
     };
   }
 }

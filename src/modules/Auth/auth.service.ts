@@ -8,15 +8,17 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
 import { ResponseError } from "src/helpers/ResponseError";
-import { LoginDto, User } from "src/submodules/models/UserModel/User";
+import {
+  LoginDto,
+  User,
+  userGroup,
+} from "src/submodules/models/UserModel/User";
 import { UserModel } from "./auth.schema";
 import { ChangePasswordDTO } from "./dto/changePassword.dto";
 
 @Injectable()
 export class AccountService {
-  constructor(
-    private jwtService: JwtService,
-  ) {}
+  constructor(private jwtService: JwtService) {}
   // register
   async register(account: Partial<User>): Promise<User> {
     const existingUser = await UserModel.findOne({
@@ -40,39 +42,42 @@ export class AccountService {
     //validate login request
     const user = await this.validateUser(loginRequestDTO);
     try {
-      // create access token  sign
-        const payload =  {
+      const payload = {
         email: user.get().email,
         role: user.get().userGroup,
       };
-      const sign = await this.accessToken(payload)
+
+      const sign = await this.accessToken(payload);
+
       const { password, ...rest } = await user.dataValues;
-      // if (rest.userGroup == 0) {
-      //   return { user: rest, token: sign };
-      // }
-      // if (rest.userGroup == 2) {
-      //   return { user: rest, token: sign };
-      // }
-      return { user: rest, token: sign };
+
+      if (rest.userGroup == userGroup.user) {
+        return { user: rest };
+      }
+      if (rest.userGroup == userGroup.admin) {
+        return { user: rest, token: sign };
+      }
     } catch (err) {
       throw new HttpException("error", HttpStatus.FORBIDDEN);
     }
   }
-   async accessToken(payload) {
-      const expiresIn: string = process.env.JWT_ExpiresIn;
-      const sign = this.jwtService.sign(payload, {
-        secret: expiresIn,
-        expiresIn: "1d",
-      });
-       return sign
+  async accessToken(payload) {
+    const expiresIn: string = process.env.JWT_ExpiresIn;
+    const sign = this.jwtService.sign(payload, {
+      secret: expiresIn,
+      expiresIn: "1d",
+    });
+    return sign;
+  }
 
-   }
   async changePassword(changeRequestDTO: ChangePasswordDTO) {
     const { userId, password, newPassword, repeatNewPassword } =
       changeRequestDTO;
+
     const User = await UserModel.findOne({
       where: { id: userId },
     });
+
     if (!User) {
       throw new HttpException("not found user", HttpStatus.FORBIDDEN);
     } else {
@@ -88,7 +93,6 @@ export class AccountService {
         if (isCheck) {
           const saltOrRounds = 10;
           const hashedPassword = await bcrypt.hash(newPassword, saltOrRounds);
-          console.log(hashedPassword);
           await UserModel.update(
             { password: hashedPassword },
             {
@@ -102,14 +106,14 @@ export class AccountService {
       }
     }
   }
-  // forget password
-  // private function handle
+
   private validatePasswordChange(newPassword, repeatNewPassword) {
     if (newPassword !== repeatNewPassword) {
       throw new BadRequestException("Passwords do not match.");
     }
     return true;
   }
+
   private async validateUser(loginRequestDTO: LoginDto) {
     const user = await UserModel.findOne({
       where: { email: loginRequestDTO.email },

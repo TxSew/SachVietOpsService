@@ -1,18 +1,24 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import { Discount } from 'src/submodules/models/DiscountModel/Discount';
-import { DiscountModel } from './discount.shema';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from "@nestjs/common";
+import { Discount } from "src/submodules/models/DiscountModel/Discount";
+import { DiscountModel } from "./discount.shema";
+import { ResponseError } from "src/helpers/ResponseError";
 
 @Injectable()
 export class DiscountService {
-  async GetAll():Promise<Discount[]> {
+  async GetAll(): Promise<Discount[]> {
     const discountData = await DiscountModel.findAll({});
-    console.log(discountData);
     return discountData;
   }
-  async createDiscount(discount: Discount):Promise<Discount> {
+
+  async createDiscount(discount: Discount): Promise<Discount> {
     try {
       if (!discount) {
-        throw 'discount creating not value';
+        throw ResponseError.notFound("Discount not found");
       }
       const discountData = await DiscountModel.create(discount);
       return discountData;
@@ -20,6 +26,7 @@ export class DiscountService {
       throw new HttpException(err.message, HttpStatus.ACCEPTED);
     }
   }
+
   async updateDiscount(id: number, discount: Partial<Discount>) {
     try {
       const updated = await DiscountModel.update(discount, {
@@ -30,10 +37,10 @@ export class DiscountService {
       throw new BadRequestException(errors.message);
     }
   }
+
   async removeDiscount(id) {
     DiscountModel.destroy({
       where: { id: id },
     });
   }
-      
 }

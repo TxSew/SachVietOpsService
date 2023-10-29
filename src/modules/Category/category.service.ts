@@ -4,6 +4,7 @@ import { CategoryModel } from "./category.schema";
 import { Category } from "src/submodules/models/ProductModel/Category";
 import { ResponseError } from "src/helpers/ResponseError";
 import { CategoryQueryDto } from "./dto/Category.schema";
+import { productModel } from "../Product/product.schema";
 
 @Injectable()
 export class CategoryService {
@@ -112,7 +113,6 @@ export class CategoryService {
   }
   //category
   async createCategory(category: Partial<Category>): Promise<Category> {
-    console.log(category);
     try {
       const existingCategory = await CategoryModel.findOne({
         where: { name: category.name },

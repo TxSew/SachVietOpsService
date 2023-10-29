@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 type ResponseErrorBadInput<T extends { [key: string]: any }> = {
   [P in keyof T]: {
@@ -11,16 +11,16 @@ type ResponseErrorBadInput<T extends { [key: string]: any }> = {
 export class ResponseError extends Error {
   constructor(
     message: string,
-    public readonly status: number,
+    public readonly status: number
   ) {
     super(message);
   }
   static alreadyExists(message: string): ResponseError {
-    throw new HttpException(message || 'not found', 430);
+    throw new HttpException(message || "not found", 430);
   }
 
   static notFound(message: string): ResponseError {
-    throw new HttpException(message || 'not found', HttpStatus.NOT_FOUND);
+    throw new HttpException(message || "not found", HttpStatus.NOT_FOUND);
   }
 
   static badInput<T>(object: ResponseErrorBadInput<T> | string): ResponseError {
@@ -28,25 +28,28 @@ export class ResponseError extends Error {
   }
 
   static conflict(message: string): ResponseError {
-    throw new HttpException(message || 'not found', HttpStatus.CONFLICT);
+    throw new HttpException(message || "not found", HttpStatus.CONFLICT);
   }
 
   static lengthRequired(message: string): ResponseError {
-    throw new HttpException(message || 'not found', HttpStatus.LENGTH_REQUIRED);
+    throw new HttpException(message || "not found", HttpStatus.LENGTH_REQUIRED);
   }
+
   static unexpected(message: string): ResponseError {
     throw new HttpException(
-      message || 'not found',
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      message || "not found",
+      HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
+
   static unauthenticated(message: string): ResponseError {
     throw new HttpException(
-      message || 'Authenticated',
-      HttpStatus.UNAUTHORIZED,
+      message || "Authenticated",
+      HttpStatus.UNAUTHORIZED
     );
   }
-  static unauthorized(message: string = 'Unauthorized'): ResponseError {
+
+  static unauthorized(message: string = "Unauthorized"): ResponseError {
     throw new HttpException(message, HttpStatus.FORBIDDEN);
   }
 }

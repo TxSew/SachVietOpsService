@@ -21,29 +21,34 @@ import { OrderQueryDto } from "./dto/query-orders";
 @Controller("order")
 export class OrderController {
   constructor(private orderService: OrderService) {}
+
   @Get("")
   retOrderHistory(@Query() query: OrderQueryDto): Promise<TOrders> {
     return this.orderService.getOrderAll(query);
   }
+
   @Get("orderDetail/:id")
   getOrderDetail(@Param("id") id: number) {
     return this.orderService.getOrderDetailByOrder(id);
   }
+
   @Get("current/:id")
   getOrderCUrrent(@Param("id") id: number): Promise<OrderDto[]> {
-    return this.orderService.getOrderByUser(Number(id));
+    return this.orderService.OrderByUser(id);
   }
+
   @ApiOperation({ summary: "Order product" })
   @ApiCreatedResponse({ description: " Order successfully." })
   @Post("store")
   addOrder(@Body() OrderDto: OrderDto): Promise<TOrderResponse> {
     return this.orderService.createOrder(OrderDto);
   }
+
   @Post("update/:id")
   updateOrder(@Param("id") id: number, @Body() status: number) {
-    console.log(id, status);
     return this.orderService.update(id, status);
   }
+
   @Delete(":id")
   RemoveOrder(@Param("id") id: number) {
     this.orderService.RemoveOrder(id);

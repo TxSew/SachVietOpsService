@@ -33,9 +33,6 @@ export class ProductService {
         [Op.between]: [minPrice, maxPrice],
       },
     };
-    if (categoryFilter) {
-      whereClause.categoryId = categoryFilter;
-    }
     try {
       const Product = await ProductModel.findAndCountAll({
         where: whereClause,
@@ -52,7 +49,6 @@ export class ProductService {
             model: CategoryModel,
             attributes: ["name", "parentId", "id"],
             as: "category",
-            where: slug,
           },
           {
             model: ProducerModel,
