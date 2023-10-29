@@ -21,30 +21,32 @@ import { ProductService } from "./product.service";
 @Controller("products")
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
   @Get("")
   async findAll(@Query() query: ProductQueryDto): Promise<TProductResponse> {
     return this.productService.findAll(query);
   }
+
   @Get(":id")
   async findOne(@Param("id") slug: string): Promise<Product> {
     return this.productService.findOneWithRelatedProducts(slug);
   }
+
   @Get("currentUpdate/:id")
   async findUpdate(@Param("id") id: number): Promise<Product> {
     return this.productService.findOneUpdate(Number(id));
   }
-  // @UseGuards(JwtMiddleware)
-  // @UseGuards(JwtAuthGuard)
+
   @Post("store")
   async createProduct(@Body() product: Partial<TProduct>) {
-   return this.productService.createProduct(product);
+    return this.productService.createProduct(product);
   }
-  // @UseGuards(JwtAuthGuard)
+
   @Put("update/:id")
   async updateProduct(@Param("id") id: number, @Body() product: TProduct) {
-   return this.productService.updateProduct(Number(id), product);
+    return this.productService.updateProduct(Number(id), product);
   }
-  // @UseGuards(JwtAuthGuard)
+
   @Delete(":id")
   async removeProduct(@Param("id") id: number) {
     return this.productService.removeProductTrashed(Number(id));

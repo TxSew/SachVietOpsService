@@ -8,7 +8,7 @@ export class StatisticalController {
   constructor(private statisticalService: StatisticalService) {}
   @Get("")
   public GetTotal(): Promise<any> {
-    return this.statisticalService.GetTotal();
+    return this.statisticalService.getTotal();
   }
 
   @Get(":year/:month")
