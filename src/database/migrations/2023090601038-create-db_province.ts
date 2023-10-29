@@ -9,26 +9,4 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
-        type: Sequelize.STRING(100),
-      },
-      type: {
-        type: Sequelize.STRING(30),
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
-      },
-    });
-  },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('db_province');
-  },
-};
+      name: { type: Sequelize.STRING(100), }, type: { type: Sequelize.STRING(30), }, createdAt: { allowNull: false, type: Sequelize.DATE, }, updatedAt: { allowNull: false, type: Sequelize.DATE, }, deletedAt: { type: Sequelize.DATE, }, }); }, async down(queryInterface, Sequelize) { await queryInterface.dropTable('db_province'); }, };

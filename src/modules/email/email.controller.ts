@@ -14,11 +14,12 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @Post()
-  async sendMail(@Body() createEmailDto: CreateEmailDto): Promise<{
+  // @Roles('ADMIN')
+  async sendMail(@Body() emailDto: CreateEmailDto): Promise<{
     message: string;
   }> {
     try {
-      this.emailService.sendMail(createEmailDto);
+      this.emailService.sendMail(emailDto);
       return { message: "Email is sent..." };
     } catch (error) {
       console.log(error);
@@ -28,12 +29,12 @@ export class EmailController {
 
   @Post("multiple")
   async sendMultipleMail(
-    @Body() CreateEmailMultipleDto: CreateEmailMultipleDto
+    @Body() emailMultipleDto: CreateEmailMultipleDto
   ): Promise<{
     message: string;
   }> {
     try {
-      this.emailService.sendMultipleEmails(CreateEmailMultipleDto);
+      this.emailService.sendMultipleEmails(emailMultipleDto);
       return { message: "Email is sent..." };
     } catch (error) {
       console.log(error);

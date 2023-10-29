@@ -16,7 +16,7 @@ export class UserController {
   }
 
   @Get("CurrentUser")
-  public GetUserCurrent(@Body() email: string): Promise<User> {
+  public getUserCurrent(@Body() email: string): Promise<User> {
     return this.userService.getUserCurrent(email);
   }
 }
