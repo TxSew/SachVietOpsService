@@ -33,8 +33,8 @@ export class DiscountService {
         where: { id: id },
       });
       return updated;
-    } catch (errors) {
-      throw new BadRequestException(errors.message);
+    } catch (error) {
+      throw  ResponseError.badInput(error.message);
     }
   }
 

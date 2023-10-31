@@ -3,7 +3,6 @@ import { Options } from "sequelize";
 dotenv.config();
 
 export const getEnv = (key: string) => process.env[key];
-export const IS_DEVELOPER_ENV = getEnv("NODE_ENV").toLowerCase() == "localhost";
 
 export interface IConfig {
   ConnectDB: {
@@ -19,9 +18,12 @@ export interface IConfig {
     EMAIL_PASS: string;
     EMAIL_HOST: string;
   };
+  jwt: {
+    secret:string
+  }
 }
 
-export const ConfigDatabase: IConfig = {
+export const appConfig: IConfig = {
   ConnectDB: {
     development: {
       username: "root",
@@ -45,4 +47,7 @@ export const ConfigDatabase: IConfig = {
     EMAIL_PASS: getEnv("EMAIL_PASS"),
     EMAIL_HOST: getEnv("EMAIL_HOST"),
   },
+jwt: {
+secret: getEnv("JWT_SECRET_KEY")|| 'book@123',   
+}
 };

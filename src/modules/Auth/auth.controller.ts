@@ -1,11 +1,13 @@
-import { Body, Controller, Post, Put } from "@nestjs/common";
+import { Body, Controller, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { User } from "src/submodules/models/UserModel/User";
 import { EmailService } from "../email/email.service";
 import { AccountService } from "./auth.service";
 import { ChangePasswordDTO } from "./dto/changePassword.dto";
 import { LoginRequestDTO } from "./dto/loginRequest.dto";
+import { JwtAuthGuard, Public } from "src/guard/jwt.guard";
 @ApiTags("Auth")
+@UseGuards(JwtAuthGuard)
 @Controller("auth")
 export class AccountController {
   constructor(
@@ -13,9 +15,8 @@ export class AccountController {
     private emailService: EmailService
   ) {}
 
+  @Public()
   @Post("register")
-  @ApiOperation({ summary: "Create a new account" })
-  @ApiCreatedResponse({ description: "The cat has been successfully created." })
   async create(@Body() register: User): Promise<User> {
     const dataRegis = await this.accountService.register(register);
     await this.emailService.sendMailTemplate({
@@ -29,11 +30,10 @@ export class AccountController {
     return dataRegis;
   }
 
+  @Public()
   @Post("Login")
-  @ApiOperation({ summary: "check login account" })
-  @ApiCreatedResponse({ description: " checkLogin successfully." })
   Login(@Body() loginDto: LoginRequestDTO) {
-    return this.accountService.checkLogin(loginDto);
+    return this.accountService.login(loginDto);
   }
 
   @Put("changePassword")

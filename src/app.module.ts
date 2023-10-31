@@ -26,6 +26,9 @@ import { OtpService } from "./modules/forgotPassword/forgot-password.service";
 import { PaymentController } from "./modules/payment/payment.controller";
 import { PaymentService } from "./modules/payment/payment.service";
 import * as dotenv from "dotenv";
+import { JwtAuthGuard } from "./guard/jwt.guard";
+import { appConfig } from "./constants/IConfig";
+import { JwtStrategy } from "./guard/jwtStratery";
 
 dotenv.config();
 @Module({
@@ -41,11 +44,10 @@ dotenv.config();
       synchronize: true, // Auto-create and update database tables (not recommended for production)
     }),
     JwtModule.register({
-      secret: process.env.JWT_ExpiresIn,
+      secret: appConfig.jwt.secret,
       signOptions: { expiresIn: "1d" },
     }),
     EmailModule,
-    // ForgotPasswordModule,
   ],
   controllers: [
     AccountController,
@@ -60,7 +62,15 @@ dotenv.config();
     OtpController,
     PaymentController,
   ],
+
   providers: [
+
+    //auth
+    JwtAuthGuard,
+    JwtStrategy,
+    { provide: 'APP_GUARD', useClass: JwtAuthGuard },
+
+    //service 
     AccountService,
     ProductService,
     CategoryService,

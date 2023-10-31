@@ -75,17 +75,10 @@ export class PaymentService {
         cancel_url: this.configService.getStripeCancelUrl,
       });
 
-      // console.log(paymentIntent);
-      console.log(session);
-
-      // const data = await this.orderService.createOrder(orderDto);
-      console.log(session.url);
-
       return {
         paymentMethod: "Visa",
         message: "Order by Visa successfully",
         url: session.url,
-        // data: data,
       };
     }
   }

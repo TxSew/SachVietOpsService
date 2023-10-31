@@ -7,6 +7,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
+import { appConfig } from "src/constants/IConfig";
 import { ResponseError } from "src/helpers/ResponseError";
 import {
   LoginDto,
@@ -18,58 +19,39 @@ import { ChangePasswordDTO } from "./dto/changePassword.dto";
 
 @Injectable()
 export class AccountService {
+
   constructor(private jwtService: JwtService) {}
-  // register
   async register(account: Partial<User>): Promise<User> {
+
     const existingUser = await UserModel.findOne({
       where: { email: account.email },
     });
     if (existingUser) {
-      throw new HttpException(
-        {
-          message: "Email already exists",
-        },
-        HttpStatus.FORBIDDEN
-      );
-    }
+        throw ResponseError.badInput('email already exists');
+        }
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(account.password, saltOrRounds);
     account.password = await hash;
+
     const register = await UserModel.create(account);
     return register;
   }
-  async checkLogin(loginRequestDTO: LoginDto) {
-    //validate login request
+
+  async login(loginRequestDTO: LoginDto) {
     const user = await this.validateUser(loginRequestDTO);
     try {
-      const payload = {
-        email: user.get().email,
-        role: user.get().userGroup,
-      };
+           const sign = this.jwtService.sign({Id:user.get().id}, {
+        secret:appConfig.jwt.secret
+      })
 
-      const sign = await this.accessToken(payload);
+      const { password, ...rest } =  user.dataValues;
 
-      const { password, ...rest } = await user.dataValues;
-
-      if (rest.userGroup == userGroup.user) {
-        return { user: rest };
-      }
-      if (rest.userGroup == userGroup.admin) {
-        return { user: rest, token: sign };
-      }
+      return { user: rest, token: sign };
     } catch (err) {
-      throw new HttpException("error", HttpStatus.FORBIDDEN);
+      throw new HttpException("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  async accessToken(payload) {
-    const expiresIn: string = process.env.JWT_ExpiresIn;
-    const sign = this.jwtService.sign(payload, {
-      secret: expiresIn,
-      expiresIn: "1d",
-    });
-    return sign;
-  }
-
+ 
   async changePassword(changeRequestDTO: ChangePasswordDTO) {
     const { userId, password, newPassword, repeatNewPassword } =
       changeRequestDTO;
