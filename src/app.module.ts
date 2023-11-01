@@ -64,11 +64,10 @@ dotenv.config();
   ],
 
   providers: [
-
     //auth
-    JwtAuthGuard,
-    JwtStrategy,
-    { provide: 'APP_GUARD', useClass: JwtAuthGuard },
+    // JwtAuthGuard,
+    // JwtStrategy,
+    // { provide: 'APP_GUARD', useClass: JwtAuthGuard },
 
     //service 
     AccountService,
