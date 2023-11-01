@@ -6,6 +6,7 @@ import { ApiTags } from "@nestjs/swagger";
 @Controller("statistical")
 export class StatisticalController {
   constructor(private statisticalService: StatisticalService) {}
+
   @Get("")
   public GetTotal(): Promise<any> {
     return this.statisticalService.getTotal();

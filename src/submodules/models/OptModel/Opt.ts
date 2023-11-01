@@ -1,11 +1,10 @@
-import { type } from "os";
-import { Model } from "sequelize";
-import { Nullable } from "../BaseModel/constanst";
+import { type } from 'os';
+import { Model } from 'sequelize';
+import { Nullable } from '../BaseModel/constanst';
 
 export interface Otp extends Model {
-  email?: string;
-  code?: string;
+    email?: string;
+    code?: string;
 }
 //make a type multiple
-export type EmailDto = Nullable<Omit<Otp, "code">>;
-
+export type EmailDto = Nullable<Omit<Otp, 'code'>>;
