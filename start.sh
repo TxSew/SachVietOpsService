@@ -5,7 +5,7 @@ npm install -g @nestjs/cli
 npm install -g pm2
 
 git pull orgin master
-cp  .env.dev .env
+# cp  .env.dev .env
 npm install
 npm run build
 pm2 start dist/main.js --name thanh-api
