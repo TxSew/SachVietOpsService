@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
+import * as dotenv from 'dotenv';
 import { ConfigDatabase } from './configs/config';
+import { appConfig } from './constants/IConfig';
+import { JwtAuthGuard } from './guard/jwtGuard';
+import { JwtStrategy } from './guard/jwtStratery';
 import { AccountController } from './modules/Auth/auth.controller';
 import { AccountService } from './modules/Auth/auth.service';
 import { CategoryController } from './modules/Category/category.controller';
@@ -25,10 +29,6 @@ import { OtpController } from './modules/forgotPassword/forgot-password.controll
 import { OtpService } from './modules/forgotPassword/forgot-password.service';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
-import * as dotenv from 'dotenv';
-import { appConfig } from './constants/IConfig';
-import { JwtStrategy } from './guard/jwtStratery';
-import { JwtAuthGuard } from './guard/jwtGuard';
 
 dotenv.config();
 @Module({
