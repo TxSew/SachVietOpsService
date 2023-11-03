@@ -35,7 +35,7 @@ export class AccountController {
         return this.accountService.login(props);
     }
 
-    @Put('changePassword')
+    @Post('changePassword')
     ChangePassword(@Body() changePasswordDto: ChangePasswordDTO) {
         return this.accountService.changePassword(changePasswordDto);
     }

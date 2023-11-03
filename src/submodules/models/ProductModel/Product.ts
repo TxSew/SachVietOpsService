@@ -1,32 +1,33 @@
-import { Model } from "sequelize";
-import { BaseModel } from "../BaseModel";
-import { Modified } from "../BaseModel/constanst";
+import { Model } from 'sequelize';
+import { BaseModel } from '../BaseModel';
+import { Modified } from '../BaseModel/constanst';
 
 export interface Product extends BaseModel, Model, Modified {
-  title?: string;
-  desc?: string;
-  producerID?: number;
-  categoryId?: number;
-  slug?: string;
-  price?: number;
-  image?: string;
-  price_sale?: number;
-  listImage?: string;
-  quantity?: number;
-  productId?: number;
-  sale?: number;
+    title?: string;
+    desc?: string;
+    producerID?: number;
+    categoryId?: number;
+    slug?: string;
+    price?: number;
+    image?: string;
+    price_sale?: number;
+    listImage?: string;
+    quantity?: number;
+    productId?: number;
+    sale?: number;
 }
 export interface TProduct {
-  product?: Product;
-  productImages?: ProductImages[];
+    product?: Product;
+    productImages?: ProductImages[];
 }
 export interface ProductImages extends Modified, Model {
-  productId?: number;
-  image?: string;
+    productId?: number;
+    image?: string;
 }
 export interface TProductResponse {
-  page?: number;
-  limit?: number;
-  totalPage?: number;
-  products?: Product[];
+    pageSize?: number;
+    page?: number;
+    limit?: number;
+    totalPage?: number;
+    products?: Product[];
 }

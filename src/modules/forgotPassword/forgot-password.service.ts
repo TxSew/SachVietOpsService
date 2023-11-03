@@ -55,7 +55,9 @@ export class OtpService {
             const decoded = await this.jwtService.verify(token, {
                 secret: 'forgotPassword',
             });
+
             const user = await this.usersService.getUserCurrent(decoded.email);
+
             if (!user) {
                 throw ResponseError.notFound('User not found');
             }

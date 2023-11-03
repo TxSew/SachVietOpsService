@@ -12,12 +12,12 @@ export class OtpController {
     constructor(private readonly OtpService: OtpService) {}
 
     @Public()
-    @Post('')
+    @Post('send-otp-email')
     async sendEmailOtp(@Body() emailDto: Partial<EmailDto>): Promise<unknown> {
         return this.OtpService.sendEMailOtp(emailDto);
     }
 
-    @Post('/verify/:token')
+    @Post('/verify-top/:token')
     @ApiResponse({
         status: 200,
     })

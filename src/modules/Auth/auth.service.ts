@@ -16,15 +16,15 @@ export class AccountService {
 
     @Public()
     async register(account: Partial<User>): Promise<User> {
+        let { email, fullName, password, phone, userGroup, address } = account;
+        if (!email || !password) throw ResponseError.notFound('Please enter your email or password');
+        const hash = await this.hashPassword(account.password, 10);
+        password = await hash;
+
         const existingUser = await UserModel.findOne({
-            where: { email: account.email },
+            where: { email: email },
         });
-        if (existingUser) {
-            throw ResponseError.badInput('email already exists');
-        }
-        const saltOrRounds = 10;
-        const hash = await bcrypt.hash(account.password, saltOrRounds);
-        account.password = await hash;
+        if (existingUser) throw ResponseError.badInput('email already exists');
 
         const register = await UserModel.create(account);
         return register;
@@ -43,55 +43,62 @@ export class AccountService {
         }
 
         const passwordCompare = await bcrypt.compare(props.password, account.password);
-        if (!passwordCompare) {
-            throw ResponseError.conflict('Wrong password');
-        }
+        if (!passwordCompare) throw ResponseError.conflict('Wrong password');
 
-        const access_token = this.jwtService.sign(
-            { Id: 2 },
-            {
-                secret: appConfig.jwt.secret,
-            }
-        );
+        const access_token = this.generateToken(account.id);
 
         const { password, ...rest } = account;
 
         return { account: rest, token: access_token };
     }
 
-    async changePassword(changeRequestDTO: ChangePasswordDTO) {
-        const { userId, password, newPassword, repeatNewPassword } = changeRequestDTO;
+    async changePassword(changePassword: ChangePasswordDTO) {
+        if (!changePassword) throw ResponseError.badInput('Account not found');
+        const { userId, password, newPassword, repeatNewPassword } = changePassword;
 
         const User = await UserModel.findOne({
             where: { id: userId },
         });
 
-        if (!User) {
-            throw new HttpException('not found user', HttpStatus.FORBIDDEN);
-        } else {
-            const isCheckPassword = await bcrypt.compare(password, User.get().password);
-            if (isCheckPassword) {
-                const isCheck = this.validatePasswordChange(newPassword, repeatNewPassword);
-                if (isCheck) {
-                    const saltOrRounds = 10;
-                    const hashedPassword = await bcrypt.hash(newPassword, saltOrRounds);
-                    await UserModel.update(
-                        { password: hashedPassword },
-                        {
-                            where: { id: User.get().id },
-                        }
-                    );
-                    return { password: 'Password changed successfully' };
-                }
-            } else {
-                throw ResponseError.badInput('password is incorrect');
+        const isCheckPassword = await this.comparePassword(password, User.get().password);
+        if (!isCheckPassword) throw ResponseError.badInput('password is incorrect');
+        const isCheck = this.validatePasswordChange(newPassword, repeatNewPassword);
+        if (!isCheck) throw ResponseError.badInput('Passwords do not match.');
+        const hashPassword = await this.hashPassword(newPassword, 10);
+        await UserModel.update(
+            { password: hashPassword },
+            {
+                where: { id: User.get().id },
             }
-        }
+        );
+        return { password: 'Password changed successfully' };
+    }
+
+    generateToken(id: number) {
+        const access_token = this.jwtService.sign(
+            {
+                Id: id,
+            },
+            {
+                secret: appConfig.jwt.secret,
+            }
+        );
+        return access_token;
+    }
+
+    async hashPassword(password: string, saltOrRounds: number) {
+        const hashPassword = await bcrypt.hash(password, saltOrRounds);
+        return hashPassword;
+    }
+
+    async comparePassword(password: string, password2: string) {
+        const comparePassword = await bcrypt.compare(password, password2);
+        return comparePassword;
     }
 
     private validatePasswordChange(newPassword, repeatNewPassword) {
         if (newPassword !== repeatNewPassword) {
-            throw new BadRequestException('Passwords do not match.');
+            return false;
         }
         return true;
     }

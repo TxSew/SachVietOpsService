@@ -10,37 +10,37 @@ import { join } from 'path';
 import { MyConfigService } from 'src/myConfig.service';
 
 @Module({
-  imports: [
-    JwtModule,
-    MailerModule.forRootAsync({
-      inject: [MyConfigService],
-      imports: [MyConfigModule],
-      useFactory: (config: MyConfigService) => ({
-        transport: {
-          host: config.getEmailHost,
-          port: 587,
-          tls: { rejectUnauthorized: false },
-          secure: false,
-          auth: {
-            user: config.getEmail,
-            pass: config.getEmailPassword,
-          },
-        },
-        defaults: {
-          from: `"No Reply"`,
-        },
-        template: {
-          dir: join(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(),
-          options: {
-            strict: true,
-          },
-        },
-      }),
-    }),
-  ],
-  controllers: [EmailController],
-  providers: [EmailService, ConfigService, MyConfigService],
-  exports: [EmailService, ConfigService, MyConfigService],
+    imports: [
+        JwtModule,
+        MailerModule.forRootAsync({
+            inject: [MyConfigService],
+            imports: [MyConfigModule],
+            useFactory: (config: MyConfigService) => ({
+                transport: {
+                    host: config.getEmailHost,
+                    port: 587,
+                    tls: { rejectUnauthorized: false },
+                    secure: false,
+                    auth: {
+                        user: config.getEmail,
+                        pass: config.getEmailPassword,
+                    },
+                },
+                defaults: {
+                    from: `"No Reply"`,
+                },
+                template: {
+                    dir: join(__dirname, 'templates'),
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
+            }),
+        }),
+    ],
+    controllers: [EmailController],
+    providers: [EmailService, ConfigService, MyConfigService],
+    exports: [EmailService, ConfigService, MyConfigService],
 })
 export class EmailModule {}
