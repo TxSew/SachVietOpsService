@@ -4,12 +4,14 @@ import { Category } from 'src/submodules/models/ProductModel/Category';
 import { CategoryService } from './category.service';
 import { CategoryQueryDto } from './dto/Category.schema';
 import { serviceName } from 'src/constants/IServiceName';
+import { Public } from 'src/guard/jwtGuard';
 @ApiTags(serviceName.category)
 @Controller(serviceName.category)
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
-    @Get()
+    @Public()
+    @Get('')
     getAll(@Query() query: CategoryQueryDto) {
         return this.categoryService.getAll(query);
     }

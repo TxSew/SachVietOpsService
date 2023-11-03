@@ -25,9 +25,9 @@ export class OrderController {
         return this.orderService.OrderByUser(id);
     }
 
+    @Public()
     @ApiOperation({ summary: 'Order product' })
     @ApiCreatedResponse({ description: ' Order successfully.' })
-    @Public()
     @Post('store')
     addOrder(@Body() OrderDto: OrderDto): Promise<TOrderResponse> {
         return this.orderService.createOrder(OrderDto);

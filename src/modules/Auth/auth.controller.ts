@@ -1,11 +1,10 @@
-import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 import { User } from 'src/submodules/models/UserModel/User';
 import { EmailService } from '../email/email.service';
 import { AccountService } from './auth.service';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
-import { LoginRequestDTO } from './dto/loginRequest.dto';
-import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 @ApiTags('Auth')
 @UseGuards(JwtAuthGuard)
 @Controller('auth')
@@ -29,6 +28,7 @@ export class AccountController {
         });
         return dataRegis;
     }
+
     @Public()
     @Post('Login')
     Login(@Body() props: { email: string; password: string }) {

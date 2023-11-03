@@ -12,7 +12,7 @@ import { ProductModel } from './product.schema';
 export class ProductService {
     //find all products
     async findAll(props): Promise<TProductResponse> {
-        const limit = props.limit || 10;
+        const limit = props.limit || 4;
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
