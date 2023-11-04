@@ -13,7 +13,7 @@ export class CategoryService {
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const categoryList = await this.getListCategory();
+        // const categoryList = await this.getListCategory();
         const qr = `
     WITH RECURSIVE CategoryTree AS (
       SELECT
@@ -44,7 +44,7 @@ export class CategoryService {
     SELECT * FROM CategoryTree LIMIT ${limited} OFFSET ${offset}
     `;
         const [results] = await SequelizeBase.query(qr);
-        const totalPage = Math.ceil(categoryList.length / limited);
+        const totalPage = Math.ceil(results.length / limited);
         return { totalPage, limit: limited, page, category: results };
         // const nestedCategories = this.buildCategoryHierarchy(results);
         // return nestedCategories;
@@ -67,7 +67,7 @@ export class CategoryService {
         });
         return rootCategories;
     }
-    async getListCategory() {
+    async filter(props) {
         const query = `
     WITH RECURSIVE CategoryTree AS (
       SELECT

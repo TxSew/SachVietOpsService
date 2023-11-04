@@ -16,9 +16,10 @@ export class CategoryController {
         return this.categoryService.getAll(query);
     }
 
-    @Get('/listCategory')
-    getListCategory() {
-        return this.categoryService.getListCategory();
+    @Public()
+    @Post('filter')
+    getListCategory(props) {
+        return this.categoryService.filter(props);
     }
 
     @Get(':id')
