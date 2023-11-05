@@ -10,6 +10,7 @@ import { Public } from 'src/guard/jwtGuard';
 export class OrderController {
     constructor(private orderService: OrderService) {}
 
+    @Public()
     @Get('')
     retOrderHistory(@Query() query: OrderQueryDto): Promise<TOrders> {
         return this.orderService.getOrderAll(query);
@@ -20,6 +21,7 @@ export class OrderController {
         return this.orderService.getOrderDetailByOrder(id);
     }
 
+    @Public()
     @Get('current/:id')
     getOrderCUrrent(@Param('id') id: number): Promise<OrderDto[]> {
         return this.orderService.OrderByUser(id);

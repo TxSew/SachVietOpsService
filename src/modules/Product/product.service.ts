@@ -5,7 +5,6 @@ import { Product, TProduct, TProductResponse } from 'src/submodules/models/Produ
 import { CategoryModel } from '../Category/category.schema';
 import { ProducerModel } from '../Producer/producer.schema';
 import { ImagesProductModel } from './dto/listImage.schema';
-import { ProductQueryDto } from './dto/query-product';
 import { ProductModel } from './product.schema';
 
 @Injectable()
@@ -25,7 +24,6 @@ export class ProductService {
 
         let whereClause: any = {
             [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
-
             price_sale: {
                 [Op.between]: [minPrice, maxPrice],
             },
