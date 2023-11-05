@@ -19,7 +19,8 @@ export class AccountService {
         let { email, fullName, password, phone, userGroup, address } = account;
         if (!email || !password) throw ResponseError.notFound('Please enter your email or password');
         const hash = await this.hashPassword(account.password, 10);
-        password = await hash;
+        console.log('🚀 ~ file: auth.service.ts:22 ~ AccountService ~ register ~ hash:', hash);
+        account.password = hash;
 
         const existingUser = await UserModel.findOne({
             where: { email: email },
