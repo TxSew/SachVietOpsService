@@ -1,13 +1,13 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, UseGuards } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { appConfig } from 'src/constants/IConfig';
+import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 import { ResponseError } from 'src/helpers/ResponseError';
-import { LoginDto, User, userGroup } from 'src/submodules/models/UserModel/User';
+import { User } from 'src/submodules/models/UserModel/User';
 import { UserModel } from './auth.schema';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
-import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 
 @Injectable()
 @UseGuards(JwtAuthGuard)
@@ -16,7 +16,7 @@ export class AccountService {
 
     @Public()
     async register(account: Partial<User>): Promise<User> {
-        let { email, fullName, password, phone, userGroup, address } = account;
+        let { email, password } = account;
         if (!email || !password) throw ResponseError.notFound('Please enter your email or password');
         const hash = await this.hashPassword(account.password, 10);
         console.log('🚀 ~ file: auth.service.ts:22 ~ AccountService ~ register ~ hash:', hash);
