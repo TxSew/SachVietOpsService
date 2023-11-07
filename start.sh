@@ -3,8 +3,8 @@
 cd /var/www/thanh
 npm install -g @nestjs/cli
 npm install -g pm2
-
-git pull orgin master
+git checkout -- .
+git pull orgin main
 # cp  .env.dev .env
 npm install
 npm run build

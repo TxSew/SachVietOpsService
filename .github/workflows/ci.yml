@@ -25,6 +25,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "Hello from the remote server"
+            cd /var/www/quangthanh/book_server
             sh start.sh
             
 
