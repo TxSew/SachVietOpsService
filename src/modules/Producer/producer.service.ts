@@ -6,7 +6,7 @@ import { ResponseError } from 'src/helpers/ResponseError';
 
 @Injectable()
 export class ProducerService {
-    async getAll(query: ProducerQueyDto): Promise<TProducer> {
+    async getListProducer(query: ProducerQueyDto): Promise<TProducer> {
         const limited = Number(query.limit) || 2;
         const page = query.page || 1;
         const offset = (Number(page) - 1) * limited;
@@ -27,7 +27,7 @@ export class ProducerService {
             throw new HttpException(err, HttpStatus.FORBIDDEN);
         }
     }
-    async getOne(id: number): Promise<Producer> {
+    async getProducer(id: number): Promise<Producer> {
         const producer = await ProducerModel.findOne({
             where: {
                 id: id,
@@ -37,7 +37,7 @@ export class ProducerService {
         return producer;
     }
 
-    async create(producer: Partial<Producer>): Promise<Producer> {
+    async createProducer(producer: Partial<Producer>): Promise<Producer> {
         const producerData = await ProducerModel.create(producer);
         return producerData;
     }

@@ -25,12 +25,10 @@ export class OrderController {
     @Public()
     @Get('current/:id')
     getOrderCUrrent(@Param('id') id: number): Promise<OrderDto[]> {
-        return this.orderService.OrderByUser(id);
+        return this.orderService.getOrderbyUser(id);
     }
 
     @Public()
-    @ApiOperation({ summary: 'Order product' })
-    @ApiCreatedResponse({ description: ' Order successfully.' })
     @Post('store')
     addOrder(@Body() OrderDto: OrderDto): Promise<TOrderResponse> {
         return this.orderService.createOrder(OrderDto);
@@ -38,11 +36,11 @@ export class OrderController {
     @Public()
     @Post('update/:id')
     updateOrder(@Param('id') id: number, @Body() status: number) {
-        return this.orderService.update(id, status);
+        return this.orderService.updateOrder(id, status);
     }
     @Public()
     @Delete(':id')
     RemoveOrder(@Param('id') id: number) {
-        this.orderService.RemoveOrder(id);
+        this.orderService.delete(id);
     }
 }

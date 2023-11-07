@@ -7,6 +7,7 @@ import { ProductModel } from '../Product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
+import { ResponseError } from 'src/helpers/ResponseError';
 
 @Injectable()
 export class OrderService {
@@ -38,9 +39,10 @@ export class OrderService {
         };
     }
 
-    public async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
+    async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
         const resultOrder: any = orderDto.orders;
         const dataDetail: any[] = orderDto.orderDetail;
+
         const detailDt: any[] = dataDetail.map((e) => {
             return {
                 productId: e.productId,
@@ -54,34 +56,31 @@ export class OrderService {
             const discount: Discount = await DiscountModel.findOne({
                 where: { code: resultOrder?.orderCode },
             });
-            if (!discount) {
-                throw new HttpException('discount not found', HttpStatus.FORBIDDEN);
-            }
-            if (discount?.number_used >= discount.limit_number) {
+            if (!discount) throw ResponseError.notFound('discount not found');
+            if (discount?.number_used >= discount.limit_number)
                 throw new HttpException('discount limited value', HttpStatus.FORBIDDEN);
-            }
-            if (resultOrder.money < discount.payment_limit) {
+            if (resultOrder.money < discount.payment_limit)
                 throw new HttpException('discount  maximum value', HttpStatus.FORBIDDEN);
-            }
             coupon = Number(discount.discount);
         }
+
         resultOrder.coupon = coupon;
-        try {
-            const priceTotal = detailDt.reduce((total, current) => total + current.price * current.quantity, 0);
-            resultOrder.money = priceTotal;
-            // resultOrder.price_ship = resultOrder.money - resultOrder.coupon;
-            let results = await OrderModel.create(resultOrder).then(async (res) => {
-                let id = await res.get().id;
-                detailDt.map((detailDt) => {
-                    return (detailDt.orderID = id);
-                });
-                const detailData = await OrderDetailModel.bulkCreate(detailDt);
-                return { result: res, detailData };
+
+        const priceTotal = detailDt.reduce((total, current) => total + current.price * current.quantity, 0);
+        resultOrder.money = priceTotal;
+
+        // resultOrder.price_ship = resultOrder.money - resultOrder.coupon;
+        let results = await OrderModel.create(resultOrder).then(async (res) => {
+            let id = await res.get().id;
+            detailDt.map((detailDt) => {
+                return (detailDt.orderID = id);
             });
-            return results;
-        } catch (err) {
-            throw new HttpException(err, HttpStatus.FORBIDDEN);
-        }
+
+            const detailData = await OrderDetailModel.bulkCreate(detailDt);
+            return { result: res, detailData };
+        });
+
+        return results;
     }
 
     async getOrderDetailByOrder(id: number): Promise<any> {
@@ -104,8 +103,8 @@ export class OrderService {
         });
         return detailedOrder[0];
     }
-    //  get order by current
-    async OrderByUser(id: number): Promise<OrderDto[]> {
+
+    async getOrderbyUser(id: number): Promise<OrderDto[]> {
         const orderCurrent = await OrderModel.findAll({
             include: [
                 {
@@ -132,14 +131,14 @@ export class OrderService {
         return orderCurrent;
     }
 
-    async RemoveOrder(id: number) {
+    async delete(id: number) {
         await OrderModel.destroy({
             where: { id: Number(id) },
         });
     }
 
-    async update(id: number, status: any) {
-        OrderModel.update(
+    async updateOrder(id: number, status: any) {
+        await OrderModel.update(
             { status: status.status },
             {
                 where: {

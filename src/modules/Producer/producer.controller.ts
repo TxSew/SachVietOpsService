@@ -13,23 +13,23 @@ export class ProducerController {
     @Public()
     @Get('')
     getAll(@Query() query: ProducerQueyDto): Promise<TProducer> {
-        return this.producerService.getAll(query);
+        return this.producerService.getListProducer(query);
     }
 
     @Get(':id')
-    async GetOne(@Param('id') id: number) {
-        return this.producerService.getOne(id);
+    async getProducer(@Param('id') id: number) {
+        return this.producerService.getProducer(id);
     }
 
     @Public()
     @Post('store')
-    create(@Body() data: Producer): Promise<Producer> {
+    createProducer(@Body() data: Producer): Promise<Producer> {
         console.log(data);
-        return this.producerService.create(data);
+        return this.producerService.createProducer(data);
     }
 
     @Put('update/:id')
-    update(@Param() id: number, @Body() data: Producer) {
+    updateProducer(@Param() id: number, @Body() data: Producer) {
         return this.producerService.update(Number(id), data);
     }
 
