@@ -8,27 +8,42 @@ import { ResponseError } from 'src/helpers/ResponseError';
 import { User } from 'src/submodules/models/UserModel/User';
 import { UserModel } from './auth.schema';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 @UseGuards(JwtAuthGuard)
 export class AccountService {
-    constructor(private jwtService: JwtService) {}
+    constructor(
+        private jwtService: JwtService,
+        private emailService: EmailService
+    ) {}
 
     @Public()
-    async register(account: Partial<User>): Promise<User> {
-        let { email, password } = account;
-        if (!email || !password) throw ResponseError.notFound('Please enter your email or password');
+    async register(account: Partial<User>) {
+        if (!account.email || !account.password) throw ResponseError.notFound('Please enter your email or password');
         const hash = await this.hashPassword(account.password, 10);
-        console.log('🚀 ~ file: auth.service.ts:22 ~ AccountService ~ register ~ hash:', hash);
         account.password = hash;
 
         const existingUser = await UserModel.findOne({
-            where: { email: email },
+            where: { email: account.email },
         });
         if (existingUser) throw ResponseError.badInput('email already exists');
 
-        const register = await UserModel.create(account);
-        return register;
+        const user: User = await UserModel.create(account);
+        const { password, ...rest } = user;
+        const access_token = this.generateToken(rest);
+        await this.emailService.sendMailTemplate({
+            subject: 'welcome email notification',
+            to: user.email,
+            template: './welcome',
+            context: {
+                email: user.email,
+            },
+        });
+
+        return {
+            access_token: access_token,
+        };
     }
 
     @Public()
@@ -46,9 +61,8 @@ export class AccountService {
         const passwordCompare = await bcrypt.compare(props.password, account.password);
         if (!passwordCompare) throw ResponseError.conflict('Wrong password');
 
-        const access_token = this.generateToken(account.id);
-
         const { password, ...rest } = account;
+        const access_token = this.generateToken(rest);
 
         return { account: rest, token: access_token };
     }
@@ -75,15 +89,17 @@ export class AccountService {
         return { password: 'Password changed successfully' };
     }
 
-    generateToken(id: number) {
-        const access_token = this.jwtService.sign(
-            {
-                Id: id,
-            },
-            {
-                secret: appConfig.jwt.secret,
-            }
-        );
+    async verifyToken(props: { token: string }) {
+        const verify = await this.jwtService.verify(props.token, {
+            secret: appConfig.jwt.secret,
+        });
+        return verify;
+    }
+
+    generateToken(props: any) {
+        const access_token = this.jwtService.sign(props, {
+            secret: appConfig.jwt.secret,
+        });
         return access_token;
     }
 

@@ -1,10 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
-import { CategoryModel } from './category.schema';
-import { Category } from 'src/submodules/models/ProductModel/Category';
 import { ResponseError } from 'src/helpers/ResponseError';
+import { Category } from 'src/submodules/models/ProductModel/Category';
+import { CategoryModel } from './category.schema';
 import { CategoryQueryDto } from './dto/Category.schema';
-import { productModel } from '../Product/product.schema';
 
 @Injectable()
 export class CategoryService {
@@ -67,6 +66,7 @@ export class CategoryService {
         });
         return rootCategories;
     }
+
     async filter(props) {
         const query = `
     WITH RECURSIVE CategoryTree AS (
@@ -100,48 +100,41 @@ export class CategoryService {
         const [results] = await SequelizeBase.query(query);
         return results;
     }
-    async getOne(id): Promise<any> {
-        const Id: number = id.id;
-        const findOne = await CategoryModel.findOne({
+
+    async getOne(id: number) {
+        const category = await CategoryModel.findOne({
             where: {
-                id: Id,
+                id: id,
             },
         });
-        if (findOne) {
-            return findOne;
-        }
+        return category;
     }
-    //category
-    async createCategory(category: Partial<Category>): Promise<Category> {
-        try {
-            const existingCategory = await CategoryModel.findOne({
-                where: { name: category.name },
-            });
-            if (existingCategory) {
-                throw 'Name already exists';
-            }
-            const Category = await CategoryModel.create(category);
-            return Category;
-        } catch (err) {
-            throw ResponseError.badInput(err);
-        }
+
+    async createCategory(props: Partial<Category>): Promise<Category> {
+        const existingCategory = await CategoryModel.findOne({
+            where: { name: props.name },
+        });
+
+        if (existingCategory) throw ResponseError.badInput('Name already exists');
+
+        const category = await CategoryModel.create(props);
+        return category;
     }
+
     async updateCategory(id: number, category: Category) {
-        console.log(id);
-        console.log(category);
+        if (!category) throw ResponseError.badInput('Category not found');
+
         const update = await CategoryModel.update(category, {
             where: { id: id },
         });
+
         return update;
     }
-    async removeCategoryTrashed(id: number) {
-        try {
-            const destroy = await CategoryModel.destroy({
-                where: { id: id },
-            });
-            return destroy;
-        } catch (err) {
-            return ` ${err.message}`;
-        }
+
+    async removeCategory(id: number) {
+        const destroy = await CategoryModel.destroy({
+            where: { id: id },
+        });
+        return destroy;
     }
 }

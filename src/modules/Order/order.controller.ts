@@ -16,6 +16,7 @@ export class OrderController {
         return this.orderService.getOrderAll(query);
     }
 
+    @Public()
     @Get('orderDetail/:id')
     getOrderDetail(@Param('id') id: number) {
         return this.orderService.getOrderDetailByOrder(id);

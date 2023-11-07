@@ -9,28 +9,23 @@ import { ChangePasswordDTO } from './dto/changePassword.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('auth')
 export class AccountController {
-    constructor(
-        private readonly accountService: AccountService,
-        private emailService: EmailService
-    ) {}
+    constructor(private readonly accountService: AccountService) {}
+
+    @Public()
+    @Post('verifyToken')
+    verifyToken(@Body() props: { token: string }) {
+        return this.accountService.verifyToken(props);
+    }
 
     @Public()
     @Post('register')
-    async create(@Body() register: User): Promise<User> {
+    async create(@Body() register: User) {
         const dataRegis = await this.accountService.register(register);
-        await this.emailService.sendMailTemplate({
-            subject: 'welcome email notification',
-            to: dataRegis.email,
-            template: './welcome',
-            context: {
-                email: register.email,
-            },
-        });
         return dataRegis;
     }
 
     @Public()
-    @Post('Login')
+    @Post('login')
     Login(@Body() props: { email: string; password: string }) {
         return this.accountService.login(props);
     }

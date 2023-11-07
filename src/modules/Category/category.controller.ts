@@ -23,7 +23,7 @@ export class CategoryController {
     }
 
     @Get(':id')
-    getOne(@Param() id: number) {
+    getOne(@Param('id') id: number) {
         return this.categoryService.getOne(id);
     }
 
@@ -39,6 +39,6 @@ export class CategoryController {
 
     @Delete(':id')
     removeCategory(@Param('id') id: number) {
-        return this.categoryService.removeCategoryTrashed(Number(id));
+        return this.categoryService.removeCategory(Number(id));
     }
 }

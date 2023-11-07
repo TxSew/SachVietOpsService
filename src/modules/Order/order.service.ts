@@ -15,30 +15,29 @@ export class OrderService {
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const searchQuery = query.keyword || '';
         const orders = await OrderModel.findAll({});
-        try {
-            const listOrder: Order[] = await OrderModel.findAll({
-                limit: limited,
-                offset,
-                include: [
-                    {
-                        model: UserModel,
-                        as: 'users',
-                    },
-                ],
-            });
-            const totalPage = Math.round((await orders.length) / limited);
-            return {
-                totalPage: totalPage,
-                limit: limited,
-                page: page,
-                orders: listOrder,
-            };
-        } catch (error) {
-            throw 'errors: ' + error;
-        }
+
+        const listOrder: Order[] = await OrderModel.findAll({
+            limit: limited,
+            offset,
+            include: [
+                {
+                    model: UserModel,
+                    as: 'users',
+                },
+            ],
+        });
+
+        const totalPage = Math.round(orders.length / limited);
+
+        return {
+            totalPage: totalPage,
+            limit: limited,
+            page: page,
+            orders: listOrder,
+        };
     }
+
     public async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
         const resultOrder: any = orderDto.orders;
         const dataDetail: any[] = orderDto.orderDetail;
@@ -132,14 +131,13 @@ export class OrderService {
         });
         return orderCurrent;
     }
-    // remove order
+
     async RemoveOrder(id: number) {
-        console.log(id);
-        const destroyOrder = await OrderModel.destroy({
+        await OrderModel.destroy({
             where: { id: Number(id) },
         });
-        return destroyOrder;
     }
+
     async update(id: number, status: any) {
         OrderModel.update(
             { status: status.status },

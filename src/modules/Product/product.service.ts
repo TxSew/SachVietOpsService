@@ -160,11 +160,7 @@ export class ProductService {
             //  logic % price
             const { sale, price } = product;
             let priceSale: number;
-            if (sale == '' || null) {
-                priceSale = price - (0 / 100) * price;
-            } else {
-                priceSale = price - (Number(sale) / 100) * price;
-            }
+            priceSale = price - (Number(sale) / 100) * price;
             product.price_sale = priceSale;
             //create product
             const ProductData = await ProductModel.create(product);
@@ -204,7 +200,6 @@ export class ProductService {
             const updated = await ProductModel.update(product, {
                 where: { id: parInt },
             });
-            console.log(updated);
 
             for (var i = 0; i < productImages.length; i++) {
                 productImages[i].productId = parInt;
