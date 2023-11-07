@@ -26,6 +26,7 @@ jobs:
           script: |
             echo "Hello from the remote server"
             cd /var/www/quangthanh/book_server
+            dos2unix start.sh
             sh start.sh
             
 
