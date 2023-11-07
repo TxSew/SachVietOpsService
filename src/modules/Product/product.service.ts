@@ -11,16 +11,16 @@ import { ProductModel } from './product.schema';
 export class ProductService {
     //find all products
     async findAll(props): Promise<TProductResponse> {
-        const limit = props.limit || 8;
+        let limit = props.limit || 8;
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const minPrice = props.sortMinPrice || 1;
         const maxPrice = props.sortMaxPrice || 200000000000;
         const searchQuery = props.keyword || '';
-        const slug = props.slug ? { slug: props.slug } : {};
-        const categoryFilter = props.categoryFilter;
+        const ct = props.categoryFilter;
         const orderWith = (props.sortWith || 'asc').toLocaleLowerCase() == 'asc' ? 'DESC' : 'ASC';
+        let filterCategory = {};
 
         let whereClause: any = {
             [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
@@ -28,12 +28,10 @@ export class ProductService {
                 [Op.between]: [minPrice, maxPrice],
             },
         };
-        let filterCategory = {};
-        if (categoryFilter) {
+        if (ct)
             filterCategory = {
-                slug: categoryFilter,
+                slug: props.categoryFilter,
             };
-        }
         try {
             const Product = await ProductModel.findAndCountAll({
                 where: whereClause,
@@ -161,10 +159,12 @@ export class ProductService {
             }
             //  logic % price
             const { sale, price } = product;
-            if (sale > 100 && sale < 1) {
-                throw ResponseError.badInput('sale not must be greater than 100');
+            let priceSale: number;
+            if (sale == '' || null) {
+                priceSale = price - (0 / 100) * price;
+            } else {
+                priceSale = price - (Number(sale) / 100) * price;
             }
-            const priceSale = price - (sale / 100) * price;
             product.price_sale = priceSale;
             //create product
             const ProductData = await ProductModel.create(product);
@@ -185,11 +185,15 @@ export class ProductService {
         const parInt = id;
         const { product, productImages } = TProduct;
         const { sale, price } = product;
-        if (sale > 100 && sale < 1) {
+
+        if (Number(sale) > 100 && Number(sale) < 1) {
             throw ResponseError.badInput('sale not must be greater than 100');
         }
-        const priceSale = price - (sale / 100) * price;
+
+        if (!sale) sale == 0;
+        const priceSale = price - (Number(sale) / 100) * price;
         product.price_sale = priceSale;
+
         if (productImages.length > 0) {
             const destroy = await ImagesProductModel.destroy({
                 where: { productId: parInt },
@@ -224,4 +228,5 @@ export class ProductService {
         });
         return trashed;
     }
+    async checkSoldQuantity(id: number) {}
 }
