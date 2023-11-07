@@ -1,13 +1,27 @@
 #!/bin/bash
 
-# Change directory to your project's location
-# cd /var/www/thanh (You can uncomment this line if needed)
+# Ensure the script is executed with root privileges
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" >&2
+   exit 1
+fi
 
-# Install NestJS CLI globally
-# npm install -g @nestjs/cli (You can uncomment this line if needed)
+# Optionally change directory to your project's location
+# cd /path/to/your/project || exit
 
-# Install PM2 globally
-# npm install -g pm2 (You can uncomment this line if needed)
+# Install NestJS CLI globally if it is not already installed
+if ! command -v nest > /dev/null 2>&1; then
+    npm install -g @nestjs/cli
+fi
+
+# Install PM2 globally if it is not already installed
+if ! command -v pm2 > /dev/null 2>&1; then
+    npm install -g pm2
+fi
+
+# Navigate to the project directory before resetting git branch
+# Update this to your project directory
+#cd /var/www/thanh || exit
 
 # Reset your local branch to match the remote "main" branch
 git reset --hard origin/main
@@ -15,7 +29,7 @@ git reset --hard origin/main
 # Pull the latest changes from the remote "main" branch
 git pull origin main
 
-# Copy the .env.prod file to .env for environment configuration
+# Check if the .env.prod file exists and copy it to .env for environment configuration
 cp .env.prod .env
 
 # Install project dependencies
@@ -29,6 +43,4 @@ pm2 start dist/main.js --name thanh-api
 
 # Reload the "thanh-api" application with updated environment variables
 pm2 reload thanh-api --update-env
-
-# Exit the script with a success status code (0)
 exit 0
