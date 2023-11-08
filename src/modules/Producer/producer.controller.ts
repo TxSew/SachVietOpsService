@@ -28,6 +28,7 @@ export class ProducerController {
         return this.producerService.createProducer(data);
     }
 
+    @Public()
     @Put('update/:id')
     updateProducer(@Param() id: number, @Body() data: Producer) {
         return this.producerService.update(Number(id), data);
