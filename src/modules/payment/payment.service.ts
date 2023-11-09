@@ -17,7 +17,6 @@ export class PaymentService {
             return {
                 paymentMethod: 'COD',
                 data: order,
-                url: appConfig.cod.COD_SUCCESS,
             };
         }
 
@@ -73,7 +72,7 @@ export class PaymentService {
 
                 line_items: [...line_items],
                 mode: 'payment',
-                success_url: this.configService.getStripeSuccessUrl,
+                success_url: appConfig.stripe.STRIPE_CANCEL_URL,
                 cancel_url: this.configService.getStripeCancelUrl,
             });
 

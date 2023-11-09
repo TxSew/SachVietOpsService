@@ -11,9 +11,10 @@ import { ResponseError } from 'src/helpers/ResponseError';
 
 @Injectable()
 export class OrderService {
-    async getOrderAll(query: OrderQueryDto): Promise<TOrders> {
-        const limit = query.limit || 6;
-        const page = query.page || 1;
+    async getOrderAll(props: OrderQueryDto): Promise<TOrders> {
+        const limit = props.limit || 6;
+        const page = props.page || 1;
+        props.sortWith;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
@@ -21,6 +22,7 @@ export class OrderService {
         const listOrder: Order[] = await OrderModel.findAll({
             limit: limited,
             offset,
+            order: [[props.sortBy || 'createdAt', props.sortWith || 'DESC']],
             include: [
                 {
                     model: UserModel,
@@ -28,7 +30,6 @@ export class OrderService {
                 },
             ],
         });
-
         const totalPage = Math.round(orders.length / limited);
 
         return {
