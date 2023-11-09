@@ -16,7 +16,7 @@ export class CategoryController {
         return this.categoryService.getAll(query);
     }
 
-    // @Public()
+    @Public()
     @Post('filter')
     getListCategory(props) {
         return this.categoryService.filter(props);
