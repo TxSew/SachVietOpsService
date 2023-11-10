@@ -14,12 +14,18 @@ export class OrderService {
     async getOrderAll(props: OrderQueryDto): Promise<TOrders> {
         const limit = props.limit || 6;
         const page = props.page || 1;
-        props.sortWith;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
 
+        let isWhere = {};
+        if (props.status) {
+            isWhere = {
+                status: props.status,
+            };
+        }
         const listOrder: Order[] = await OrderModel.findAll({
+            where: isWhere,
             limit: limited,
             offset,
             order: [[props.sortBy || 'createdAt', props.sortWith || 'DESC']],
@@ -36,6 +42,7 @@ export class OrderService {
             totalPage: totalPage,
             limit: limited,
             page: page,
+            pageSize: listOrder.length,
             orders: listOrder,
         };
     }

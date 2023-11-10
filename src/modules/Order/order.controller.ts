@@ -11,9 +11,9 @@ export class OrderController {
     constructor(private orderService: OrderService) {}
 
     @Public()
-    @Get('')
-    retOrderHistory(@Query() query: OrderQueryDto): Promise<TOrders> {
-        return this.orderService.getOrderAll(query);
+    @Post('')
+    retOrderHistory(@Body() props: OrderQueryDto): Promise<TOrders> {
+        return this.orderService.getOrderAll(props);
     }
 
     @Public()
