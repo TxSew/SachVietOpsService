@@ -50,19 +50,21 @@ export class AccountService {
     async login(props: { email: string; password: string }) {
         const account = await UserModel.findOne({
             where: { email: props.email },
-        }).then((result) => {
-            return result.dataValues;
         });
 
         if (!account) {
             throw ResponseError.notFound('account not found');
         }
 
-        const passwordCompare = await bcrypt.compare(props.password, account.password);
+        const passwordCompare = await bcrypt.compare(props.password, account.get().password);
         if (!passwordCompare) throw ResponseError.conflict('Wrong password');
+        const { password, ...rest } = account.get();
 
-        const { password, ...rest } = account;
-        const access_token = this.generateToken(rest);
+        let access_token = this.generateToken(rest);
+        let tokenAdmin = this.generateTokenAdmin(rest);
+        if (rest.userGroup == 2) {
+            return { role: 'ale@123', account: rest, token: tokenAdmin };
+        }
 
         return { account: rest, token: access_token };
     }
@@ -102,7 +104,12 @@ export class AccountService {
         });
         return access_token;
     }
-
+    generateTokenAdmin(props: any) {
+        const access_token = this.jwtService.sign(props, {
+            secret: appConfig.jwt.secret,
+        });
+        return access_token;
+    }
     async hashPassword(password: string, saltOrRounds: number) {
         const hashPassword = await bcrypt.hash(password, saltOrRounds);
         return hashPassword;

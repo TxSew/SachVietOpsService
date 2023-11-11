@@ -13,20 +13,16 @@ export class OtpController {
 
     @Public()
     @Post('send-otp-email')
-    async sendEmailOtp(@Body() emailDto: Partial<EmailDto>): Promise<unknown> {
+    async sendEmailOtp(@Body() emailDto: EmailDto) {
         return this.OtpService.sendEMailOtp(emailDto);
     }
 
-    @Post('/verify-top/:token')
+    @Public()
+    @Post('verify-otp-email-resetPassword')
     @ApiResponse({
         status: 200,
     })
-    verifyOtp(@Body() otpCodeDto: OtpCodeDto, @Param('token') token: string): Promise<any> {
-        return this.OtpService.verifyOtp(Number(otpCodeDto.otp), token);
-    }
-
-    @Post('/resetPassword/:token')
-    resetPassword(@Param('token') token: string, @Body() newPasswordDTO: NewPasswordDTO) {
-        return this.OtpService.resetPassword(token, newPasswordDTO);
+    verifyOtpAndResetPassword(@Body() props: { email: string; otp: string; token: string; password: string }) {
+        return this.OtpService.verifyOtpAndResetPassword(props);
     }
 }
