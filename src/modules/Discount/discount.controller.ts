@@ -11,9 +11,9 @@ export class DiscountController {
     constructor(private discountService: DiscountService) {}
 
     @Public()
-    @Get('')
-    getDiscount() {
-        return this.discountService.GetAll();
+    @Post('')
+    getDiscount(@Body() props) {
+        return this.discountService.GetAll(props);
     }
 
     @Get(':id')

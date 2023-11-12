@@ -5,8 +5,15 @@ import { ResponseError } from 'src/helpers/ResponseError';
 
 @Injectable()
 export class DiscountService {
-    async GetAll(): Promise<Discount[]> {
-        const discountData = await DiscountModel.findAll({});
+    async GetAll(props) {
+        let limit = props.limit || 8;
+        const page = props.page || 1;
+        const limited = Number(limit);
+        const offset = (Number(page) - 1) * limited;
+        const discountData = await DiscountModel.findAll({
+            where: {},
+            offset: offset,
+        });
         return discountData;
     }
 
