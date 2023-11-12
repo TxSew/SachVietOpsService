@@ -20,6 +20,15 @@ export class DiscountService {
         const discount = await DiscountModel.create(props);
         return discount;
     }
+    async getOneUpdateDiscount(id: number) {
+        const discount = await DiscountModel.findOne({
+            where: {
+                id: id,
+            },
+        });
+        if (!discount) throw ResponseError.notFound('discount not found');
+        return discount;
+    }
 
     async updateDiscount(id: number, discount: Partial<Discount>) {
         try {

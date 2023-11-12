@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { DiscountService } from './discount.service';
 import { Public } from 'src/guard/jwtGuard';
+import { get } from 'http';
 
 @ApiTags('discount')
 @Controller('discount')
@@ -15,13 +16,17 @@ export class DiscountController {
         return this.discountService.GetAll();
     }
 
+    @Get(':id')
+    getOneDiscount(@Param('id') id: number) {
+        return this.discountService.getOneUpdateDiscount(id);
+    }
     @Post('store')
     createDiscount(@Body() discount: Discount) {
         return this.discountService.createDiscount(discount);
     }
 
     @Put('update/:id')
-    updateDiscount(@Param('id') id: number, discount: Partial<Discount>) {
+    updateDiscount(@Param('id') id: number, @Body() discount: Discount) {
         this.discountService.updateDiscount(id, discount);
     }
 
