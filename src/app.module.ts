@@ -31,7 +31,9 @@ import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
 import { VoucherService } from './modules/voucher/voucher.service';
 import { VoucherController } from './modules/voucher/voucher.controller';
-
+import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as redisStore from 'cache-manager-redis-store';
 dotenv.config();
 @Module({
     imports: [
@@ -50,6 +52,9 @@ dotenv.config();
             signOptions: { expiresIn: '1d' },
         }),
         EmailModule,
+        CacheModule.register({
+            ttl: 30,
+        }),
     ],
     controllers: [
         AccountController,

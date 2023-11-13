@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Param, Delete, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { Order, OrderDto, TOrderResponse, TOrders } from 'src/submodules/models/OrderModel/Order';
 import { OrderQueryDto } from './dto/query-orders';
 import { Public } from 'src/guard/jwtGuard';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('order')
 @Controller('order')
@@ -17,12 +18,14 @@ export class OrderController {
     }
 
     @Public()
+    @UseInterceptors(CacheInterceptor)
     @Get('orderDetail/:id')
     getOrderDetail(@Param('id') id: number) {
         return this.orderService.getOrderDetailByOrder(id);
     }
 
     @Public()
+    @UseInterceptors(CacheInterceptor)
     @Get('current/:id')
     getOrderCUrrent(@Param('id') id: number): Promise<OrderDto[]> {
         return this.orderService.getOrderbyUser(id);
