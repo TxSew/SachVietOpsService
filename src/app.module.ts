@@ -29,6 +29,8 @@ import { OtpController } from './modules/forgotPassword/forgot-password.controll
 import { OtpService } from './modules/forgotPassword/forgot-password.service';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
+import { VoucherService } from './modules/voucher/voucher.service';
+import { VoucherController } from './modules/voucher/voucher.controller';
 
 dotenv.config();
 @Module({
@@ -61,15 +63,14 @@ dotenv.config();
         ProvinceController,
         OtpController,
         PaymentController,
+        VoucherController,
     ],
 
     providers: [
-        //auth
         JwtAuthGuard,
         JwtStrategy,
         { provide: 'APP_GUARD', useClass: JwtAuthGuard },
 
-        //service
         AccountService,
         ProductService,
         CategoryService,
@@ -81,6 +82,7 @@ dotenv.config();
         ProvinceService,
         OtpService,
         PaymentService,
+        VoucherService,
     ],
 })
 export class AppModule {}
