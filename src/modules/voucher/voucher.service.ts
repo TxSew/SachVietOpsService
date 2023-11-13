@@ -17,7 +17,6 @@ export class VoucherService {
                 },
                 {
                     model: DiscountModel,
-                    attributes: ['code', 'discount', 'id'],
                     as: 'discountVoucher',
                 },
             ],
@@ -41,5 +40,13 @@ export class VoucherService {
         } catch (err) {
             throw ResponseError.badInput('voucher already exists');
         }
+    }
+    async deleteVoucherUser(props: { id: number }) {
+        await VoucherModel.destroy({
+            where: { id: props.id },
+        });
+        return {
+            message: 'delete voucher successfully',
+        };
     }
 }

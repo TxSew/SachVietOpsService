@@ -16,7 +16,7 @@ export const VoucherModel = SequelizeBase.define<voucherModel>(
     },
     {
         freezeTableName: true,
-        // paranoid: true,
+        paranoid: true,
     }
 );
 

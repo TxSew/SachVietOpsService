@@ -14,8 +14,14 @@ export class VoucherController {
     }
 
     @Public()
-    @Post('add-voucher')
+    @Post('/add-voucher')
     addVoucherUser(@Body() props: Voucher) {
         return this.voucherService.addVoucherUser(props);
+    }
+
+    @Public()
+    @Post('/remove-voucher')
+    deleteVoucherByUser(@Body() props: { id: Partial<number> }) {
+        return this.voucherService.deleteVoucherUser(props);
     }
 }

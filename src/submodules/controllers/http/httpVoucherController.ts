@@ -37,5 +37,13 @@ class HttpStatisticalController {
             throw error;
         }
     }
+    async deleteVoucherUser(id: number) {
+        try {
+            const deleteVoucher = await this.axiosInstance.post('/voucher/delete-voucher', id);
+            return deleteVoucher.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 export default HttpStatisticalController;
