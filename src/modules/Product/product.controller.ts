@@ -30,7 +30,6 @@ export class ProductController {
         return this.productService.findOneUpdate(Number(id));
     }
 
-    @Public()
     @Post('store')
     async createProduct(@Body() product: Partial<TProduct>) {
         return this.productService.createProduct(product);

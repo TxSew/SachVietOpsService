@@ -18,8 +18,8 @@ export class CategoryController {
 
     @Public()
     @Post('filter')
-    getListCategory(props) {
-        return this.categoryService.filter(props);
+    getListCategory() {
+        return this.categoryService.filter();
     }
 
     @Public()
@@ -28,6 +28,7 @@ export class CategoryController {
         return this.categoryService.getOne(id);
     }
 
+    // @Public()
     @Post('store')
     createCategory(@Body() category: Partial<Category>) {
         return this.categoryService.createCategory(category);

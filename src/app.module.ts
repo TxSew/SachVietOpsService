@@ -49,7 +49,6 @@ dotenv.config();
         }),
         JwtModule.register({
             secret: appConfig.jwt.secret || 'book@123',
-            signOptions: { expiresIn: '1d' },
         }),
         EmailModule,
         CacheModule.register({

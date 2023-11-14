@@ -8,45 +8,45 @@ import { CategoryQueryDto } from './dto/Category.schema';
 @Injectable()
 export class CategoryService {
     async getAll(query: CategoryQueryDto): Promise<any> {
-        const limit = query.limit || 5;
+        const limit = query.limit || 4;
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        // const categoryList = await this.getListCategory();
         const qr = `
-    WITH RECURSIVE CategoryTree AS (
-      SELECT
-        c.id,
-        c.parentId,
-        c.name,
-        c.slug,
-        c.deletedAt,
-        c.image,
-        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
-      FROM db_category c
-      LEFT JOIN db_category p ON c.parentId = p.id
-      WHERE c.id = 1 AND c.deletedAt IS NULL
-      UNION ALL
-      SELECT
-        c.id,
-        c.parentId,
-        c.name,
-        c.slug,
-        c.deletedAt,
-        c.image,
-        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
-      FROM db_category c
-      JOIN CategoryTree ct ON c.parentId = ct.id
-      LEFT JOIN db_category p ON c.parentId = p.id
-      WHERE c.deletedAt IS NULL
-    )
-    SELECT * FROM CategoryTree LIMIT ${limited} OFFSET ${offset}
+        WITH RECURSIVE CategoryTree AS (
+            SELECT
+              c.id,
+              c.parentId,
+              c.name,
+              c.slug,
+              c.createdAt,
+              c.deletedAt,
+              c.image,
+              p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+            FROM db_category c
+            LEFT JOIN db_category p ON c.parentId = p.id
+            WHERE c.id = 1 AND c.deletedAt IS NULL
+            UNION ALL
+            SELECT
+              c.id,
+              c.parentId,
+              c.name,
+              c.slug,
+              c.createdAt,
+              c.deletedAt,
+              c.image,
+              p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+            FROM db_category c
+            JOIN CategoryTree ct ON c.parentId = ct.id
+            LEFT JOIN db_category p ON c.parentId = p.id
+            WHERE c.deletedAt IS NULL
+          )
+          SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC LIMIT ${limited} OFFSET ${offset}
     `;
         const [results] = await SequelizeBase.query(qr);
-        const totalPage = Math.ceil(results.length / limited);
+        const getAll = await this.filter();
+        const totalPage = Math.ceil(getAll.length / limited);
         return { totalPage, limit: limited, page, category: results };
-        // const nestedCategories = this.buildCategoryHierarchy(results);
-        // return nestedCategories;
     }
 
     async buildCategoryHierarchy(categories) {
@@ -67,7 +67,7 @@ export class CategoryService {
         return rootCategories;
     }
 
-    async filter(props) {
+    async filter() {
         const query = `
     WITH RECURSIVE CategoryTree AS (
       SELECT
