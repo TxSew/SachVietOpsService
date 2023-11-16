@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Public } from 'src/guard/jwtGuard';
 import { VoucherService } from './voucher.service';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
+import { CurrentAccount } from 'src/guard/currentUser';
 
 @Controller('voucher')
 export class VoucherController {
@@ -19,6 +20,11 @@ export class VoucherController {
         return this.voucherService.addVoucherUser(props);
     }
 
+    @Post('/getVoucher')
+    getOneDiscount(@CurrentAccount() account, @Body() voucher) {
+        console.log('🚀 ~ file: voucher.controller.ts:26 ~ VoucherController ~ getOneDiscount ~ account:', account);
+        return this.voucherService.getOneDiscount(account, voucher.voucher);
+    }
     @Public()
     @Post('/remove-voucher')
     deleteVoucherByUser(@Body() props: { id: Partial<number> }) {

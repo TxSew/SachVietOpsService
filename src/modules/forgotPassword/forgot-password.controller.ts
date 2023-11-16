@@ -1,10 +1,8 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { EmailDto } from 'src/submodules/models/OptModel/Opt';
-import { NewPasswordDTO } from './dto/newPasswordDto';
-import { OtpCodeDto } from './dto/otpCodeDto';
-import { OtpService } from './forgot-password.service';
 import { Public } from 'src/guard/jwtGuard';
+import { EmailDto } from 'src/submodules/models/OptModel/Opt';
+import { OtpService } from './forgot-password.service';
 
 @ApiTags('forgot-password')
 @Controller('forgotPassword')

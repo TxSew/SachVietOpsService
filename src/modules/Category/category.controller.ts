@@ -28,12 +28,13 @@ export class CategoryController {
         return this.categoryService.getOne(id);
     }
 
-    // @Public()
+    @Public()
     @Post('store')
     createCategory(@Body() category: Partial<Category>) {
         return this.categoryService.createCategory(category);
     }
 
+    @Public()
     @Put('update/:id')
     updateCategory(@Param('id') id: number, @Body() category: Category) {
         return this.categoryService.updateCategory(Number(id), category);

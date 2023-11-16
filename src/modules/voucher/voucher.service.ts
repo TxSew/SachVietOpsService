@@ -41,6 +41,20 @@ export class VoucherService {
             throw ResponseError.badInput('voucher already exists');
         }
     }
+    async getOneDiscount(account, voucher: Partial<string>) {
+        if (!account) throw ResponseError.badInput('account not found');
+        const discount = await VoucherModel.findOne({
+            include: [
+                {
+                    model: DiscountModel,
+                    as: 'discountVoucher',
+                    where: { code: voucher },
+                },
+            ],
+            where: { userId: account.id },
+        });
+        return discount;
+    }
     async deleteVoucherUser(props: { id: number }) {
         await VoucherModel.destroy({
             where: { id: props.id },

@@ -30,6 +30,7 @@ export class ProductController {
         return this.productService.findOneUpdate(Number(id));
     }
 
+    @Public()
     @Post('store')
     async createProduct(@Body() product: Partial<TProduct>) {
         return this.productService.createProduct(product);
@@ -46,6 +47,7 @@ export class ProductController {
         return this.productService.updateProduct(Number(id), product);
     }
 
+    @Public()
     @Delete(':id')
     async removeProduct(@Param('id') id: number) {
         return this.productService.removeProductTrashed(Number(id));
