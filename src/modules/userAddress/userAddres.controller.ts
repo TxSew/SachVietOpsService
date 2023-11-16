@@ -12,5 +12,7 @@ export class UserAddressController {
     createUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {
         return this.UserAddressService.createUserAddress(account, props);
     }
-    updateUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {}
+    updateUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {
+        return this.UserAddressService.updateUserAddress(account, props);
+    }
 }
