@@ -21,7 +21,6 @@ export class ProducerController {
         return this.producerService.getProducer(id);
     }
 
-    @Public()
     @Post('store')
     createProducer(@Body() data: Producer): Promise<Producer> {
         console.log(data);
@@ -33,7 +32,6 @@ export class ProducerController {
         return this.producerService.update(Number(id), data);
     }
 
-    @Public()
     @Delete(':id')
     remove(@Param('id') id: number) {
         return this.producerService.removeProducerTrashed(id);
