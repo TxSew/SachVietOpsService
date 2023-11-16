@@ -10,6 +10,11 @@ export interface User extends Modified, BaseModel, Model {
     email?: string;
     address?: string;
 }
+export interface UserAddress extends Omit<User, 'password' | 'email'> {
+    userId: number;
+    province: string;
+    district: string;
+}
 
 export type LoginDto = Pick<User, 'email' | 'password'>;
 export interface ResponseUser {

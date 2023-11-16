@@ -34,6 +34,8 @@ import { VoucherController } from './modules/voucher/voucher.controller';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as redisStore from 'cache-manager-redis-store';
+import { UserAddressController } from './modules/userAddress/userAddres.controller';
+import { UserAddressService } from './modules/userAddress/userAddress.service';
 dotenv.config();
 @Module({
     imports: [
@@ -68,6 +70,7 @@ dotenv.config();
         OtpController,
         PaymentController,
         VoucherController,
+        UserAddressController,
     ],
 
     providers: [
@@ -87,6 +90,7 @@ dotenv.config();
         OtpService,
         PaymentService,
         VoucherService,
+        UserAddressService,
     ],
 })
 export class AppModule {}

@@ -22,6 +22,7 @@ export class PaymentService {
 
         if (orderDto.paymentMethod == 'Visa') {
             const stripe = require('stripe')(this.config.getStripeSecretKey);
+
             const line_items = orderDto.orderDetail.map((order) => {
                 const parseInt = Math.ceil(order.price);
                 return {
