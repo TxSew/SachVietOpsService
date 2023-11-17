@@ -3,6 +3,9 @@ import { appConfig } from 'src/constants/IConfig';
 import { MyConfigService } from 'src/myConfig.service';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderService } from '../Order/order.service';
+const stripe = require('stripe')(
+    'sk_test_51NytAnGgD3dbMpsnDslKorNDTNgk3ZT7dn8uEgkZbaXWIaSwXrGQBsxPygvP7SS7gLK5dnQRWSDI8VpAdrEKfvh1001G2Se1OM'
+);
 
 @Injectable()
 export class PaymentService {
@@ -11,6 +14,44 @@ export class PaymentService {
         private configService: MyConfigService,
         private config: MyConfigService
     ) {}
+    getCartItems = async (line_items, object, metadata) => {
+        return new Promise((resolve, reject) => {
+            let cartItems = [];
+            let order = {
+                iduser: parseInt(metadata.idUser),
+                cartItems,
+                amount_subtotal: object.amount_subtotal,
+                shipping: object.total_details.amount_shipping,
+                discount: object.total_details.amount_discount,
+                amount_total: object.amount_total,
+                method: 'Thẻ tín dụng',
+                note: metadata.note,
+                invoice: metadata.invoice,
+                name: metadata.name,
+                address: metadata.address,
+                phoneNumber: metadata.phone,
+            };
+            line_items?.data?.map(async (element) => {
+                const product = await stripe.products.retrieve(element.price.product);
+                console.log(product);
+                const id = parseInt(product.metadata.productId);
+
+                cartItems.push({
+                    productId: id,
+                    name: product.name,
+                    image: product.images[0],
+                    price: element.price.unit_amount,
+                    quantity: element.quantity,
+                    total: element.price.unit_amount * element.quantity,
+                });
+
+                if (cartItems.length === line_items?.data.length) {
+                    resolve(order);
+                }
+            });
+        });
+    };
+
     async getPayment(orderDto: OrderDto) {
         if (orderDto.paymentMethod == 'COD') {
             const order = await this.orderService.createOrder(orderDto);
@@ -23,15 +64,13 @@ export class PaymentService {
         }
 
         if (orderDto.paymentMethod == 'Visa') {
-            const stripe = require('stripe')(this.config.getStripeSecretKey);
-
             const line_items = orderDto.orderDetail.map((order) => {
                 const parseInt = Math.ceil(order.price);
                 return {
                     price_data: {
                         currency: 'vnd',
                         product_data: {
-                            name: order.productId,
+                            name: order.productName,
                             images: [order.image],
                             metadata: {
                                 id: order.productId,
@@ -42,14 +81,17 @@ export class PaymentService {
                     quantity: order.quantity,
                 };
             });
-
-            // Pass the appearance object to the Elements instance
+            const customer = await stripe.customers.create({
+                metadata: {
+                    ...orderDto.orders,
+                },
+            });
 
             const session = await stripe.checkout.sessions.create({
                 invoice_creation: {
                     enabled: true,
                 },
-                customer_email: orderDto.orders.fullName,
+                customer: customer.id,
                 shipping_options: [
                     {
                         shipping_rate_data: {
@@ -87,25 +129,20 @@ export class PaymentService {
         }
     }
     async webhook(request, response) {
-        const event = request.body;
+        let event = request.body;
         console.log(event);
 
         // Handle the event
         switch (event.type) {
-            case 'payment_intent.succeeded':
-                const paymentIntent = event.data.object;
-                console.log('PaymentIntent was successful!');
-                break;
-            case 'payment_method.attached':
-                const paymentMethod = event.data.object;
-                console.log('PaymentMethod was attached to a Customer!');
-                break;
-            // ... handle other event types
-            default:
-                console.log(`Unhandled event type ${event.type}`);
+            case 'checkout.session.completed':
+                const line_items = await stripe.checkout.sessions.listLineItems(event.data.object.id);
+                console.log('🚀 ~ file: payment.service.ts:138 ~ PaymentService ~ webhook ~ line_items:', line_items);
+                const iduser = await stripe.customers.retrieve(event.data.object.customer);
+                console.log('🚀 ~ file: payment.service.ts:139 ~ PaymentService ~ webhook ~ iduser:', iduser);
+                const orderItems = await this.getCartItems(line_items, event.data.object, iduser.metadata);
+                console.log('🚀 ~ file: payment.service.ts:140 ~ PaymentService ~ webhook ~ orderItems:', orderItems);
         }
 
-        // Return a 200 response to acknowledge receipt of the event
         response.json({ received: true });
     }
 }

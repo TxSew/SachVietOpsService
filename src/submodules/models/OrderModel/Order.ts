@@ -30,6 +30,7 @@ export interface TOrders {
 }
 
 export interface OrderDetail extends Modified {
+    productName?: string;
     productId?: number;
     orderID?: number;
     quantity?: number;

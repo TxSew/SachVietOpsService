@@ -131,7 +131,7 @@ export class OrderService {
                     ],
                 },
             ],
-
+            order: [['createdAt', 'DESC']],
             where: {
                 userID: id,
             },
@@ -154,5 +154,18 @@ export class OrderService {
                 },
             }
         );
+    }
+    async updateOrderUser(id: number, account) {
+        if (!account) throw ResponseError.unauthorized('authorization orderUser');
+        if (!id) throw ResponseError.unauthorized('orderId not value');
+        const order = await OrderModel.update(
+            { status: 0 },
+            {
+                where: {
+                    id: Number(id),
+                },
+            }
+        );
+        return order;
     }
 }

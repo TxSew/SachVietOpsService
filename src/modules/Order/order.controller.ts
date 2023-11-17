@@ -5,6 +5,7 @@ import { Order, OrderDto, TOrderResponse, TOrders } from 'src/submodules/models/
 import { OrderQueryDto } from './dto/query-orders';
 import { Public } from 'src/guard/jwtGuard';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CurrentAccount } from 'src/guard/currentUser';
 
 @ApiTags('order')
 @Controller('order')
@@ -41,6 +42,12 @@ export class OrderController {
     updateOrder(@Param('id') id: number, @Body() status: number) {
         return this.orderService.updateOrder(id, status);
     }
+
+    @Post('updateOrderUser/:id')
+    updateOrderUser(@Param('id') id: number, @CurrentAccount() account) {
+        return this.orderService.updateOrderUser(id, account.id);
+    }
+
     @Public()
     @Delete(':id')
     RemoveOrder(@Param('id') id: number) {
