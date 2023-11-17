@@ -6,9 +6,9 @@ import { appConfig } from 'src/constants/IConfig';
 import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { User } from 'src/submodules/models/UserModel/User';
+import { EmailService } from '../email/email.service';
 import { UserModel } from './auth.schema';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
-import { EmailService } from '../email/email.service';
 
 @Injectable()
 @UseGuards(JwtAuthGuard)
@@ -69,12 +69,12 @@ export class AccountService {
         return { account: rest, token: access_token };
     }
 
-    async changePassword(changePassword: ChangePasswordDTO) {
+    async changePassword(changePassword: ChangePasswordDTO, id: number) {
         if (!changePassword) throw ResponseError.badInput('Account not found');
-        const { userId, password, newPassword, repeatNewPassword } = changePassword;
+        const { password, newPassword, repeatNewPassword } = changePassword;
 
         const User = await UserModel.findOne({
-            where: { id: userId },
+            where: { id: id },
         });
 
         const isCheckPassword = await this.comparePassword(password, User.get().password);
@@ -88,7 +88,7 @@ export class AccountService {
                 where: { id: User.get().id },
             }
         );
-        return { password: 'Password changed successfully' };
+        return { message: 'Password changed successfully' };
     }
 
     async verifyToken(props: { token: string }) {

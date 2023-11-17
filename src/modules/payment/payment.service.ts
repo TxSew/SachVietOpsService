@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { appConfig } from 'src/constants/IConfig';
 import { MyConfigService } from 'src/myConfig.service';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderService } from '../Order/order.service';
-import { appConfig } from 'src/constants/IConfig';
 
 @Injectable()
 export class PaymentService {
@@ -14,9 +14,11 @@ export class PaymentService {
     async getPayment(orderDto: OrderDto) {
         if (orderDto.paymentMethod == 'COD') {
             const order = await this.orderService.createOrder(orderDto);
+
             return {
                 paymentMethod: 'COD',
                 data: order,
+                url: `${appConfig.stripe.STRIPE_SUCCESS_URL}/${order.result.id}`,
             };
         }
 
@@ -47,7 +49,7 @@ export class PaymentService {
                 invoice_creation: {
                     enabled: true,
                 },
-                customer_email: 'thanhdq2003@gmail.com',
+                customer_email: orderDto.orders.fullName,
                 shipping_options: [
                     {
                         shipping_rate_data: {
