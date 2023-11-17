@@ -24,6 +24,7 @@ export class DiscountService {
         if (findOne) {
             throw ResponseError.badInput('Discount already exits');
         }
+        props.code = props.code.toUpperCase();
         const discount = await DiscountModel.create(props);
         return discount;
     }
