@@ -35,10 +35,9 @@ export class ProductController {
         return this.productService.createProduct(product);
     }
 
-    @Public()
-    @Post('check-sold-quantity')
-    checkSoldQuantity(id: number) {
-        return this.productService.checkSoldQuantity(id);
+    @Post('updateQuantity')
+    updateQuantity(@Body() props) {
+        return this.productService.updateQuantity(props);
     }
 
     @Put('update/:id')

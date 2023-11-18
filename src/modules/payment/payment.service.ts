@@ -3,23 +3,28 @@ import { appConfig } from 'src/constants/IConfig';
 import { MyConfigService } from 'src/myConfig.service';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderService } from '../Order/order.service';
+import axios from 'axios';
+
 const stripe = require('stripe')(
     'sk_test_51NytAnGgD3dbMpsnDslKorNDTNgk3ZT7dn8uEgkZbaXWIaSwXrGQBsxPygvP7SS7gLK5dnQRWSDI8VpAdrEKfvh1001G2Se1OM'
 );
 
 @Injectable()
 export class PaymentService {
+    private orderId: string;
     constructor(
         private orderService: OrderService,
         private configService: MyConfigService,
         private config: MyConfigService
     ) {}
+
     getCartItems = async (line_items, object, metadata) => {
         return new Promise((resolve, reject) => {
-            let cartItems = [];
+            let orderDetail = [];
+
             let order = {
                 iduser: parseInt(metadata.idUser),
-                cartItems,
+                orderDetail,
                 amount_subtotal: object.amount_subtotal,
                 shipping: object.total_details.amount_shipping,
                 discount: object.total_details.amount_discount,
@@ -31,12 +36,11 @@ export class PaymentService {
                 address: metadata.address,
                 phoneNumber: metadata.phone,
             };
+
             line_items?.data?.map(async (element) => {
                 const product = await stripe.products.retrieve(element.price.product);
-                console.log(product);
-                const id = parseInt(product.metadata.productId);
-
-                cartItems.push({
+                const id = parseInt(product.metadata.id);
+                orderDetail.push({
                     productId: id,
                     name: product.name,
                     image: product.images[0],
@@ -45,7 +49,7 @@ export class PaymentService {
                     total: element.price.unit_amount * element.quantity,
                 });
 
-                if (cartItems.length === line_items?.data.length) {
+                if (orderDetail.length === line_items?.data.length) {
                     resolve(order);
                 }
             });
@@ -81,6 +85,7 @@ export class PaymentService {
                     quantity: order.quantity,
                 };
             });
+
             const customer = await stripe.customers.create({
                 metadata: {
                     ...orderDto.orders,
@@ -117,30 +122,34 @@ export class PaymentService {
 
                 line_items: [...line_items],
                 mode: 'payment',
-                success_url: appConfig.stripe.STRIPE_CANCEL_URL,
-                cancel_url: this.configService.getStripeCancelUrl,
+                success_url: `${appConfig.stripe.STRIPE_SUCCESS_URL}/${this.orderId}`,
+                cancel_url: `${this.configService.getStripeCancelUrl}/${495}`,
             });
 
             return {
                 paymentMethod: 'Visa',
                 message: 'Order by Visa successfully',
-                url: session.url,
+                url: `${session.url}`,
             };
         }
     }
     async webhook(request, response) {
         let event = request.body;
-        console.log(event);
 
-        // Handle the event
         switch (event.type) {
             case 'checkout.session.completed':
-                const line_items = await stripe.checkout.sessions.listLineItems(event.data.object.id);
-                console.log('🚀 ~ file: payment.service.ts:138 ~ PaymentService ~ webhook ~ line_items:', line_items);
-                const iduser = await stripe.customers.retrieve(event.data.object.customer);
-                console.log('🚀 ~ file: payment.service.ts:139 ~ PaymentService ~ webhook ~ iduser:', iduser);
-                const orderItems = await this.getCartItems(line_items, event.data.object, iduser.metadata);
-                console.log('🚀 ~ file: payment.service.ts:140 ~ PaymentService ~ webhook ~ orderItems:', orderItems);
+                const line_items = (await stripe.checkout.sessions.listLineItems(event.data.object.id)) as any;
+                const orders = (await stripe.customers.retrieve(event.data.object.customer)) as any;
+                const orderItems = (await this.getCartItems(line_items, event.data.object, orders.metadata)) as any;
+                const orderDto = {
+                    orders: orders.metadata,
+                    orderDetail: orderItems.orderDetail,
+                };
+                const order = (await this.orderService.createOrder(orderDto)) as any;
+
+                if (order) {
+                    this.orderId = order.id;
+                }
         }
 
         response.json({ received: true });

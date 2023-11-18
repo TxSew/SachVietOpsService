@@ -1,5 +1,5 @@
 enum OrderStatus {
-  cancel,
-  pending,
-  success,
+    cancel,
+    pending,
+    success,
 }

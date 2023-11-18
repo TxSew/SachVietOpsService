@@ -44,6 +44,9 @@ export const OrderModel = SequelizeBase.define<Models>(
         orderType: {
             type: DataTypes.STRING,
         },
+        invoice: {
+            type: DataTypes.STRING,
+        },
         address: {
             type: DataTypes.STRING,
         },

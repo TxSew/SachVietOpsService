@@ -6,6 +6,7 @@ import { CategoryModel } from '../Category/category.schema';
 import { ProducerModel } from '../Producer/producer.schema';
 import { ImagesProductModel } from './dto/listImage.schema';
 import { ProductModel } from './product.schema';
+import { OrderDetail } from 'src/submodules/models/OrderModel/Order';
 
 @Injectable()
 export class ProductService {
@@ -128,8 +129,6 @@ export class ProductService {
             return err;
         }
     }
-    //find product by category
-
     // find One or more products
     async findOneUpdate(id: number): Promise<Product> {
         try {
@@ -217,11 +216,30 @@ export class ProductService {
         });
         return trashed;
     }
+
     async restoreProductTrashed(id: number) {
         const trashed = await ProductModel.restore({
             where: { id: id },
         });
         return trashed;
     }
-    async checkSoldQuantity(id: number) {}
+
+    async updateQuantity(props: OrderDetail[]) {
+        props.map(async (e) => {
+            const product = await ProductModel.findOne({
+                where: { id: e.productId },
+            });
+
+            const quantity = (await product.get().quantity) - e.quantity;
+            const soldQuantity = (await product.get().soldQuantity) + e.quantity;
+
+            const updateProduct = await ProductModel.update(
+                { quantity: quantity, soldQuantity: soldQuantity },
+                {
+                    where: { id: product.get().id },
+                }
+            );
+            return updateProduct;
+        });
+    }
 }

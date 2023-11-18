@@ -23,7 +23,6 @@ export class VoucherController {
     @Public()
     @Post('/getVoucher')
     getOneDiscount(@CurrentAccount() account, @Body() voucher) {
-        console.log('🚀 ~ file: voucher.controller.ts:26 ~ VoucherController ~ getOneDiscount ~ account:', account);
         return this.voucherService.getOneDiscount(account, voucher.voucher);
     }
     @Public()
