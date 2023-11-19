@@ -37,6 +37,7 @@ export class OrderController {
     addOrder(@Body() OrderDto: OrderDto): Promise<TOrderResponse> {
         return this.orderService.createOrder(OrderDto);
     }
+
     @Public()
     @Post('update/:id')
     updateOrder(@Param('id') id: number, @Body() status: number) {

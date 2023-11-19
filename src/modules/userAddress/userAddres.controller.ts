@@ -11,11 +11,11 @@ export class UserAddressController {
         return this.UserAddressService.getListByUser(account.id);
     }
     @Post('/createUserAddress')
-    createUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {
-        return this.UserAddressService.createUserAddress(account, props);
+    createUserAddress(@Body() props: UserAddress, @CurrentAccount() account) {
+        return this.UserAddressService.createUserAddress(props, account.id);
     }
     @Post('/updateUserAddress')
     updateUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {
-        return this.UserAddressService.updateUserAddress(account, props);
+        return this.UserAddressService.updateUserAddress(account.id, props);
     }
 }

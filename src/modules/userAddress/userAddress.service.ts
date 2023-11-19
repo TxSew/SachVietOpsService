@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { UserModel } from '../Auth/auth.schema';
 import { UserAddressModel } from './userAddress.schema';
+import { ProvinceModel } from '../Province/dto/province.schema';
 
 @Injectable()
 export class UserAddressService {
@@ -13,15 +14,20 @@ export class UserAddressService {
             },
         });
     }
-    async createUserAddress(acoount, props) {
+    async createUserAddress(props, account) {
         if (!props) throw ResponseError.badInput('UserAddress empty value');
         const user = await UserModel.findOne({
             where: {
-                id: acoount,
+                id: account,
             },
         });
+        const address = {
+            ...props,
+            userId: account,
+        };
+
         if (!user) throw ResponseError.notFound('User not found');
-        const userAddress = await UserAddressModel.create(props);
+        const userAddress = await UserAddressModel.create(address);
         return userAddress;
     }
 
