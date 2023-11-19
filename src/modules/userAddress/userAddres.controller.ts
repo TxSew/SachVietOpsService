@@ -15,7 +15,7 @@ export class UserAddressController {
         return this.UserAddressService.createUserAddress(props, account.id);
     }
     @Post('/updateUserAddress')
-    updateUserAddress(@CurrentAccount() account, @Body() props: UserAddress) {
-        return this.UserAddressService.updateUserAddress(account.id, props);
+    updateUserAddress(@Body() props: UserAddress, @CurrentAccount() account) {
+        return this.UserAddressService.updateUserAddress(props, account.id);
     }
 }

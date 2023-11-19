@@ -8,22 +8,21 @@ import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
 import { ResponseError } from 'src/helpers/ResponseError';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class OrderService {
     async getOrderAll(props: OrderQueryDto): Promise<TOrders> {
         const limit = props.limit || 6;
         const page = props.page || 1;
+        const search = props.keyword || '';
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
 
-        let isWhere = {};
-        if (props.status) {
-            isWhere = {
-                status: props.status,
-            };
-        }
+        let isWhere = {
+            [Op.or]: [{ id: { [Op.like]: `%${search}%` } }],
+        };
         const listOrder: Order[] = await OrderModel.findAll({
             where: isWhere,
             limit: limited,
@@ -112,8 +111,16 @@ export class OrderService {
         return detailedOrder[0];
     }
 
-    async getOrderbyUser(id: number): Promise<OrderDto[]> {
+    async getOrderbyUser(props, id: number) {
+        const limit = props.limit || 6;
+        const page = props.page || 1;
+        const limited = Number(limit);
+        const offset = (Number(page) - 1) * limited;
+        const orders = await OrderModel.findAll({});
+
         const orderCurrent = await OrderModel.findAll({
+            limit: limited,
+            offset: offset,
             include: [
                 {
                     attributes: ['fullName'],
@@ -136,7 +143,14 @@ export class OrderService {
                 userID: id,
             },
         });
-        return orderCurrent;
+        const totalPage = Math.round(orders.length / limited);
+
+        return {
+            totalPage: totalPage,
+            limit: limited,
+            page: page,
+            data: orderCurrent,
+        };
     }
 
     async delete(id: number) {

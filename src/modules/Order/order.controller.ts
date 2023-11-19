@@ -25,11 +25,11 @@ export class OrderController {
         return this.orderService.getOrderDetailByOrder(id);
     }
 
-    @Public()
     @UseInterceptors(CacheInterceptor)
-    @Get('current/:id')
-    getOrderCUrrent(@Param('id') id: number): Promise<OrderDto[]> {
-        return this.orderService.getOrderbyUser(id);
+    @Post('current')
+    getOrderCUrrent(@Body() props, @CurrentAccount() account) {
+        console.log(account);
+        return this.orderService.getOrderbyUser(props, Number(account.id));
     }
 
     @Public()

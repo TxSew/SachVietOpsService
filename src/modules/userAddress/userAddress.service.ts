@@ -31,7 +31,7 @@ export class UserAddressService {
         return userAddress;
     }
 
-    async updateUserAddress(account, props) {
+    async updateUserAddress(props, account) {
         if (!props) throw ResponseError.badInput('UserAddress empty value');
         const userAddress = await UserAddressModel.update(props, {
             where: {
