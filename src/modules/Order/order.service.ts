@@ -21,7 +21,7 @@ export class OrderService {
         const orders = await OrderModel.findAll({});
 
         let isWhere = {
-            [Op.or]: [{ id: { [Op.like]: `%${search}%` } }],
+            [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
         };
         const listOrder: Order[] = await OrderModel.findAll({
             where: isWhere,
@@ -36,7 +36,6 @@ export class OrderService {
             ],
         });
         const totalPage = Math.round(orders.length / limited);
-
         return {
             totalPage: totalPage,
             limit: limited,

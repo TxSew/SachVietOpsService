@@ -1,6 +1,7 @@
 {
   "name": "books_server",
   "version": "0.0.1",
+  "ngrok-skip-browser-warning": "69420", 
   "description": "",
   "author": "",
   "private": true,
