@@ -20,9 +20,14 @@ export class OrderService {
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
         let isWhere: {};
+        let isSearchUser: {};
         if (search) {
             isWhere = {
                 [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
+            };
+
+            isSearchUser = {
+                [Op.or]: [{ fullName: { [Op.like]: `%${search}%` } }],
             };
         }
         const listOrder: Order[] = await OrderModel.findAll({
@@ -34,6 +39,7 @@ export class OrderService {
                 {
                     model: UserModel,
                     as: 'users',
+                    where: isSearchUser,
                 },
             ],
         });
@@ -44,6 +50,48 @@ export class OrderService {
             page: page,
             pageSize: listOrder.length,
             orders: listOrder,
+        };
+    }
+    async getOrderUser(id: number, props) {
+        console.log('🚀 ~ file: order.service.ts:56 ~ OrderService ~ getOrderUser ~ props:', props);
+        const limit = props.limit || 6;
+        const page = props.page || 1;
+        const limited = Number(limit);
+        const offset = (Number(page) - 1) * limited;
+        const orders = await OrderModel.findAll({});
+
+        const orderCurrent = await OrderModel.findAll({
+            limit: limited,
+            offset: offset,
+            include: [
+                {
+                    attributes: ['fullName'],
+                    model: UserModel,
+                    as: 'users',
+                },
+                {
+                    model: OrderDetailModel,
+                    as: 'orderDetail',
+                    include: [
+                        {
+                            model: ProductModel,
+                            as: 'product',
+                        },
+                    ],
+                },
+            ],
+            order: [['createdAt', 'DESC']],
+            where: {
+                userID: id,
+            },
+        });
+        const totalPage = Math.round(orders.length / limited);
+
+        return {
+            totalPage: totalPage,
+            limit: limited,
+            page: page,
+            data: orderCurrent,
         };
     }
 
