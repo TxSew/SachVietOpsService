@@ -1,4 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Op } from 'sequelize';
+import { ResponseError } from 'src/helpers/ResponseError';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { Order, OrderDto, TOrderResponse, TOrders } from 'src/submodules/models/OrderModel/Order';
 import { UserModel } from '../auth/auth.schema';
@@ -7,8 +9,6 @@ import { ProductModel } from '../product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
-import { ResponseError } from 'src/helpers/ResponseError';
-import { Op } from 'sequelize';
 
 @Injectable()
 export class OrderService {
@@ -19,10 +19,12 @@ export class OrderService {
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
-
-        let isWhere = {
-            [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
-        };
+        let isWhere: {};
+        if (search) {
+            isWhere = {
+                [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
+            };
+        }
         const listOrder: Order[] = await OrderModel.findAll({
             where: isWhere,
             limit: limited,
@@ -71,11 +73,8 @@ export class OrderService {
         }
 
         resultOrder.coupon = coupon;
-
         const priceTotal = detailDt.reduce((total, current) => total + current.price * current.quantity, 0);
         resultOrder.money = priceTotal;
-
-        // resultOrder.price_ship = resultOrder.money - resultOrder.coupon;
         let results = await OrderModel.create(resultOrder).then(async (res) => {
             let id = await res.get().id;
             detailDt.map((detailDt) => {
@@ -85,7 +84,6 @@ export class OrderService {
             const detailData = await OrderDetailModel.bulkCreate(detailDt);
             return { result: res, detailData };
         });
-
         return results;
     }
 
@@ -168,7 +166,7 @@ export class OrderService {
             }
         );
     }
-    async updateOrderUser(id: number, account) {
+    async updateOrderUser(id: number, account: number) {
         if (!account) throw ResponseError.unauthorized('authorization orderUser');
         if (!id) throw ResponseError.unauthorized('orderId not value');
         const order = await OrderModel.update(
