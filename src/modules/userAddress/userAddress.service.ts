@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { UserModel } from '../Auth/auth.schema';
 import { UserAddressModel } from './userAddress.schema';
-import { ProvinceModel } from '../Province/dto/province.schema';
 
 @Injectable()
 export class UserAddressService {

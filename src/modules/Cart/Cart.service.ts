@@ -21,7 +21,6 @@ export class CartService {
                 ],
             });
         } catch (err) {
-            console.log('🚀 ~ file: Cart.service.ts:23 ~ CartService ~ getCart ~ err:', err);
             console.log(err);
         }
     }
@@ -35,7 +34,7 @@ export class CartService {
                 userId,
             };
 
-            const qty = parseInt(quantity || 1); // default to 1 if not provided
+            const qty = parseInt(quantity || 1);
 
             let cart = (await CartModel.findOne({
                 where: {

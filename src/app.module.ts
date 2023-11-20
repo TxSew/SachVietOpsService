@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -8,6 +9,8 @@ import { JwtAuthGuard } from './guard/jwtGuard';
 import { JwtStrategy } from './guard/jwtStratery';
 import { AccountController } from './modules/Auth/auth.controller';
 import { AccountService } from './modules/Auth/auth.service';
+import { CartController } from './modules/Cart/Cart.controller';
+import { CartService } from './modules/Cart/Cart.service';
 import { CategoryController } from './modules/Category/category.controller';
 import { CategoryService } from './modules/Category/category.service';
 import { DiscountController } from './modules/Discount/discount.controller';
@@ -29,15 +32,10 @@ import { OtpController } from './modules/forgotPassword/forgot-password.controll
 import { OtpService } from './modules/forgotPassword/forgot-password.service';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
-import { VoucherService } from './modules/voucher/voucher.service';
-import { VoucherController } from './modules/voucher/voucher.controller';
-import { CacheModule } from '@nestjs/cache-manager';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as redisStore from 'cache-manager-redis-store';
-import { UserAddressController } from './modules/userAddress/userAddres.controller';
+import { UserAddressController } from './modules/userAddress/userAddress.controller';
 import { UserAddressService } from './modules/userAddress/userAddress.service';
-import { CartController } from './modules/Cart/Cart.controller';
-import { CartService } from './modules/Cart/Cart.service';
+import { VoucherController } from './modules/voucher/voucher.controller';
+import { VoucherService } from './modules/voucher/voucher.service';
 dotenv.config();
 @Module({
     imports: [
