@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
-import { UserModel } from '../Auth/auth.schema';
+import { UserModel } from '../auth/auth.schema';
 import { UserAddressModel } from './userAddress.schema';
 
 @Injectable()

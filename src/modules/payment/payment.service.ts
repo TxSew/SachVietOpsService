@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { appConfig } from 'src/constants/IConfig';
 import { MyConfigService } from 'src/myConfig.service';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
-import { OrderService } from '../Order/order.service';
-
+import { OrderService } from '../order/order.service';
 
 const stripe = require('stripe')(
     'sk_test_51NytAnGgD3dbMpsnDslKorNDTNgk3ZT7dn8uEgkZbaXWIaSwXrGQBsxPygvP7SS7gLK5dnQRWSDI8VpAdrEKfvh1001G2Se1OM'

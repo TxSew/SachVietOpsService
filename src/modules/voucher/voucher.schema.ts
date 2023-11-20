@@ -2,8 +2,8 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequ
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
-import { UserModel } from '../Auth/auth.schema';
-import { DiscountModel } from '../Discount/discount.shema';
+import { UserModel } from '../auth/auth.schema';
+import { DiscountModel } from '../discount/discount.shema';
 export class voucherModel extends Model<InferAttributes<Voucher>, InferCreationAttributes<Voucher>> {}
 
 export const VoucherModel = SequelizeBase.define<voucherModel>(

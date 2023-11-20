@@ -1,4 +1,4 @@
-import { CategoryModel, ImagesProductModel, ProducerModel, ProductModel } from 'src/modules/Product';
+import { CategoryModel, ImagesProductModel, ProducerModel, ProductModel } from 'src/modules/product';
 
 ProductModel.hasMany(ImagesProductModel, {
     foreignKey: 'productId',

@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { MyConfigService } from 'src/myConfig.service';
 import { EmailDto, Otp } from 'src/submodules/models/OptModel/Opt';
-import { UserService } from '../User/user.service';
+import { UserService } from '../user/user.service';
 import { CreateEmailDto } from '../email/dto/create-email';
 import { EmailService } from '../email/email.service';
 import { CreateOtpDto } from './dto/create-otp';

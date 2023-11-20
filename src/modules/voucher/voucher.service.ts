@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
 import { VoucherModel } from './voucher.schema';
-import { DiscountModel } from '../Discount/discount.shema';
-import { UserModel, Users } from '../Auth/auth.schema';
+import { DiscountModel } from '../discount/discount.shema';
+import { UserModel, Users } from '../auth/auth.schema';
 
 @Injectable()
 export class VoucherService {
