@@ -3,9 +3,6 @@ import slugify from 'slugify';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Product } from 'src/submodules/models/ProductModel/Product';
-import { CategoryModel } from '../category/category.schema';
-import { ProducerModel } from '../producer/producer.schema';
-import { ImagesProductModel } from './dto/listImage.schema';
 
 export class productModel extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {}
 

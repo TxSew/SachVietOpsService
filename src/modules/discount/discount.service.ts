@@ -15,7 +15,11 @@ export class DiscountService {
             limit: limited,
             offset: offset,
         });
-        return discountData;
+        const getList = await DiscountModel.findAll({});
+        return {
+            totalPage: Math.ceil(getList.length / limited),
+            data: discountData,
+        };
     }
 
     async createDiscount(props: Discount): Promise<Discount> {

@@ -12,7 +12,7 @@ import { OrderDetail } from 'src/submodules/models/OrderModel/Order';
 export class ProductService {
     //find all products
     async findAll(props): Promise<TProductResponse> {
-        let limit = props.limit || 8;
+        const limit = props.limit || 8;
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
@@ -64,7 +64,8 @@ export class ProductService {
                 .catch((err) => {
                     throw ResponseError.badInput(`Unable to parse ${err.message}`);
                 });
-            let totalPage = Math.ceil(Product.count / limited);
+            const getAll: any = await ProductModel.findAll({});
+            let totalPage = Math.ceil(getAll.length / limited);
             return { totalPage, pageSize: Product.rows.length, limit: limited, page, products: Product.rows };
         } catch (err) {
             throw ResponseError.unexpected(err);
