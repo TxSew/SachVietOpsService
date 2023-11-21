@@ -35,6 +35,10 @@ export class ProductController {
         return this.productService.createProduct(product);
     }
 
+    @Post('addProductInventory')
+    async addProductInventory(@Body() props) {
+        return this.productService.UpdateProductInventory(props);
+    }
     @Post('updateQuantity')
     updateQuantity(@Body() props) {
         return this.productService.updateQuantity(props);

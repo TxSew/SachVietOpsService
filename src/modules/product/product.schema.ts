@@ -44,6 +44,9 @@ export const ProductModel = SequelizeBase.define<productModel>(
         soldQuantity: {
             type: DataTypes.INTEGER,
         },
+        soldInventory: {
+            type: DataTypes.INTEGER,
+        },
         size: {
             type: DataTypes.STRING,
         },

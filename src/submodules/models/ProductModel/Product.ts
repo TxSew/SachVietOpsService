@@ -18,6 +18,7 @@ export interface Product extends BaseModel, Model, Modified {
     listImage?: string;
     quantity?: number;
     productId?: number;
+    soldInventory?: number;
     sale?: number | string;
 }
 export interface TProduct {

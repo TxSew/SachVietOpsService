@@ -203,11 +203,40 @@ export class ProductService {
 
             for (var i = 0; i < productImages.length; i++) {
                 productImages[i].productId = parInt;
-                const data = await ImagesProductModel.bulkCreate(productImages);
+                await ImagesProductModel.bulkCreate(productImages);
             }
             return updated;
         } catch (errors) {
             throw ResponseError.badInput('Product update failed');
+        }
+    }
+    async UpdateProductInventory(props) {
+        try {
+            const { id, newQuantity } = props;
+            if (!id && !newQuantity) throw ResponseError.badInput('productInventory empty value!');
+
+            const product = await ProductModel.findOne({
+                where: { id: id },
+            });
+
+            const soldInventoryProduct = product.get().soldInventory + Number(newQuantity);
+            const quantity = product.get().quantity + Number(newQuantity);
+
+            await ProductModel.update(
+                {
+                    soldInventory: soldInventoryProduct,
+                    quantity: quantity,
+                },
+                {
+                    where: { id: id },
+                }
+            );
+
+            return {
+                message: 'updateProductInventory Success',
+            };
+        } catch (err) {
+            console.log(err);
         }
     }
     //  search a Product
@@ -231,8 +260,8 @@ export class ProductService {
                 where: { id: e.productId },
             });
 
-            const quantity = (await product.get().quantity) - e.quantity;
-            const soldQuantity = (await product.get().soldQuantity) + e.quantity;
+            const quantity = product.get().quantity - e.quantity;
+            const soldQuantity = product.get().soldQuantity + e.quantity;
 
             const updateProduct = await ProductModel.update(
                 { quantity: quantity, soldQuantity: soldQuantity },
