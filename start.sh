@@ -1,5 +1,5 @@
 #!/bin/bash
-
+dos2unix start.sh
 # Ensure the script is executed with root privileges
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" >&2
