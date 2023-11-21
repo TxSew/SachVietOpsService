@@ -48,7 +48,10 @@ jobs:
                   script: |
                       echo "Connecting to remote server"
                       cd /var/www/quangthanh/book_server
-                      chmod +x init.sh && sh init.sh
+                      pm2 delete thanh-api || true
+                      pm2 start dist/main.js --name thanh-api
+                      pm2 reload thanh-api --update-env
+                      exit 0
             - name: Get current date
               id: date
               run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
