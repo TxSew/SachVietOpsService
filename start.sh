@@ -1,22 +1,22 @@
 #!/bin/bash
 # Ensure the script is executed with root privileges
-if [ "$(id -u)" != "0" ]; then
-   echo "This script must be run as root" >&2
-   exit 1
-fi
+# if [ "$(id -u)" != "0" ]; then
+#    echo "This script must be run as root" >&2
+#    exit 1
+# fi
 
-# Optionally change directory to your project's location
-# cd /path/to/your/project || exit
+# # Optionally change directory to your project's location
+# # cd /path/to/your/project || exit
 
-# Install NestJS CLI globally if it is not already installed
-if ! command -v nest > /dev/null 2>&1; then
-    npm install -g @nestjs/cli
-fi
+# # Install NestJS CLI globally if it is not already installed
+# if ! command -v nest > /dev/null 2>&1; then
+#     npm install -g @nestjs/cli
+# fi
 
-# Install PM2 globally if it is not already installed
-if ! command -v pm2 > /dev/null 2>&1; then
-    npm install -g pm2
-fi
+# # Install PM2 globally if it is not already installed
+# if ! command -v pm2 > /dev/null 2>&1; then
+#     npm install -g pm2
+# fi
 
 # Navigate to the project directory before resetting git branch
 # Update this to your project directory
