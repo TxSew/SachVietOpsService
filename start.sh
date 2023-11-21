@@ -14,7 +14,7 @@ else
 fi
 
 # Install project dependencies
-npm install
+npm install --no-optional
 
 # Build the project, generating production-ready assets
 npm run build
