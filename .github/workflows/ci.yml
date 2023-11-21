@@ -26,6 +26,7 @@ jobs:
           script: |
             echo "remote server"
             cd /var/www/quangthanh/book_server
+            chmod +x start.sh
             dos2unix start.sh && sh start.sh
       - name: Get current date
         id: date
