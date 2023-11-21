@@ -1,7 +1,5 @@
 #!/bin/bash
-#dos2unix start.sh
 # Ensure the script is executed with root privileges
-#update code
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" >&2
    exit 1
@@ -22,7 +20,7 @@ fi
 
 # Navigate to the project directory before resetting git branch
 # Update this to your project directory
-#cd /var/www/thanh || exit
+# cd /var/www/thanh || exit
 
 # Reset your local branch to match the remote "main" branch
 git reset --hard origin/main
@@ -44,4 +42,5 @@ pm2 start dist/main.js --name thanh-api
 
 # Reload the "thanh-api" application with updated environment variables
 pm2 reload thanh-api --update-env
+
 exit 0
