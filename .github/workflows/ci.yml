@@ -1,66 +1,66 @@
-name: "Build and push to ECR"
+name: 'Build and push to ECR'
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+        types:
+            - closed
 
 jobs:
-  BuildAndPushImageToDocker:
-    name: "Build and Push to Docker"
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x]
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: npm install
-      - name: Build
-        run: |
-          cp .env.prod .env
-          npm run build
-          echo "${{ secrets.SSH_PASSWORD }}" | scp -r -P ${{ secrets.SSH_PORT }} ./dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/quangthanh/book_server
-      - name: Run commands over SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            echo "Connecting to remote server"
-            cd /var/www/quangthanh/book_server
-            chmod +x init.sh && sh init.sh
-            
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+    BuildAndPushImageToDocker:
+        name: 'Build and Push to Docker'
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [14.x, 16.x]
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Install dependencies
+              run: yarn install
+            - name: Build
+              run: |
+                  cp .env.prod .env
+                  yarn build
+                  echo "${{ secrets.SSH_PASSWORD }}" | scp -r -P ${{ secrets.SSH_PORT }} ./dist ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/quangthanh/book_server
+            - name: Run commands over SSH
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  password: ${{ secrets.SSH_PASSWORD }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      echo "Connecting to remote server"
+                      cd /var/www/quangthanh/book_server
+                      chmod +x init.sh && sh init.sh
 
-      - name: Get branch name
-        id: branch
-        run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+            - name: Get current date
+              id: date
+              run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
-      - name: Send Discord message on success
-        if: ${{ success() }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: "Build succeeded on branch ${{ steps.branch.outputs.branch }} by ${{ github.actor }} on ${{ steps.date.outputs.date }}! :tada:"
-      - name: Send Discord message on failure
-        if: failure()
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: "❌ Build failed on branch ${{ steps.branch.outputs.branch }} by ${{ github.actor }} on ${{ steps.date.outputs.date }}!"
+            - name: Get branch name
+              id: branch
+              run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+
+            - name: Send Discord message on success
+              if: ${{ success() }}
+              uses: Ilshidur/action-discord@master
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+              with:
+                  args: 'Build succeeded on branch ${{ steps.branch.outputs.branch }} by ${{ github.actor }} on ${{ steps.date.outputs.date }}! :tada:'
+            - name: Send Discord message on failure
+              if: failure()
+              uses: Ilshidur/action-discord@master
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+              with:
+                  args: '❌ Build failed on branch ${{ steps.branch.outputs.branch }} by ${{ github.actor }} on ${{ steps.date.outputs.date }}!'
