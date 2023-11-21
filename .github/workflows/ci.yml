@@ -24,11 +24,14 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            echo "remote server"
+            echo "Connecting to remote server"
             cd /var/www/quangthanh/book_server
             chmod +x start.sh
-            sudo apt install dos2unix
-            sudo dos2unix start.sh && sh start.sh
+            if ! command -v dos2unix >/dev/null; then
+                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dos2unix
+            fi
+            sudo dos2unix start.sh
+            sudo sh start.sh
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
