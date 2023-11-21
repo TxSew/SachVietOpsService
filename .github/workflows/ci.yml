@@ -26,10 +26,7 @@ jobs:
           script: |
             echo "remote server"
             cd /var/www/quangthanh/book_server
-            dos2unix start.sh
-            sh start.sh
-            
-
+            dos2unix start.sh && sh start.sh
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
