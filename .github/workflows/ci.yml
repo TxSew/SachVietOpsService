@@ -51,6 +51,7 @@ jobs:
                       pm2 delete thanh-api || true
                       pm2 start dist/main.js --name thanh-api
                       pm2 reload thanh-api --update-env
+                      pm2 save
                       exit 0
             - name: Get current date
               id: date
