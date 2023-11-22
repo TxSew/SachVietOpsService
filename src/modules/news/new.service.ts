@@ -23,9 +23,12 @@ export class NewService {
         };
     }
     async createNews(props) {
-        if (!props) throw ResponseError.badInput('news empty value');
-        const news = await NewsModel.create(props);
-        return news;
+        try {
+            const news = await NewsModel.create(props);
+            return news;
+        } catch (err) {
+            throw ResponseError.badInput(err);
+        }
     }
 
     async updateNews(props) {

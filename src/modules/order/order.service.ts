@@ -20,14 +20,9 @@ export class OrderService {
         const offset = (Number(page) - 1) * limited;
         const orders = await OrderModel.findAll({});
         let isWhere: {};
-        let isSearchUser: {};
         if (search) {
             isWhere = {
                 [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
-            };
-
-            isSearchUser = {
-                [Op.or]: [{ fullName: { [Op.like]: `%${search}%` } }],
             };
         }
         const listOrder: Order[] = await OrderModel.findAll({
@@ -39,7 +34,6 @@ export class OrderService {
                 {
                     model: UserModel,
                     as: 'users',
-                    where: isSearchUser,
                 },
             ],
         });

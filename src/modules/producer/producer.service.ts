@@ -7,7 +7,7 @@ import { ResponseError } from 'src/helpers/ResponseError';
 @Injectable()
 export class ProducerService {
     async getListProducer(query: ProducerQueyDto): Promise<TProducer> {
-        const limited = Number(query.limit) || 2;
+        const limited = Number(query.limit) || 6;
         const page = query.page || 1;
         const offset = (Number(page) - 1) * limited;
         const findAllProducer = await ProducerModel.findAll({});
