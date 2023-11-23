@@ -48,8 +48,8 @@ dotenv.config();
             username: ConfigDatabase.development.username,
             password: ConfigDatabase.development.password,
             database: ConfigDatabase.development.database,
-            autoLoadModels: true, // Automatically load models from the 'models' folder
-            synchronize: true, // Auto-create and update database tables (not recommended for production)
+            autoLoadModels: true,
+            synchronize: true,
         }),
         JwtModule.register({
             secret: appConfig.jwt.secret || 'book@123',
@@ -81,7 +81,6 @@ dotenv.config();
         JwtAuthGuard,
         JwtStrategy,
         { provide: 'APP_GUARD', useClass: JwtAuthGuard },
-
         AccountService,
         ProductService,
         CategoryService,

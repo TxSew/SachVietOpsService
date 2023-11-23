@@ -255,9 +255,7 @@ export class ProductService {
     }
 
     async updateQuantity(props: OrderDetail[]) {
-        console.log(props);
-        const data = props.map(async (e) => {
-            console.log('', e);
+        props.map(async (e) => {
             const product = await ProductModel.findOne({
                 where: { id: e.productId },
             });
@@ -265,7 +263,7 @@ export class ProductService {
             const quantity = product.get().quantity - Number(e.quantity);
             const soldQuantity = product.get().soldQuantity + Number(e.quantity);
 
-            const updateProduct = await ProductModel.update(
+            await ProductModel.update(
                 { quantity: quantity, soldQuantity: soldQuantity },
                 {
                     where: { id: product.get().id },

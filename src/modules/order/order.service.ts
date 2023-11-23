@@ -100,6 +100,7 @@ export class OrderService {
                 quantity: e.quantity,
             };
         });
+
         let coupon: number = 0;
 
         if (resultOrder?.orderCode) {
