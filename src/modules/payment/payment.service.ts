@@ -67,7 +67,7 @@ export class PaymentService {
         }
 
         if (orderDto.paymentMethod == 'Visa') {
-            const line_items = orderDto.orderDetail.map((order) => {
+            const line_items = orderDto.orderDetail.map((order: any) => {
                 const parseInt = Math.ceil(order.price);
                 return {
                     price_data: {

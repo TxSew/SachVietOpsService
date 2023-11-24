@@ -29,6 +29,9 @@ export const OrderModel = SequelizeBase.define<Models>(
         money: {
             type: DataTypes.STRING,
         },
+        email: {
+            type: DataTypes.STRING,
+        },
         price_ship: {
             type: DataTypes.TEXT,
         },

@@ -9,9 +9,11 @@ import { ProductModel } from '../product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class OrderService {
+    constructor(private emailService: EmailService) {}
     async getOrderAll(props: OrderQueryDto): Promise<TOrders> {
         const limit = props.limit || 6;
         const page = props.page || 1;
@@ -47,7 +49,6 @@ export class OrderService {
         };
     }
     async getOrderUser(id: number, props) {
-        console.log('🚀 ~ file: order.service.ts:56 ~ OrderService ~ getOrderUser ~ props:', props);
         const limit = props.limit || 6;
         const page = props.page || 1;
         const limited = Number(limit);
@@ -92,7 +93,6 @@ export class OrderService {
     async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
         const resultOrder: any = orderDto.orders;
         const dataDetail: any[] = orderDto.orderDetail;
-
         const detailDt: any[] = dataDetail.map((e) => {
             return {
                 productId: e.productId,
@@ -120,6 +120,17 @@ export class OrderService {
         resultOrder.money = priceTotal;
         let results = await OrderModel.create(resultOrder).then(async (res) => {
             let id = await res.get().id;
+            const data = {
+                subject: 'Order successfully',
+                to: resultOrder.email,
+                template: './order',
+                context: {
+                    email: resultOrder.email,
+                    code: id,
+                },
+            };
+            await this.emailService.sendMailTemplate(data);
+
             detailDt.map((detailDt) => {
                 return (detailDt.orderID = id);
             });
@@ -127,6 +138,7 @@ export class OrderService {
             const detailData = await OrderDetailModel.bulkCreate(detailDt);
             return { result: res, detailData };
         });
+
         return results;
     }
 
