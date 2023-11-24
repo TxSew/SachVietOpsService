@@ -1,9 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/guard/jwtGuard';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { DiscountService } from './discount.service';
-import { Public } from 'src/guard/jwtGuard';
-import { get } from 'http';
 
 @ApiTags('discount')
 @Controller('discount')

@@ -32,13 +32,12 @@ export class StatisticalService {
     }
 
     async calculateProductRevenueByMonth(month: number, year: number) {
-        const startDate = new Date(year, month - 1, 1); // Lấy
-        const endDate = new Date(year, month, 0); // Lấy ngày cuối cùng của tháng
-        // Truy vấn các giao dịch liên quan đến sản phẩm trong khoảng thời gian đã cho
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
         const orders = await OrderModel.findAll({
             where: {
                 createdAt: {
-                    [Op.between]: [startDate, endDate], // Sử dụng Op.between để kiểm tra ngày
+                    [Op.between]: [startDate, endDate],
                 },
             },
         }).then(async (res) => {
