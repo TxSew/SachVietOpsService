@@ -12,7 +12,7 @@ export const NewsModel = SequelizeBase.define<newModel>(
             type: DataTypes.INTEGER,
         },
         slug: { type: DataTypes.STRING, unique: true },
-        descShort: { type: DataTypes.STRING },
+        author: { type: DataTypes.STRING },
         desc: {
             type: DataTypes.STRING,
         },

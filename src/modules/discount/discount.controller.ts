@@ -27,8 +27,10 @@ export class DiscountController {
 
     @Put('update/:id')
     updateDiscount(@Param('id') id: number, @Body() discount: Discount) {
-        this.discountService.updateDiscount(id, discount);
+        return this.discountService.updateDiscount(id, discount);
     }
+    @Post('checkDiscount')
+    checkDiscount(@Param('id') id: number) {}
 
     @Delete(':id')
     removeDiscount(@Param('id') id: number) {

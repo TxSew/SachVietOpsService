@@ -9,18 +9,23 @@ export class NewService {
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const minPrice = props.sortMinPrice || 1;
-        const maxPrice = props.sortMaxPrice || 200000000000;
-        const searchQuery = props.keyword || '';
-        const ct = props.categoryFilter;
-        const orderWith = (props.sortWith || 'asc').toLocaleLowerCase() == 'asc' ? 'DESC' : 'ASC';
-        const news = NewsModel.findAll({
+
+        const listAll = await NewsModel.findAll({});
+
+        const news = await NewsModel.findAll({
             limit: limited,
             offset: offset,
         });
         return {
+            totalPage: Math.ceil(listAll.length / limited),
             data: news,
         };
+    }
+    async getOne(id: number) {
+        const getNew = await NewsModel.findOne({
+            where: { id: id },
+        });
+        return getNew;
     }
     async createNews(props) {
         try {
@@ -32,7 +37,23 @@ export class NewService {
     }
 
     async updateNews(props) {
-        const userAddress = await NewsModel.upsert(props);
-        return userAddress;
+        try {
+            await NewsModel.update(props, {
+                where: { id: props.id },
+            });
+            return {
+                message: 'update News successfully',
+            };
+        } catch (err) {
+            throw ResponseError.badInput(err);
+        }
+    }
+    async deleteNews(id) {
+        await NewsModel.destroy({
+            where: { id: id },
+        });
+        return {
+            message: ' delete News successfully',
+        };
     }
 }

@@ -71,11 +71,6 @@ export class ProductService {
             throw ResponseError.unexpected(err);
         }
     }
-    //get by category
-    async getByCategory() {
-        const products = ProductModel.findAll({});
-    }
-    // find One or more products
     async findOneWithRelatedProducts(slug: string) {
         try {
             // Find the product with the provided slug
@@ -255,13 +250,13 @@ export class ProductService {
     }
 
     async updateQuantity(props: OrderDetail[]) {
-        props.map(async (e) => {
-            const product = await ProductModel.findOne({
+        await props.map(async (e) => {
+            const product: any = await ProductModel.findOne({
                 where: { id: e.productId },
             });
-
-            const quantity = product.get().quantity - Number(e.quantity);
-            const soldQuantity = product.get().soldQuantity + Number(e.quantity);
+            let quantity = (await product.quantity) - Number(e.quantity);
+            // if (quantity < 0) throw ResponseError.badInput('Insufficient product');
+            const soldQuantity = (await product.soldQuantity) + Number(e.quantity);
 
             await ProductModel.update(
                 { quantity: quantity, soldQuantity: soldQuantity },
