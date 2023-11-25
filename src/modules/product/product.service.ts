@@ -65,7 +65,7 @@ export class ProductService {
                     throw ResponseError.badInput(`Unable to parse ${err.message}`);
                 });
             const getAll: any = await ProductModel.findAll({});
-            let totalPage = Math.ceil(getAll.length / limited);
+            let totalPage = Math.ceil(getAll.length / limited - 1);
             return { totalPage, pageSize: Product.rows.length, limit: limited, page, products: Product.rows };
         } catch (err) {
             throw ResponseError.unexpected(err);
@@ -255,7 +255,6 @@ export class ProductService {
                 where: { id: e.productId },
             });
             let quantity = (await product.quantity) - Number(e.quantity);
-            // if (quantity < 0) throw ResponseError.badInput('Insufficient product');
             const soldQuantity = (await product.soldQuantity) + Number(e.quantity);
 
             await ProductModel.update(

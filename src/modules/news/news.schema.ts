@@ -13,6 +13,7 @@ export const NewsModel = SequelizeBase.define<newModel>(
         },
         slug: { type: DataTypes.STRING, unique: true },
         author: { type: DataTypes.STRING },
+        descShort: { type: DataTypes.STRING },
         desc: {
             type: DataTypes.STRING,
         },
@@ -20,6 +21,7 @@ export const NewsModel = SequelizeBase.define<newModel>(
             type: DataTypes.STRING,
             unique: true,
         },
+        status: { type: DataTypes.INTEGER },
     },
     {
         freezeTableName: true,

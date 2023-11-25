@@ -15,6 +15,10 @@ export class NewsController {
         return this.newsService.getOne(Number(id));
     }
 
+    @Get('detail/:id')
+    getDetail(@Param('id') slug: string) {
+        return this.newsService.getDetail(slug);
+    }
     @Post('/createNews')
     createUserAddress(@Body() props) {
         console.log(props);

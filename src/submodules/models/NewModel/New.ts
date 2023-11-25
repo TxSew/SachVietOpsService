@@ -7,5 +7,6 @@ export interface New extends BaseModel, Model, Modified {
     slug: string;
     image: string;
     desc: string;
+    descShort?: string;
     author?: string;
 }

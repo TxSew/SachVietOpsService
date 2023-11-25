@@ -42,7 +42,8 @@ export class VoucherService {
         }
     }
     async getOneDiscount(account, voucher: Partial<string>) {
-        if (!account) throw ResponseError.badInput('account not found');
+        console.log('', account);
+        console.log('', voucher);
         const discount = await VoucherModel.findOne({
             include: [
                 {

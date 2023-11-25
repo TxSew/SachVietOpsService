@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { NewsModel } from './news.schema';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class NewService {
@@ -9,21 +10,34 @@ export class NewService {
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-
         const listAll = await NewsModel.findAll({});
-
+        let status = {};
+        if (props.status) {
+            status = {
+                status: { [Op.eq]: null },
+            };
+        }
         const news = await NewsModel.findAll({
             limit: limited,
             offset: offset,
+            where: status,
         });
         return {
             totalPage: Math.ceil(listAll.length / limited),
             data: news,
         };
     }
+    async getDetail(slug: string) {
+        if (!slug) throw ResponseError.badInput('news empty value');
+
+        const getNew = await NewsModel.findOne({
+            where: { slug: slug },
+        });
+        return getNew;
+    }
     async getOne(id: number) {
         const getNew = await NewsModel.findOne({
-            where: { id: id },
+            where: { slug: id },
         });
         return getNew;
     }
