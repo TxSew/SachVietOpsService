@@ -2,32 +2,50 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
-import { Order, OrderDto, TOrderResponse, TOrders } from 'src/submodules/models/OrderModel/Order';
+import { OrderDto, TOrderResponse } from 'src/submodules/models/OrderModel/Order';
 import { UserModel } from '../auth/auth.schema';
 import { DiscountModel } from '../discount/discount.shema';
+import { EmailService } from '../email/email.service';
 import { ProductModel } from '../product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
-import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class OrderService {
     constructor(private emailService: EmailService) {}
-    async getOrderAll(props: OrderQueryDto): Promise<TOrders> {
+
+    async getOrderAll(props: OrderQueryDto) {
         const limit = props.limit || 6;
         const page = props.page || 1;
-        const search = props.keyword || '';
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const orders = await OrderModel.findAll({});
-        let isWhere: {};
+
+        const search = props.keyword || '';
+
+        let isWhere = {};
+
         if (search) {
             isWhere = {
                 [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
             };
         }
-        const listOrder: Order[] = await OrderModel.findAll({
+
+        if (props.status == 'null') {
+            isWhere = {
+                status: {
+                    [Op.is]: null,
+                },
+            };
+        } else if (typeof props.status == 'number') {
+            isWhere = {
+                status: Number(props.status),
+            };
+        } else {
+            isWhere = {};
+        }
+
+        const listOrder = await OrderModel.findAll({
             where: isWhere,
             limit: limited,
             offset,
@@ -39,15 +57,16 @@ export class OrderService {
                 },
             ],
         });
-        const totalPage = Math.round(orders.length / limited);
+
+        const orders = await OrderModel.findAll({});
+        const totalPage = Math.ceil(orders.length / limited);
         return {
-            totalPage: totalPage,
+            totalPage,
             limit: limited,
-            page: page,
-            pageSize: listOrder.length,
             orders: listOrder,
         };
     }
+
     async getOrderUser(id: number, props) {
         const limit = props.limit || 6;
         const page = props.page || 1;
@@ -80,10 +99,10 @@ export class OrderService {
                 userID: id,
             },
         });
-        const totalPage = Math.round(orders.length / limited);
+        const totalPage = Math.ceil(orders.length / limited);
 
         return {
-            totalPage: totalPage,
+            totalPage,
             limit: limited,
             page: page,
             data: orderCurrent,
@@ -195,7 +214,7 @@ export class OrderService {
                 userID: id,
             },
         });
-        const totalPage = Math.round(orders.length / limited);
+        const totalPage = Math.ceil(orders.length / limited);
 
         return {
             totalPage: totalPage,
@@ -221,6 +240,7 @@ export class OrderService {
             }
         );
     }
+
     async updateOrderUser(id: number, account: number) {
         if (!account) throw ResponseError.unauthorized('authorization orderUser');
         if (!id) throw ResponseError.unauthorized('orderId not value');

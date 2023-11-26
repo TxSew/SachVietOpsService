@@ -21,7 +21,9 @@ export class ProductService {
         const searchQuery = props.keyword || '';
         const ct = props.categoryFilter;
         const orderWith = (props.sortWith || 'asc').toLocaleLowerCase() == 'asc' ? 'DESC' : 'ASC';
+
         let filterCategory = {};
+        let filterProducer = {};
 
         let whereClause: any = {
             [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
@@ -29,10 +31,41 @@ export class ProductService {
                 [Op.between]: [minPrice, maxPrice],
             },
         };
+
+        if (props.filter == 1) {
+            whereClause = {
+                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
+                price_sale: {
+                    [Op.between]: [minPrice, maxPrice],
+                },
+                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
+                sale: {
+                    [Op.gt]: 1,
+                },
+            };
+        } else if (props.filter == 2) {
+            whereClause = {
+                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
+                price_sale: {
+                    [Op.between]: [minPrice, maxPrice],
+                },
+                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
+                soldQuantity: {
+                    [Op.gt]: 1,
+                },
+            };
+        }
+
         if (ct)
             filterCategory = {
                 slug: props.categoryFilter,
             };
+
+        if (props.producerFilter) {
+            filterProducer = {
+                id: props.producerFilter,
+            };
+        }
         try {
             const Product = await ProductModel.findAndCountAll({
                 where: whereClause,
@@ -55,6 +88,7 @@ export class ProductService {
                         model: ProducerModel,
                         attributes: ['name', 'id', 'code'],
                         as: 'producer',
+                        where: filterProducer,
                     },
                 ],
             })
@@ -73,7 +107,6 @@ export class ProductService {
     }
     async findOneWithRelatedProducts(slug: string) {
         try {
-            // Find the product with the provided slug
             const product = await ProductModel.findOne({
                 include: [
                     {
@@ -96,7 +129,7 @@ export class ProductService {
             if (!product) {
                 throw ResponseError.notFound('Product not found');
             }
-            // Find related products based on the same category
+
             const relatedProducts = await ProductModel.findAll({
                 include: [
                     {
@@ -116,8 +149,8 @@ export class ProductService {
                 where: {
                     categoryId: product.get().categoryId,
                     id: { [Op.not]: product.get().id },
-                }, // Exclude the current product
-                limit: 5, // You can adjust the limit as needed
+                },
+                limit: 5,
             });
 
             return { product, relatedProducts };
@@ -125,7 +158,7 @@ export class ProductService {
             return err;
         }
     }
-    // find One or more products
+
     async findOneUpdate(id: number): Promise<Product> {
         try {
             const findOne = await ProductModel.findOne({
@@ -145,21 +178,21 @@ export class ProductService {
             return err;
         }
     }
-    // create a new Product
+
     async createProduct(TProduct: Partial<TProduct>): Promise<TProduct> {
         try {
             const { product, productImages } = TProduct;
             if (!product) {
                 throw 'product creating not value';
             }
-            //  logic % price
+
             const { sale, price } = product;
             let priceSale: number;
             priceSale = price - (Number(sale) / 100) * price;
             product.price_sale = priceSale;
-            //create product
+
             const ProductData = await ProductModel.create(product);
-            //create product images
+
             let id = ProductData.get().id;
             productImages.map((product) => (product.productId = id));
             const data = await ImagesProductModel.bulkCreate(productImages);
@@ -171,7 +204,7 @@ export class ProductService {
             throw ResponseError.badInput(err.message);
         }
     }
-    // update a Product
+
     async updateProduct(id: number, TProduct: TProduct) {
         const parInt = id;
         const { product, productImages } = TProduct;

@@ -58,11 +58,11 @@ export class AccountService {
 
         const passwordCompare = await bcrypt.compare(props.password, account.get().password);
         if (!passwordCompare) throw ResponseError.conflict('Wrong password');
-        const { password, ...rest } = account.get();
+        const { password, userGroup, ...rest } = account.get();
 
         let access_token = this.generateToken(rest);
         let tokenAdmin = this.generateTokenAdmin(rest);
-        if (rest.userGroup == 2) {
+        if (account.get().userGroup == 2) {
             return { role: 'ale@123', account: rest, token: tokenAdmin };
         }
 

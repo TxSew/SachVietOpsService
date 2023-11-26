@@ -42,6 +42,7 @@ export class DiscountService {
         if (!discount) throw ResponseError.notFound('discount not found');
         return discount;
     }
+
     async updateDiscount(id: number, discount: Partial<Discount>) {
         try {
             const updated = await DiscountModel.update(discount, {
@@ -54,7 +55,7 @@ export class DiscountService {
     }
 
     async removeDiscount(id) {
-        DiscountModel.destroy({
+        await DiscountModel.destroy({
             where: { id: id },
         });
     }

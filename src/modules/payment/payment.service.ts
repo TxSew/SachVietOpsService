@@ -3,6 +3,8 @@ import { appConfig } from 'src/constants/IConfig';
 import { MyConfigService } from 'src/myConfig.service';
 import { OrderDto } from 'src/submodules/models/OrderModel/Order';
 import { OrderService } from '../order/order.service';
+import { OrderModel } from '../order/order.schema';
+import { Op } from 'sequelize';
 
 const stripe = require('stripe')(
     'sk_test_51NytAnGgD3dbMpsnDslKorNDTNgk3ZT7dn8uEgkZbaXWIaSwXrGQBsxPygvP7SS7gLK5dnQRWSDI8VpAdrEKfvh1001G2Se1OM'
@@ -91,6 +93,10 @@ export class PaymentService {
                 },
             });
 
+            const orderNew = await OrderModel.findOne({
+                order: [['createdAt', 'DESC']],
+            });
+
             const session = await stripe.checkout.sessions.create({
                 invoice_creation: {
                     enabled: true,
@@ -118,11 +124,10 @@ export class PaymentService {
                         },
                     },
                 ],
-
                 line_items: [...line_items],
                 mode: 'payment',
-                success_url: `${appConfig.stripe.STRIPE_SUCCESS_URL}/${this.orderId}`,
-                cancel_url: `${this.configService.getStripeCancelUrl}/${495}`,
+                success_url: `${appConfig.stripe.STRIPE_SUCCESS_URL}/${orderNew.get().id + 1}`,
+                cancel_url: `${this.configService.getStripeCancelUrl}`,
             });
 
             return {
@@ -144,11 +149,9 @@ export class PaymentService {
                     orders: orders.metadata,
                     orderDetail: orderItems.orderDetail,
                 };
+                console.log('🚀 ~ file: payment.service.ts:152 ~ PaymentService ~ webhook ~ orderDto:', orderDto);
                 const order = (await this.orderService.createOrder(orderDto)) as any;
-
-                if (order) {
-                    this.orderId = order.id;
-                }
+                this.orderId = order.id;
         }
 
         response.json({ received: true });
