@@ -20,10 +20,9 @@ export class VoucherController {
         return this.voucherService.addVoucherUser(props);
     }
 
-    @Public()
     @Post('/getVoucher')
-    getOneDiscount(@CurrentAccount() account, @Body() voucher) {
-        return this.voucherService.getOneDiscount(account, voucher.voucher);
+    getOneDiscount(@CurrentAccount() account, @Body() order) {
+        return this.voucherService.getOneDiscount(account, order);
     }
 
     @Public()

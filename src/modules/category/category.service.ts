@@ -76,6 +76,7 @@ export class CategoryService {
         c.name,
         c.slug,
         c.deletedAt,
+        c.createdAt,
         c.image,
         p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
       FROM db_category c
@@ -87,6 +88,7 @@ export class CategoryService {
         c.parentId,
         c.name,
         c.slug,
+        c.createdAt,
         c.deletedAt,
         c.image,
         p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
@@ -95,7 +97,7 @@ export class CategoryService {
       LEFT JOIN db_category p ON c.parentId = p.id
       WHERE c.deletedAt IS NULL
     )
-    SELECT * FROM CategoryTree;
+    SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC;
   `;
         const [results] = await SequelizeBase.query(query);
         return results;

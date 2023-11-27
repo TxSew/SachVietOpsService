@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
 import { UserModel } from '../auth/auth.schema';
 import { DiscountModel } from '../discount/discount.shema';
 import { VoucherModel } from './voucher.schema';
+import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 
 @Injectable()
 export class VoucherService {
@@ -41,20 +42,33 @@ export class VoucherService {
             throw ResponseError.badInput('voucher already exists');
         }
     }
-    async getOneDiscount(account, voucher: Partial<string>) {
-        console.log('', account);
-        console.log('', voucher);
-        const discount = await VoucherModel.findOne({
+
+    async getOneDiscount(account, order: { code: string; money: number }) {
+        const discount = (await VoucherModel.findOne({
             include: [
                 {
                     model: DiscountModel,
                     as: 'discountVoucher',
-                    where: { code: voucher },
+                    where: { code: order.code },
                 },
             ],
             where: { userId: account.id },
-        });
-        return discount;
+        })) as any;
+
+        const numberUse = discount.dataValues;
+        const discountVoucher = discount.dataValues.discountVoucher.dataValues;
+
+        if (!discount) throw ResponseError.notFound('discount not found');
+
+        if (discountVoucher?.number_used >= discountVoucher.limit_number)
+            throw new HttpException('discount limited value', HttpStatus.FORBIDDEN);
+
+        if (order.money < discountVoucher.payment_limit) throw ResponseError.badInput('payment limit exceeded');
+
+        return {
+            message: 'success',
+            discount: discountVoucher,
+        };
     }
 
     async deleteVoucherUser(props: { id: number }) {
