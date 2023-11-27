@@ -111,6 +111,7 @@ export class OrderService {
 
     async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
         const resultOrder: any = orderDto.orders;
+        console.log('🚀 ~ file: order.service.ts:114 ~ OrderService ~ createOrder ~ resultOrder:', resultOrder);
         const dataDetail: any[] = orderDto.orderDetail;
         const detailDt: any[] = dataDetail.map((e) => {
             return {
@@ -132,6 +133,15 @@ export class OrderService {
             if (resultOrder.money < discount.payment_limit)
                 throw new HttpException('discount  maximum value', HttpStatus.FORBIDDEN);
             coupon = Number(discount.discount);
+            const numberUse = (await discount.number_used) + 1;
+            const updated = await DiscountModel.update(
+                {
+                    number_used: numberUse,
+                },
+                {
+                    where: { code: discount.code },
+                }
+            );
         }
 
         resultOrder.coupon = coupon;

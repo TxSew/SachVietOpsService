@@ -61,7 +61,7 @@ export class VoucherService {
         if (!discount) throw ResponseError.notFound('discount not found');
 
         if (discountVoucher?.number_used >= discountVoucher.limit_number)
-            throw new HttpException('discount limited value', HttpStatus.FORBIDDEN);
+            throw ResponseError.badInput('discount limited value');
 
         if (order.money < discountVoucher.payment_limit) throw ResponseError.badInput('payment limit exceeded');
 
