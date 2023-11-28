@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/guard/jwtGuard';
+import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { DiscountService } from './discount.service';
 
 @ApiTags('discount')
+@UseGuards(JwtAuthGuard)
 @Controller('discount')
 export class DiscountController {
     constructor(private discountService: DiscountService) {}
@@ -19,6 +20,7 @@ export class DiscountController {
     getOneDiscount(@Param('id') id: number) {
         return this.discountService.getOneUpdateDiscount(id);
     }
+
     @Post('store')
     createDiscount(@Body() discount: Discount) {
         return this.discountService.createDiscount(discount);
@@ -28,6 +30,7 @@ export class DiscountController {
     updateDiscount(@Param('id') id: number, @Body() discount: Discount) {
         return this.discountService.updateDiscount(id, discount);
     }
+
     @Post('checkDiscount')
     checkDiscount(@Param('id') id: number) {}
 

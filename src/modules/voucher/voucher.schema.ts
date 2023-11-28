@@ -13,6 +13,9 @@ export const VoucherModel = SequelizeBase.define<voucherModel>(
         userId: { type: DataTypes.INTEGER, primaryKey: true },
         discountId: { type: DataTypes.INTEGER },
         code: { type: DataTypes.STRING, allowNull: false },
+        status: {
+            type: DataTypes.STRING,
+        },
     },
     {
         freezeTableName: true,

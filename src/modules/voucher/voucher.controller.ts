@@ -8,16 +8,19 @@ import { VoucherService } from './voucher.service';
 export class VoucherController {
     constructor(private readonly voucherService: VoucherService) {}
 
-    @Public()
     @Post('')
-    getVoucherByUser(@Body() props: { userId: number }) {
-        return this.voucherService.getAllVoucherByUser(props);
+    getVoucherByUser(@CurrentAccount() account) {
+        return this.voucherService.getAllVoucherByUser(account.id);
     }
 
-    @Public()
+    @Post('/getVOucherUserIsNull')
+    getVoucherByUserIsnull(@CurrentAccount() account) {
+        return this.voucherService.getAllVoucherByUserIsNull(account.id);
+    }
+
     @Post('/add-voucher')
-    addVoucherUser(@Body() props: Voucher) {
-        return this.voucherService.addVoucherUser(props);
+    addVoucherUser(@Body() props: Voucher, @CurrentAccount() account) {
+        return this.voucherService.addVoucherUser(props, account);
     }
 
     @Post('/getVoucher')

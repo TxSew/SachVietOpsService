@@ -11,7 +11,9 @@ export class DiscountService {
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const discountData = await DiscountModel.findAll({
-            where: {},
+            where: {
+                status: null,
+            },
             limit: limited,
             offset: offset,
         });
@@ -26,13 +28,16 @@ export class DiscountService {
         const findOne = await DiscountModel.findOne({
             where: { code: props.code },
         });
+
         if (findOne) {
             throw ResponseError.badInput('Discount already exits');
         }
+
         props.code = props.code.toUpperCase();
         const discount = await DiscountModel.create(props);
         return discount;
     }
+
     async getOneUpdateDiscount(id: number) {
         const discount = await DiscountModel.findOne({
             where: {

@@ -8,7 +8,7 @@ import { CategoryQueryDto } from './dto/Category.schema';
 @Injectable()
 export class CategoryService {
     async getAll(query: CategoryQueryDto): Promise<any> {
-        const limit = query.limit || 4;
+        const limit = query.limit || 7;
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
@@ -22,7 +22,7 @@ export class CategoryService {
               c.createdAt,
               c.deletedAt,
               c.image,
-              p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+              p.name AS parentName 
             FROM db_category c
             LEFT JOIN db_category p ON c.parentId = p.id
             WHERE c.id = 1 AND c.deletedAt IS NULL
@@ -35,7 +35,7 @@ export class CategoryService {
               c.createdAt,
               c.deletedAt,
               c.image,
-              p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+              p.name AS parentName 
             FROM db_category c
             JOIN CategoryTree ct ON c.parentId = ct.id
             LEFT JOIN db_category p ON c.parentId = p.id
@@ -49,13 +49,57 @@ export class CategoryService {
         return { totalPage, limit: limited, page, category: results };
     }
 
+    async getCategories(query: CategoryQueryDto): Promise<any> {
+        const limit = query.limit || 11;
+        const page = query.page || 1;
+        const limited = Number(limit);
+        const offset = (Number(page) - 1) * limited;
+        const qr = `
+        WITH RECURSIVE CategoryTree AS (
+            SELECT
+              c.id,
+              c.parentId,
+              c.name,
+              c.slug,
+              c.createdAt,
+              c.deletedAt,
+              c.image,
+              p.name AS parentName 
+            FROM db_category c
+            LEFT JOIN db_category p ON c.parentId = p.id
+            WHERE c.id = 1 AND c.deletedAt IS NULL
+            UNION ALL
+            SELECT
+              c.id,
+              c.parentId,
+              c.name,
+              c.slug,
+              c.createdAt,
+              c.deletedAt,
+              c.image,
+              p.name AS parentName 
+            FROM db_category c
+            JOIN CategoryTree ct ON c.parentId = ct.id
+            LEFT JOIN db_category p ON c.parentId = p.id
+            WHERE c.deletedAt IS NULL
+          )
+          SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC LIMIT ${limited} OFFSET ${offset}
+    `;
+        const [results] = await SequelizeBase.query(qr);
+        console.log('🚀 ~ file: category.service.ts:91 ~ CategoryService ~ getCategories ~ results:', results);
+        const getAll = await this.filter();
+        const totalPage = Math.ceil(getAll.length / limited);
+        const result = await this.buildCategoryHierarchy(results);
+        return { totalPage, limit: limited, page, category: result };
+    }
+
     async buildCategoryHierarchy(categories) {
         const categoryMap = {};
         const rootCategories = [];
         categories.forEach((category) => {
             category.subcategories = [];
             categoryMap[category.id] = category;
-            if (category.parentId === 1) {
+            if (category.parentId === null) {
                 rootCategories.push(category);
             } else {
                 const parentCategory = categoryMap[category.parentId];
@@ -124,6 +168,7 @@ export class CategoryService {
     }
 
     async updateCategory(id: number, category: Category) {
+        console.log('🚀 ~ file: category.service.ts:129 ~ CategoryService ~ updateCategory ~ category:', category);
         if (!category) throw ResponseError.badInput('Category not found');
 
         const update = await CategoryModel.update(category, {

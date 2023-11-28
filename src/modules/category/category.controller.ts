@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Category } from 'src/submodules/models/ProductModel/Category';
 import { CategoryService } from './category.service';
 import { CategoryQueryDto } from './dto/Category.schema';
 import { serviceName } from 'src/constants/IServiceName';
-import { Public } from 'src/guard/jwtGuard';
+import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 @ApiTags(serviceName.category)
+@UseGuards(JwtAuthGuard)
 @Controller(serviceName.category)
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
@@ -14,6 +15,12 @@ export class CategoryController {
     @Get('')
     getAll(@Query() query: CategoryQueryDto) {
         return this.categoryService.getAll(query);
+    }
+
+    @Public()
+    @Get('getCategories')
+    getCategories(@Query() query: CategoryQueryDto) {
+        return this.categoryService.getCategories(query);
     }
 
     @Public()

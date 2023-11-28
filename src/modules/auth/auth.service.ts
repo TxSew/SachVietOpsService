@@ -90,7 +90,6 @@ export class AccountService {
         );
         return { message: 'Password changed successfully' };
     }
-
     async verifyToken(props: { token: string }) {
         const verify = await this.jwtService.verify(props.token, {
             secret: appConfig.jwt.secret,

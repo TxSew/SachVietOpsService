@@ -73,6 +73,12 @@ export class UserService implements OnModuleInit {
         }
     }
 
+    async getMe(id) {
+        const User = await UserModel.findOne({
+            where: { id: id },
+        });
+        return User;
+    }
     public async updateNewPassword(id: number, newPassword: string): Promise<unknown> {
         try {
             const user = await UserModel.findOne({

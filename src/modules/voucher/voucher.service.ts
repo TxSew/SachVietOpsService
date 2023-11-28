@@ -1,14 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
 import { UserModel } from '../auth/auth.schema';
 import { DiscountModel } from '../discount/discount.shema';
 import { VoucherModel } from './voucher.schema';
-import { Discount } from 'src/submodules/models/DiscountModel/Discount';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class VoucherService {
-    async getAllVoucherByUser(props: { userId: number }) {
+    async getAllVoucherByUser(id) {
         const discount = await VoucherModel.findAll({
             include: [
                 {
@@ -21,26 +21,49 @@ export class VoucherService {
                     as: 'discountVoucher',
                 },
             ],
-            where: { userId: props.userId },
+            where: {
+                userId: id,
+            },
+        });
+        return discount;
+    }
+    async getAllVoucherByUserIsNull(id) {
+        const discount = await VoucherModel.findAll({
+            include: [
+                {
+                    model: UserModel,
+                    attributes: ['fullName', 'email', 'id'],
+                    as: 'userVoucher',
+                },
+                {
+                    model: DiscountModel,
+                    as: 'discountVoucher',
+                },
+            ],
+            where: {
+                userId: id,
+                status: null,
+            },
         });
         return discount;
     }
 
-    async addVoucherUser(props: Voucher) {
-        try {
-            const discount = await VoucherModel.findOne({
-                where: { discountId: props.discountId, userId: props.userId },
-            });
+    async addVoucherUser(props: Voucher, account) {
+        if (!account) throw ResponseError.badInput('authorization');
 
-            if (discount) throw ResponseError.badInput('voucher already exists');
+        const discount = await VoucherModel.findOne({
+            where: { discountId: props.discountId, userId: account.id },
+        });
 
-            const vouchers = await VoucherModel.create({
-                ...props,
-            });
-            return vouchers;
-        } catch (err) {
-            throw ResponseError.badInput('voucher already exists');
-        }
+        if (discount) throw ResponseError.badInput('voucher already exists');
+
+        const data = {
+            ...props,
+            userId: account.id,
+        };
+
+        const vouchers = await VoucherModel.create(data);
+        return vouchers;
     }
 
     async getOneDiscount(account, order: { code: string; money: number }) {
@@ -55,7 +78,6 @@ export class VoucherService {
             where: { userId: account.id },
         })) as any;
 
-        const numberUse = discount.dataValues;
         const discountVoucher = discount.dataValues.discountVoucher.dataValues;
 
         if (!discount) throw ResponseError.notFound('discount not found');
