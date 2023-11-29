@@ -12,9 +12,9 @@ export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
     @Public()
-    @Get('')
-    getAll(@Query() query: CategoryQueryDto) {
-        return this.categoryService.getAll(query);
+    @Post('')
+    getAll(@Body() props) {
+        return this.categoryService.getAll(props);
     }
 
     @Public()

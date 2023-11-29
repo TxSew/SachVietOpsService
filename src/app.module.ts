@@ -15,31 +15,30 @@ import { CategoryController } from './modules/category/category.controller';
 import { CategoryService } from './modules/category/category.service';
 import { DiscountController } from './modules/discount/discount.controller';
 import { DiscountService } from './modules/discount/discount.service';
+import { EmailModule } from './modules/email/email.module';
+import { OtpController } from './modules/forgotPassword/forgot-password.controller';
+import { OtpService } from './modules/forgotPassword/forgot-password.service';
+import { NewService } from './modules/news/new.service';
+import { NewsController } from './modules/news/news.controller';
 import { OrderController } from './modules/order/order.controller';
 import { OrderService } from './modules/order/order.service';
+import { PaymentController } from './modules/payment/payment.controller';
+import { PaymentService } from './modules/payment/payment.service';
 import { ProducerController } from './modules/producer/producer.controller';
 import { ProducerService } from './modules/producer/producer.service';
 import { ProductController } from './modules/product/product.controller';
 import { ProductService } from './modules/product/product.service';
 import { ProvinceController } from './modules/province/province.controller';
 import { ProvinceService } from './modules/province/province.service';
+import { ChatModule } from './modules/socket/chat.module';
 import { StatisticalController } from './modules/statistical/statistical.controller';
 import { StatisticalService } from './modules/statistical/statistical.service';
 import { UserController } from './modules/user/user.controller';
 import { UserService } from './modules/user/user.service';
-import { EmailModule } from './modules/email/email.module';
-import { OtpController } from './modules/forgotPassword/forgot-password.controller';
-import { OtpService } from './modules/forgotPassword/forgot-password.service';
-import { PaymentController } from './modules/payment/payment.controller';
-import { PaymentService } from './modules/payment/payment.service';
 import { UserAddressController } from './modules/userAddress/userAddress.controller';
 import { UserAddressService } from './modules/userAddress/userAddress.service';
 import { VoucherController } from './modules/voucher/voucher.controller';
 import { VoucherService } from './modules/voucher/voucher.service';
-import { NewsController } from './modules/news/news.controller';
-import { NewService } from './modules/news/new.service';
-import { SocketModule } from './modules/socket/socket.module';
-import { MessageController } from './modules/sendMessage/sendMessage';
 dotenv.config();
 @Module({
     imports: [
@@ -60,6 +59,7 @@ dotenv.config();
         CacheModule.register({
             ttl: 30,
         }),
+        ChatModule,
     ],
     controllers: [
         AccountController,

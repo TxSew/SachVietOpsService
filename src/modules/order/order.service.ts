@@ -111,7 +111,6 @@ export class OrderService {
 
     async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
         const resultOrder: any = orderDto.orders;
-        console.log('🚀 ~ file: order.service.ts:114 ~ OrderService ~ createOrder ~ resultOrder:', resultOrder);
         const dataDetail: any[] = orderDto.orderDetail;
         const detailDt: any[] = dataDetail.map((e) => {
             return {

@@ -7,11 +7,12 @@ import { CategoryQueryDto } from './dto/Category.schema';
 
 @Injectable()
 export class CategoryService {
-    async getAll(query: CategoryQueryDto): Promise<any> {
+    async getAll(query: CategoryQueryDto) {
         const limit = query.limit || 5;
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
+        const keyword = query.keyword || '';
         const qr = `
         WITH RECURSIVE CategoryTree AS (
             SELECT
@@ -41,10 +42,11 @@ export class CategoryService {
             LEFT JOIN db_category p ON c.parentId = p.id
             WHERE c.deletedAt IS NULL
           )
-          SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC LIMIT ${limited} OFFSET ${offset}
+          SELECT * FROM CategoryTree t WHERE t.name like '%${keyword}%' ORDER BY t.createdAt  DESC LIMIT ${limited} OFFSET ${offset} 
     `;
         const [results] = await SequelizeBase.query(qr);
         const getAll = await this.filter();
+
         const totalPage = Math.ceil(getAll.length / limited);
         return { totalPage, limit: limited, page, category: results };
     }
