@@ -4,7 +4,7 @@ import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
 import { UserModel } from '../auth/auth.schema';
 import { DiscountModel } from '../discount/discount.shema';
 import { VoucherModel } from './voucher.schema';
-import { Op } from 'sequelize';
+import moment from 'moment';
 
 @Injectable()
 export class VoucherService {
@@ -82,10 +82,19 @@ export class VoucherService {
 
         if (!discount) throw ResponseError.notFound('discount not found');
 
+        if (Date.now() > discountVoucher.expiration_date) {
+            throw ResponseError.badInput('payment date exceeded');
+        }
         if (discountVoucher?.number_used >= discountVoucher.limit_number)
             throw ResponseError.badInput('discount limited value');
 
-        if (order.money < discountVoucher.payment_limit) throw ResponseError.badInput('payment limit exceeded');
+        if (order.money < discountVoucher.payment_limit)
+            throw ResponseError.badInput({
+                result: {
+                    message: 'payment limit exceeded',
+                    value: discountVoucher.payment_limit,
+                },
+            });
 
         return {
             message: 'success',

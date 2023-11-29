@@ -38,6 +38,8 @@ import { VoucherController } from './modules/voucher/voucher.controller';
 import { VoucherService } from './modules/voucher/voucher.service';
 import { NewsController } from './modules/news/news.controller';
 import { NewService } from './modules/news/new.service';
+import { SocketModule } from './modules/socket/socket.module';
+import { MessageController } from './modules/sendMessage/sendMessage';
 dotenv.config();
 @Module({
     imports: [

@@ -8,7 +8,7 @@ import { CategoryQueryDto } from './dto/Category.schema';
 @Injectable()
 export class CategoryService {
     async getAll(query: CategoryQueryDto): Promise<any> {
-        const limit = query.limit || 7;
+        const limit = query.limit || 5;
         const page = query.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
@@ -168,9 +168,12 @@ export class CategoryService {
     }
 
     async updateCategory(id: number, category: Category) {
-        console.log('🚀 ~ file: category.service.ts:129 ~ CategoryService ~ updateCategory ~ category:', category);
         if (!category) throw ResponseError.badInput('Category not found');
+        const existingCategory = await CategoryModel.findOne({
+            where: { name: category.name },
+        });
 
+        if (existingCategory) throw ResponseError.badInput('Name already exists');
         const update = await CategoryModel.update(category, {
             where: { id: id },
         });
