@@ -1,6 +1,10 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
-export const CommentModel = SequelizeBase.define<any>(
+import { Comment } from 'src/submodules/models/CommentModel/Comment';
+import { UserModel } from '../auth/auth.schema';
+import { ProductModel } from '../product';
+interface CommentSchema extends Model<InferAttributes<Comment>, InferCreationAttributes<Comment>> {}
+export const CommentModel = SequelizeBase.define<CommentSchema>(
     'db_comment',
     {
         userId: {
@@ -12,7 +16,7 @@ export const CommentModel = SequelizeBase.define<any>(
         content: {
             type: DataTypes.STRING,
         },
-        images: {
+        image: {
             type: DataTypes.STRING,
         },
         star: {
@@ -24,3 +28,13 @@ export const CommentModel = SequelizeBase.define<any>(
         paranoid: true,
     }
 );
+
+CommentModel.belongsTo(UserModel, {
+    as: 'userComment',
+    foreignKey: 'userId',
+});
+
+CommentModel.belongsTo(ProductModel, {
+    as: 'productComment',
+    foreignKey: 'productId',
+});

@@ -65,6 +65,7 @@ export const ProductModel = SequelizeBase.define<productModel>(
         paranoid: true,
     }
 );
+
 ProductModel.beforeCreate((product: Product) => {
     product.slug = slugify(product.title, { lower: true, strict: true });
 });

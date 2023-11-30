@@ -39,6 +39,8 @@ import { UserAddressController } from './modules/userAddress/userAddress.control
 import { UserAddressService } from './modules/userAddress/userAddress.service';
 import { VoucherController } from './modules/voucher/voucher.controller';
 import { VoucherService } from './modules/voucher/voucher.service';
+import { CommentController } from './modules/comment/comment.controller';
+import { CommentService } from './modules/comment/comment.service';
 dotenv.config();
 @Module({
     imports: [
@@ -77,6 +79,7 @@ dotenv.config();
         UserAddressController,
         CartController,
         NewsController,
+        CommentController,
     ],
 
     providers: [
@@ -98,6 +101,7 @@ dotenv.config();
         UserAddressService,
         CartService,
         NewService,
+        CommentService,
     ],
 })
 export class AppModule {}
