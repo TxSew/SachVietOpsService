@@ -9,16 +9,16 @@ import { User } from 'src/submodules/models/UserModel/User';
 import { EmailService } from '../email/email.service';
 import { UserModel } from './auth.schema';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
-@UseGuards(JwtAuthGuard)
 export class AccountService {
     constructor(
         private jwtService: JwtService,
         private emailService: EmailService
     ) {}
+    // private client = new OAuth2Client(this.myConfigService.getGoogleClientId);
 
-    @Public()
     async register(account: Partial<User>) {
         if (!account.email || !account.password) throw ResponseError.notFound('Please enter your email or password');
         const hash = await this.hashPassword(account.password, 10);
@@ -46,7 +46,6 @@ export class AccountService {
         };
     }
 
-    @Public()
     async login(props: { email: string; password: string }) {
         const account = await UserModel.findOne({
             where: { email: props.email },
@@ -89,6 +88,28 @@ export class AccountService {
             }
         );
         return { message: 'Password changed successfully' };
+    }
+
+    async loginGoogle(props) {
+        const account = await UserModel.findOne({
+            where: { email: props.email },
+        });
+        let newUser;
+        if (!account) {
+            newUser = await UserModel.create(props);
+            const passwordCompare = await bcrypt.compare(props.password, account.get().password);
+            if (!passwordCompare) throw ResponseError.conflict('Wrong password');
+        }
+
+        const { password, userGroup, ...rest } = account.get();
+
+        let access_token = this.generateToken(rest);
+        let tokenAdmin = this.generateTokenAdmin(rest);
+        if (account.get().userGroup == 2) {
+            return { role: 'ale@123', account: rest, token: tokenAdmin };
+        }
+
+        return { account: rest, token: access_token };
     }
     async verifyToken(props: { token: string }) {
         const verify = await this.jwtService.verify(props.token, {
