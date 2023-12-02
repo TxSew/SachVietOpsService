@@ -229,10 +229,12 @@ export class ProductService {
                 where: { id: parInt },
             });
 
-            for (var i = 0; i < productImages.length; i++) {
-                productImages[i].productId = parInt;
-                await ImagesProductModel.bulkCreate(productImages);
-            }
+            const newImages = productImages.map((image: any) => {
+                image.productId = parInt;
+                return image;
+            });
+
+            await ImagesProductModel.bulkCreate(newImages);
             return updated;
         } catch (errors) {
             throw ResponseError.badInput('Product update failed');

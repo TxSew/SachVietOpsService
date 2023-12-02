@@ -17,7 +17,7 @@ export class AccountService {
         private jwtService: JwtService,
         private emailService: EmailService
     ) {}
-    // private client = new OAuth2Client(this.myConfigService.getGoogleClientId);
+    private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
     async register(account: Partial<User>) {
         if (!account.email || !account.password) throw ResponseError.notFound('Please enter your email or password');
@@ -94,6 +94,7 @@ export class AccountService {
         const account = await UserModel.findOne({
             where: { email: props.email },
         });
+
         let newUser;
         if (!account) {
             newUser = await UserModel.create(props);
@@ -105,6 +106,7 @@ export class AccountService {
 
         let access_token = this.generateToken(rest);
         let tokenAdmin = this.generateTokenAdmin(rest);
+
         if (account.get().userGroup == 2) {
             return { role: 'ale@123', account: rest, token: tokenAdmin };
         }

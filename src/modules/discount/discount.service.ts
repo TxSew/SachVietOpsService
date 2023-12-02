@@ -2,17 +2,20 @@ import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nes
 import { Discount } from 'src/submodules/models/DiscountModel/Discount';
 import { DiscountModel } from './discount.shema';
 import { ResponseError } from 'src/helpers/ResponseError';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class DiscountService {
     async GetAll(props) {
         let limit = props.limit || 6;
         const page = props.page || 1;
+        const keyword = props.keyword || '';
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
         const discountData = await DiscountModel.findAll({
             where: {
-                status: null,
+                // status: null,
+                [Op.or]: [{ code: { [Op.like]: `%${keyword}%` } }],
             },
             limit: limited,
             offset: offset,

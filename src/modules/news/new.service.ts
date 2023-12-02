@@ -35,9 +35,10 @@ export class NewService {
         });
         return getNew;
     }
+
     async getOne(id: number) {
         const getNew = await NewsModel.findOne({
-            where: { slug: id },
+            where: { id: id },
         });
         return getNew;
     }

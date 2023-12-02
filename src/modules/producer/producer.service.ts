@@ -3,16 +3,21 @@ import { Producer, TProducer } from 'src/submodules/models/producerModel/produce
 import { ProducerModel } from './producer.schema';
 import { ProducerQueyDto } from './dto/query-producer';
 import { ResponseError } from 'src/helpers/ResponseError';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProducerService {
-    async getListProducer(query: ProducerQueyDto): Promise<TProducer> {
+    async getListProducer(query): Promise<any> {
         const limited = Number(query.limit) || 6;
         const page = query.page || 1;
+        const keyword = query.keyword || '';
         const offset = (Number(page) - 1) * limited;
         const findAllProducer = await ProducerModel.findAll({});
         try {
             const data = await ProducerModel.findAll({
+                where: {
+                    [Op.or]: [{ name: { [Op.like]: `%${keyword}%` } }],
+                },
                 limit: limited,
                 offset: offset,
             });

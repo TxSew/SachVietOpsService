@@ -15,6 +15,7 @@ export class NewsController {
     geOne(@Param('id') id: number) {
         return this.newsService.getOne(Number(id));
     }
+
     @Public()
     @Get('detail/:id')
     getDetail(@Param('id') slug: string) {

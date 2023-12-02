@@ -8,11 +8,11 @@ import { CommentModel } from './comment.schema';
 export class CommentService {
     async getCommentByProduct(props: { productId: number; page: number; limit: number }): Promise<any> {
         if (!props.productId) throw ResponseError.badInput('productId is required');
-        const limit = props.limit || 5;
+        const limit = props.limit || 4;
         const page = props.page || 1;
         const offset = (Number(page) - 1) * Number(limit);
 
-        const comments = await CommentModel.findAll({
+        const comments = await CommentModel.findAndCountAll({
             limit: Number(limit),
             offset: offset,
             include: [
@@ -28,7 +28,10 @@ export class CommentService {
 
             where: { productId: props.productId },
         });
-        return comments;
+        return {
+            totalPage: comments.count,
+            comments: comments.rows,
+        };
     }
 
     async addComment(comment, account) {

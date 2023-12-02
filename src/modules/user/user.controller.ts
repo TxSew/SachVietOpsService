@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/submodules/models/UserModel/User';
 import { ApiTags } from '@nestjs/swagger';
@@ -12,8 +12,8 @@ import { CurrentAccount } from 'src/guard/currentUser';
 export class UserController {
     constructor(private userService: UserService) {}
     @Public()
-    @Get('')
-    public GetUser(@Query() query: UserQueryDto) {
+    @Post('')
+    public GetUser(@Body() query: UserQueryDto) {
         return this.userService.getUsers(query);
     }
 

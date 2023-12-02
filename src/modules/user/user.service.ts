@@ -8,7 +8,7 @@ import { UserQueryDto } from './dto/query-users';
 @Injectable()
 export class UserService implements OnModuleInit {
     onModuleInit() {}
-    public async getUsers(query: UserQueryDto): Promise<TUser> {
+    public async getUsers(query) {
         const search = query.keyword || '';
         const limit: number = Number(query.limit) || 5;
         const page: number = Number(query.page) || 1;

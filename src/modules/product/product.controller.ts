@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/guard/jwtGuard';
 import { Product, TProduct, TProductResponse } from 'src/submodules/models/ProductModel/Product';
 import { ProductService } from './product.service';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('products')
 @Controller('products')

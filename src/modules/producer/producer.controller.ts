@@ -11,8 +11,8 @@ export class ProducerController {
     constructor(private readonly producerService: ProducerService) {}
 
     @Public()
-    @Get('')
-    getAll(@Query() query: ProducerQueyDto): Promise<TProducer> {
+    @Post('')
+    async getAll(@Body() query): Promise<any> {
         return this.producerService.getListProducer(query);
     }
 
@@ -23,7 +23,6 @@ export class ProducerController {
 
     @Post('store')
     createProducer(@Body() data: Producer): Promise<Producer> {
-        console.log(data);
         return this.producerService.createProducer(data);
     }
 
