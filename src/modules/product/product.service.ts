@@ -240,6 +240,18 @@ export class ProductService {
             throw ResponseError.badInput('Product update failed');
         }
     }
+    async checkQuantity(props: { productId: number; quantity: number }) {
+        if (!props.productId) throw ResponseError.badInput('Product not found');
+        if (!props.quantity) throw ResponseError.badInput('Product not quantity');
+        const product = await ProductModel.findOne({
+            where: { id: props.productId },
+        });
+        if (props.quantity > product.get().quantity)
+            throw ResponseError.badInput('quantity exceeds quantity Inventory');
+        return {
+            message: 'quantiy successfully',
+        };
+    }
     async UpdateProductInventory(props) {
         try {
             const { id, newQuantity } = props;

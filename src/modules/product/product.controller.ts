@@ -50,6 +50,12 @@ export class ProductController {
         return this.productService.updateProduct(Number(id), product);
     }
 
+    @Public()
+    @Post('/checkQuantity')
+    checkQuantity(@Body() props: { productId: number; quantity: number }) {
+        return this.productService.checkQuantity(props);
+    }
+
     @Delete(':id')
     async removeProduct(@Param('id') id: number) {
         return this.productService.removeProductTrashed(Number(id));
