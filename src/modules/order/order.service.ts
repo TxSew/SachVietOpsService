@@ -58,7 +58,15 @@ export class OrderService {
             ],
         });
 
-        const orders = await OrderModel.findAll({});
+        const orders = await OrderModel.findAll({
+            where: isWhere,
+            include: [
+                {
+                    model: UserModel,
+                    as: 'users',
+                },
+            ],
+        });
         const totalPage = Math.ceil(orders.length / limited);
         return {
             totalPage,
@@ -72,7 +80,6 @@ export class OrderService {
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const orders = await OrderModel.findAll({});
 
         const orderCurrent = await OrderModel.findAll({
             limit: limited,
@@ -94,6 +101,13 @@ export class OrderService {
                     ],
                 },
             ],
+            order: [['createdAt', 'DESC']],
+            where: {
+                userID: id,
+            },
+        });
+
+        const orders = await OrderModel.findAll({
             order: [['createdAt', 'DESC']],
             where: {
                 userID: id,

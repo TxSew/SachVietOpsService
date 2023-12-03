@@ -20,7 +20,12 @@ export class DiscountService {
             limit: limited,
             offset: offset,
         });
-        const getList = await DiscountModel.findAll({});
+        const getList = await DiscountModel.findAll({
+            where: {
+                // status: null,
+                [Op.or]: [{ code: { [Op.like]: `%${keyword}%` } }],
+            },
+        });
         return {
             totalPage: Math.ceil(getList.length / limited),
             data: discountData,

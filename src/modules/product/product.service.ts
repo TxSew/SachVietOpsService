@@ -67,7 +67,7 @@ export class ProductService {
             };
         }
         try {
-            const Product = await ProductModel.findAndCountAll({
+            const Product = await ProductModel.findAll({
                 where: whereClause,
                 limit: limited,
                 offset,
@@ -99,8 +99,8 @@ export class ProductService {
                     throw ResponseError.badInput(`Unable to parse ${err.message}`);
                 });
             const getAll: any = await ProductModel.findAll({});
-            let totalPage = Math.ceil(getAll.length / limited - 1);
-            return { totalPage, pageSize: Product.rows.length, limit: limited, page, products: Product.rows };
+            let totalPage = Math.ceil(getAll.length / limited);
+            return { totalPage, pageSize: Product.length, limit: limited, page, products: Product };
         } catch (err) {
             throw ResponseError.unexpected(err);
         }

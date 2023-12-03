@@ -13,7 +13,9 @@ export class UserService implements OnModuleInit {
         const limit: number = Number(query.limit) || 5;
         const page: number = Number(query.page) || 1;
         const offset = (page - 1) * limit;
-        const users = await UserModel.findAll({});
+        const users = await UserModel.findAll({
+            order: [['createdAt', 'DESC']],
+        });
         try {
             const GetUsers = await UserModel.findAll({
                 limit,

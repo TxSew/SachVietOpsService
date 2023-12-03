@@ -10,7 +10,6 @@ export class NewService {
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const listAll = await NewsModel.findAll({});
         let status = {};
         if (props.status) {
             status = {
@@ -20,6 +19,9 @@ export class NewService {
         const news = await NewsModel.findAll({
             limit: limited,
             offset: offset,
+            where: status,
+        });
+        const listAll = await NewsModel.findAll({
             where: status,
         });
         return {

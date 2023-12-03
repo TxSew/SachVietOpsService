@@ -12,7 +12,6 @@ export class ProducerService {
         const page = query.page || 1;
         const keyword = query.keyword || '';
         const offset = (Number(page) - 1) * limited;
-        const findAllProducer = await ProducerModel.findAll({});
         try {
             const data = await ProducerModel.findAll({
                 where: {
@@ -20,6 +19,11 @@ export class ProducerService {
                 },
                 limit: limited,
                 offset: offset,
+            });
+            const findAllProducer = await ProducerModel.findAll({
+                where: {
+                    [Op.or]: [{ name: { [Op.like]: `%${keyword}%` } }],
+                },
             });
             const pageTotal = Math.ceil(findAllProducer.length / limited);
             return {
