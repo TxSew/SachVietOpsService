@@ -9,3 +9,8 @@ export interface Comment extends BaseModel, Modified, Model {
     content: string;
     star: number;
 }
+
+export interface CommentImg extends BaseModel, Modified, Model {
+    commentId: number;
+    images: string;
+}

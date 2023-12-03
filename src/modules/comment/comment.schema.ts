@@ -3,6 +3,7 @@ import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { Comment } from 'src/submodules/models/CommentModel/Comment';
 import { UserModel } from '../auth/auth.schema';
 import { ProductModel } from '../product';
+import { CommentImgModel } from './commentImages.chema';
 interface CommentSchema extends Model<InferAttributes<Comment>, InferCreationAttributes<Comment>> {}
 export const CommentModel = SequelizeBase.define<CommentSchema>(
     'db_comment',
@@ -37,4 +38,8 @@ CommentModel.belongsTo(UserModel, {
 CommentModel.belongsTo(ProductModel, {
     as: 'productComment',
     foreignKey: 'productId',
+});
+CommentModel.hasMany(CommentImgModel, {
+    as: 'comment',
+    foreignKey: 'commentId',
 });

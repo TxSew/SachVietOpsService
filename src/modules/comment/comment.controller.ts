@@ -15,7 +15,7 @@ export class CommentController {
     }
 
     @Post('store')
-    addCommentByUser(@Body() comment, @CurrentAccount() account) {
+    addCommentByUser(@Body() comment, @CurrentAccount() account): Promise<any> {
         return this.commentService.addComment(comment, account);
     }
 

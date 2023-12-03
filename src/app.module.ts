@@ -61,7 +61,7 @@ dotenv.config();
         CacheModule.register({
             ttl: 30,
         }),
-        ChatModule,
+        // ChatModule,
     ],
     controllers: [
         AccountController,
