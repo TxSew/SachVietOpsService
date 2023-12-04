@@ -249,7 +249,7 @@ export class ProductService {
         if (props.quantity > product.get().quantity)
             throw ResponseError.badInput('quantity exceeds quantity Inventory');
         return {
-            message: 'quantiy successfully',
+            message: 'quantity successfully',
         };
     }
     async UpdateProductInventory(props) {
