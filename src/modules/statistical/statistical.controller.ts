@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { StatisticalService } from './statistical.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/guard/jwtGuard';
@@ -24,5 +24,10 @@ export class StatisticalController {
     @Get('/revenueToday')
     getStatisticalByDate(): Promise<any> {
         return this.statisticalService.getStatisticalToday();
+    }
+    @Public()
+    @Get('twelveMonthsData')
+    getTwelveMonthsData(@Body() props): Promise<any> {
+        return this.statisticalService.getTwelveMonths(props);
     }
 }
