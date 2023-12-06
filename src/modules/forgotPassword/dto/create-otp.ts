@@ -14,4 +14,9 @@ export class CreateOtpDto {
     @IsNotEmpty({ message: 'Code should not be empty' })
     @IsString({ message: 'Code should be a string' })
     code: string;
+
+    @ApiProperty({ example: '123456' })
+    @IsNotEmpty({ message: 'Code should not be empty' })
+    @IsString({ message: 'Code should be a string' })
+    token: string;
 }

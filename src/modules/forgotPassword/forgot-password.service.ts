@@ -26,8 +26,6 @@ export class OtpService {
         otp.code = this.generateOTP();
         otp.id = user.get().id;
 
-        await this.createOtp(otp);
-
         const email = new CreateEmailDto();
         email.to = user.email;
 
@@ -47,11 +45,18 @@ export class OtpService {
             secret: 'forgotPassword',
             expiresIn: Math.floor(Date.now() / 1000) + 3 * 60,
         });
+        otp.token = forgotPasswordToken;
+        await this.createOtp(otp);
         return { forgot_password_token: forgotPasswordToken };
     }
-    async verifyOtpAndResetPassword(props: { email: string; otp: string; token: string; password: string }) {
+    async verifyOtpAndResetPassword(props: { email: string; otp: string; password: string }) {
         try {
-            const decoded = await this.jwtService.verify(props.token, {
+            const getToken = (await OptModel.findOne({
+                where: { email: props.email },
+            }).then((res) => {
+                return res;
+            })) as any;
+            const decoded = await this.jwtService.verify(getToken.token, {
                 secret: 'forgotPassword',
             });
 

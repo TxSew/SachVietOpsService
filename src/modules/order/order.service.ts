@@ -10,6 +10,7 @@ import { ProductModel } from '../product/product.schema';
 import { OrderDetailModel } from './dto/orderDetail.schema';
 import { OrderQueryDto } from './dto/query-orders';
 import { OrderModel } from './order.schema';
+import { SequelizeBase } from 'src/configs/SequelizeConfig';
 
 @Injectable()
 export class OrderService {
@@ -124,6 +125,8 @@ export class OrderService {
     }
 
     async createOrder(orderDto: Partial<OrderDto>): Promise<TOrderResponse> {
+        const transaction = await SequelizeBase.transaction();
+
         const resultOrder: any = orderDto.orders;
         const dataDetail: any[] = orderDto.orderDetail;
         const detailDt: any[] = dataDetail.map((e) => {
@@ -160,28 +163,33 @@ export class OrderService {
         resultOrder.coupon = coupon;
         const priceTotal = detailDt.reduce((total, current) => total + current.price * current.quantity, 0);
         resultOrder.money = priceTotal;
-        let results = await OrderModel.create(resultOrder).then(async (res) => {
-            let id = await res.get().id;
-            const data = {
-                subject: 'Order successfully',
-                to: resultOrder.email,
-                template: './order',
-                context: {
-                    email: resultOrder.email,
-                    code: id,
-                },
-            };
-            await this.emailService.sendMailTemplate(data);
+        try {
+            let results = await OrderModel.create(resultOrder).then(async (res) => {
+                let id = await res.get().id;
+                const data = {
+                    subject: 'Order successfully',
+                    to: resultOrder.email,
+                    template: './order',
+                    context: {
+                        email: resultOrder.email,
+                        code: id,
+                    },
+                };
+                await this.emailService.sendMailTemplate(data);
 
-            detailDt.map((detailDt) => {
-                return (detailDt.orderID = id);
+                detailDt.map((detailDt) => {
+                    return (detailDt.orderID = id);
+                });
+
+                const detailData = await OrderDetailModel.bulkCreate(detailDt);
+                return { result: res, detailData };
             });
-
-            const detailData = await OrderDetailModel.bulkCreate(detailDt);
-            return { result: res, detailData };
-        });
-
-        return results;
+            transaction.commit();
+            return results;
+        } catch (error) {
+            transaction.rollback();
+            throw ResponseError.unexpected(error.message);
+        }
     }
 
     async getOrderDetailByOrder(id: number): Promise<any> {

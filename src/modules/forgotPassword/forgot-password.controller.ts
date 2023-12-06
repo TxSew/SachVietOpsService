@@ -20,7 +20,7 @@ export class OtpController {
     @ApiResponse({
         status: 200,
     })
-    verifyOtpAndResetPassword(@Body() props: { email: string; otp: string; token: string; password: string }) {
+    verifyOtpAndResetPassword(@Body() props: { email: string; otp: string; password: string }) {
         return this.OtpService.verifyOtpAndResetPassword(props);
     }
 }
