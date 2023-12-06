@@ -81,23 +81,42 @@ export class StatisticalService {
 
     async getTwelveMonths(props): Promise<any> {
         const currentDate = new Date();
-        console.log(currentDate);
         const currentYear = currentDate.getFullYear();
-        console.log(currentYear);
+        let endDate = new Date(currentYear, 11, 31, 23, 59, 59);
+        let startDate = new Date(currentYear, 0, 1);
+
+        if (props.startDate && props.endDate) {
+            startDate = props.startDate;
+            endDate = props.endDate;
+        }
 
         const twelveMonthsData = await OrderModel.findAll({
             attributes: [
                 [Sequelize.fn('MONTH', Sequelize.col('createdAt')), 'month'],
                 [Sequelize.fn('SUM', Sequelize.col('money')), 'revenue'],
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'orderCount'],
             ],
             where: {
                 createdAt: {
-                    [Op.between]: [new Date(currentYear, 0, 1), new Date(currentYear, 11, 31, 23, 59, 59)],
+                    [Op.between]: [startDate, endDate],
                 },
             },
             group: [Sequelize.fn('MONTH', Sequelize.col('createdAt'))],
             raw: true,
         });
-        return twelveMonthsData;
+
+        const totalRevenue = twelveMonthsData.reduce((total, monthData: any) => {
+            return total + Number(monthData.revenue);
+        }, 0);
+
+        const totalOrders = twelveMonthsData.reduce((total, monthData: any) => {
+            return total + Number(monthData.orderCount);
+        }, 0);
+
+        return {
+            data: twelveMonthsData,
+            totalRevenue: totalRevenue,
+            totalOrders: totalOrders,
+        };
     }
 }

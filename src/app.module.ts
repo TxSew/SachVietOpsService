@@ -13,6 +13,8 @@ import { CartController } from './modules/cart/Cart.controller';
 import { CartService } from './modules/cart/Cart.service';
 import { CategoryController } from './modules/category/category.controller';
 import { CategoryService } from './modules/category/category.service';
+import { CommentController } from './modules/comment/comment.controller';
+import { CommentService } from './modules/comment/comment.service';
 import { DiscountController } from './modules/discount/discount.controller';
 import { DiscountService } from './modules/discount/discount.service';
 import { EmailModule } from './modules/email/email.module';
@@ -30,7 +32,6 @@ import { ProductController } from './modules/product/product.controller';
 import { ProductService } from './modules/product/product.service';
 import { ProvinceController } from './modules/province/province.controller';
 import { ProvinceService } from './modules/province/province.service';
-import { ChatModule } from './modules/socket/chat.module';
 import { StatisticalController } from './modules/statistical/statistical.controller';
 import { StatisticalService } from './modules/statistical/statistical.service';
 import { UserController } from './modules/user/user.controller';
@@ -39,8 +40,6 @@ import { UserAddressController } from './modules/userAddress/userAddress.control
 import { UserAddressService } from './modules/userAddress/userAddress.service';
 import { VoucherController } from './modules/voucher/voucher.controller';
 import { VoucherService } from './modules/voucher/voucher.service';
-import { CommentController } from './modules/comment/comment.controller';
-import { CommentService } from './modules/comment/comment.service';
 dotenv.config();
 @Module({
     imports: [

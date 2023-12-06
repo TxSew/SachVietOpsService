@@ -25,8 +25,9 @@ export class StatisticalController {
     getStatisticalByDate(): Promise<any> {
         return this.statisticalService.getStatisticalToday();
     }
+
     @Public()
-    @Get('twelveMonthsData')
+    @Post('twelveMonthsData')
     getTwelveMonthsData(@Body() props): Promise<any> {
         return this.statisticalService.getTwelveMonths(props);
     }
