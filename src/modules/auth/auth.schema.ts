@@ -34,7 +34,6 @@ export const UserModel = SequelizeBase.define<Users>(
         },
     },
     {
-        paranoid: true,
         timestamps: true,
     }
 );

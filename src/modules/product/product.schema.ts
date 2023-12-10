@@ -62,7 +62,6 @@ export const ProductModel = SequelizeBase.define<productModel>(
     },
     {
         freezeTableName: true,
-        paranoid: true,
     }
 );
 

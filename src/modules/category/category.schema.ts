@@ -30,12 +30,11 @@ export const CategoryModel = SequelizeBase.define<ModelCategory>(
         },
         status: {
             type: DataTypes.INTEGER,
-            defaultValue: 1, // Provide a default value here
+            defaultValue: 1,
         },
     },
     {
         freezeTableName: true,
-        paranoid: true,
     }
 );
 

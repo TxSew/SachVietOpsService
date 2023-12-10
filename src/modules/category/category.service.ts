@@ -26,7 +26,7 @@ export class CategoryService {
               p.name AS parentName 
             FROM db_category c
             LEFT JOIN db_category p ON c.parentId = p.id
-            WHERE c.id = 1 AND c.deletedAt IS NULL
+            WHERE c.id = 1 
             UNION ALL
             SELECT
               c.id,
@@ -40,7 +40,6 @@ export class CategoryService {
             FROM db_category c
             JOIN CategoryTree ct ON c.parentId = ct.id
             LEFT JOIN db_category p ON c.parentId = p.id
-            WHERE c.deletedAt IS NULL
           )
           SELECT * FROM CategoryTree t WHERE t.name like '%${keyword}%' ORDER BY t.createdAt  DESC LIMIT ${limited} OFFSET ${offset} 
     `;
@@ -69,7 +68,7 @@ export class CategoryService {
               p.name AS parentName 
             FROM db_category c
             LEFT JOIN db_category p ON c.parentId = p.id
-            WHERE c.id = 1 AND c.deletedAt IS NULL
+            WHERE c.id = 1 
             UNION ALL
             SELECT
               c.id,
@@ -83,12 +82,10 @@ export class CategoryService {
             FROM db_category c
             JOIN CategoryTree ct ON c.parentId = ct.id
             LEFT JOIN db_category p ON c.parentId = p.id
-            WHERE c.deletedAt IS NULL
           )
           SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC LIMIT ${limited} OFFSET ${offset}
     `;
         const [results] = await SequelizeBase.query(qr);
-        console.log('🚀 ~ file: category.service.ts:91 ~ CategoryService ~ getCategories ~ results:', results);
         const getAll = await this.filter();
         const totalPage = Math.ceil(getAll.length / limited);
         const result = await this.buildCategoryHierarchy(results);
@@ -124,10 +121,10 @@ export class CategoryService {
         c.deletedAt,
         c.createdAt,
         c.image,
-        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+        p.name AS parentName 
       FROM db_category c
       LEFT JOIN db_category p ON c.parentId = p.id
-      WHERE c.id = 1 AND c.deletedAt IS NULL
+      WHERE c.id = 1 
       UNION ALL
       SELECT
         c.id,
@@ -137,11 +134,10 @@ export class CategoryService {
         c.createdAt,
         c.deletedAt,
         c.image,
-        p.name AS parentName -- Thêm cột parentName để hiển thị tên danh mục cha
+        p.name AS parentName
       FROM db_category c
       JOIN CategoryTree ct ON c.parentId = ct.id
       LEFT JOIN db_category p ON c.parentId = p.id
-      WHERE c.deletedAt IS NULL
     )
     SELECT * FROM CategoryTree t ORDER BY t.createdAt DESC;
   `;
@@ -170,12 +166,6 @@ export class CategoryService {
     }
 
     async updateCategory(id: number, category: Category) {
-        if (!category) throw ResponseError.badInput('Category not found');
-        const existingCategory = await CategoryModel.findOne({
-            where: { name: category.name },
-        });
-
-        if (existingCategory) throw ResponseError.badInput('Name already exists');
         const update = await CategoryModel.update(category, {
             where: { id: id },
         });

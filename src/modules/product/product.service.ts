@@ -281,12 +281,20 @@ export class ProductService {
             console.log(err);
         }
     }
-    //  search a Product
+
     async removeProductTrashed(id: number) {
-        const trashed = await ProductModel.destroy({
-            where: { id: id },
-        });
-        return trashed;
+        try {
+            const trashed = await ProductModel.destroy({
+                where: { id: id },
+            });
+            return trashed;
+        } catch (err) {
+            throw ResponseError.badInput({
+                message: {
+                    message: 'orderDetail have value',
+                },
+            });
+        }
     }
 
     async restoreProductTrashed(id: number) {

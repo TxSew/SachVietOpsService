@@ -50,7 +50,7 @@ export class OrderService {
             where: isWhere,
             limit: limited,
             offset,
-            order: [[props.sortBy || 'createdAt', props.sortWith || 'DESC']],
+            order: [[props.sortBy || 'updatedAt', props.sortWith || 'DESC']],
             include: [
                 {
                     model: UserModel,
@@ -276,7 +276,7 @@ export class OrderService {
         if (!account) throw ResponseError.unauthorized('authorization orderUser');
         if (!id) throw ResponseError.unauthorized('orderId not value');
         const order = await OrderModel.update(
-            { status: 0 },
+            { status: 3 },
             {
                 where: {
                     id: Number(id),

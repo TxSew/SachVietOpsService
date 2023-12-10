@@ -15,7 +15,6 @@ export const CommentImgModel = SequelizeBase.define<CommentImageSchema>(
     },
     {
         freezeTableName: true,
-        paranoid: true,
     }
 );
 // CommentImgModel.belongsTo(CommentModel, {

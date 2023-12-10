@@ -26,7 +26,6 @@ export const CommentModel = SequelizeBase.define<CommentSchema>(
     },
     {
         freezeTableName: true,
-        paranoid: true,
     }
 );
 

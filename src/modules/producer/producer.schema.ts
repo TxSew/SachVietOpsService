@@ -4,26 +4,25 @@ import { baseAttributes } from 'src/helpers/defineModelFactory';
 import { Producer } from 'src/submodules/models/producerModel/producer';
 
 // export class productModel extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {}
-interface ProducerSchema extends  Model<InferAttributes<Producer> , InferCreationAttributes<Producer>> {}
+interface ProducerSchema extends Model<InferAttributes<Producer>, InferCreationAttributes<Producer>> {}
 export const ProducerModel = SequelizeBase.define<ProducerSchema>(
-  'db_producer',
-  {
-    ...baseAttributes,
-    name: {
-      type: DataTypes.STRING,
+    'db_producer',
+    {
+        ...baseAttributes,
+        name: {
+            type: DataTypes.STRING,
+        },
+        code: {
+            type: DataTypes.STRING,
+        },
+        keyword: {
+            type: DataTypes.STRING,
+        },
+        status: {
+            type: DataTypes.INTEGER,
+        },
     },
-    code: {
-      type: DataTypes.STRING,
-    },
-    keyword: {
-      type: DataTypes.STRING,
-    },
-    status: {
-      type: DataTypes.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    paranoid: true,
-  },
+    {
+        freezeTableName: true,
+    }
 );
