@@ -26,12 +26,6 @@ export class OrderService {
 
         let isWhere = {};
 
-        if (search) {
-            isWhere = {
-                [Op.or]: [{ id: { [Op.like]: `${search}` } }, { phone: { [Op.like]: `${search}` } }],
-            };
-        }
-
         if (props.status == 'null') {
             isWhere = {
                 status: {
@@ -44,6 +38,11 @@ export class OrderService {
             };
         } else {
             isWhere = {};
+        }
+        if (search) {
+            isWhere = {
+                [Op.or]: [{ id: { [Op.like]: `${Number(search)}` } }, { phone: { [Op.like]: `${Number(search)}` } }],
+            };
         }
 
         const listOrder = await OrderModel.findAll({

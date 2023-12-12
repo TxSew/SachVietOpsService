@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ProvinceModel } from './dto/province.schema';
-import { Model } from 'sequelize';
 import { DistrictModel } from './dto/district.schema';
+import { ProvinceModel } from './dto/province.schema';
 
 Injectable();
 export class ProvinceService {
