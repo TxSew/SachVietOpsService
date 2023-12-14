@@ -11,14 +11,12 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Public()
-    @UseInterceptors(CacheInterceptor)
     @Post('filter')
     async findAll(@Body() props): Promise<TProductResponse> {
         return this.productService.findAll(props);
     }
 
     @Public()
-    @UseInterceptors(CacheInterceptor)
     @Get(':id')
     async findOne(@Param('id') slug: string): Promise<Product> {
         return this.productService.findOneWithRelatedProducts(slug);

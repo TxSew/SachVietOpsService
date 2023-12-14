@@ -4,6 +4,7 @@ import { UserModel } from '../auth/auth.schema';
 import { ProductModel } from '../product/product.schema';
 import { CommentModel } from './comment.schema';
 import { CommentImgModel } from './commentImages.chema';
+import { OrderDetailModel } from '../order/dto/orderDetail.schema';
 
 @Injectable()
 export class CommentService {
@@ -53,8 +54,17 @@ export class CommentService {
             images.map((image) => {
                 return (image.commentId = id);
             });
-            const data = await CommentImgModel.bulkCreate(images);
-            return data;
+            await CommentImgModel.bulkCreate(images);
+            await OrderDetailModel.update(
+                {
+                    status: 1,
+                },
+                {
+                    where: { id: content.idOrderDetail },
+                }
+            );
+
+            return comments;
         } catch (err) {
             throw ResponseError.badInput(err);
         }

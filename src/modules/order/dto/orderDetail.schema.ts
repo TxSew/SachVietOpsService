@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { SequelizeBase } from 'src/configs/SequelizeConfig';
 import { Order } from 'src/submodules/models/OrderModel/Order';
-import { OrderModel } from '../order.schema';
 import { ProductModel } from 'src/modules/product/product.schema';
 import { baseAttributes } from 'src/helpers/defineModelFactory';
 
@@ -23,6 +22,9 @@ export const OrderDetailModel = SequelizeBase.define<IOrderDetailModel>(
             type: DataTypes.STRING,
         },
         price: {
+            type: DataTypes.STRING,
+        },
+        status: {
             type: DataTypes.STRING,
         },
     },

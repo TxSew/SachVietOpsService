@@ -19,13 +19,11 @@ export class OrderController {
     }
 
     @Public()
-    @UseInterceptors(CacheInterceptor)
     @Get('orderDetail/:id')
     getOrderDetail(@Param('id') id: number) {
         return this.orderService.getOrderDetailByOrder(id);
     }
 
-    @UseInterceptors(CacheInterceptor)
     @Post('current')
     getOrderCUrrent(@Body() props, @CurrentAccount() account) {
         return this.orderService.getOrderbyUser(props, Number(account.id));
