@@ -37,7 +37,6 @@ export class ProductService {
                 price_sale: {
                     [Op.between]: [minPrice, maxPrice],
                 },
-                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
                 sale: {
                     [Op.gt]: 1,
                 },
@@ -48,7 +47,6 @@ export class ProductService {
                 price_sale: {
                     [Op.between]: [minPrice, maxPrice],
                 },
-                [Op.or]: [{ title: { [Op.like]: `%${searchQuery}%` } }],
                 soldQuantity: {
                     [Op.gt]: 1,
                 },
