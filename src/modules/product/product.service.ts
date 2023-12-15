@@ -10,7 +10,6 @@ import { OrderDetail } from 'src/submodules/models/OrderModel/Order';
 
 @Injectable()
 export class ProductService {
-    //find all products
     async findAll(props): Promise<TProductResponse> {
         const limit = props.limit || 8;
         const page = props.page || 1;
