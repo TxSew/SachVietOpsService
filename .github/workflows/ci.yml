@@ -31,7 +31,7 @@ jobs:
             - name: Build and Copy files using sshpass
               env:
                   SSH_HOST: ${{ secrets.SSH_HOST }}
-                  SSH_USER: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_KEY }}
                   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
                   REMOTE_PATH: /var/www/quangthanh/book_server
               run: |
@@ -43,7 +43,7 @@ jobs:
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
-                  password: ${{ secrets.SSH_PASSWORD }}
+                  key: ${{ secrets.SSH_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   script: |
                       echo "Connecting to remote server"
