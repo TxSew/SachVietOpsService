@@ -14,16 +14,18 @@ jobs:
     BuildAndPushImageToDocker:
         name: 'Build and Push to Docker'
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [16.x]
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
         steps:
             - uses: actions/checkout@v2
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v2
+            - name: Use Node.js 6.x
+              uses: actions/setup-node@v1
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: '16.x'
+
+            # - name: Install dependencies
+            #   run: npm install
+            # - name: Build
+            #   run: npm run build
 
             - name: Run commands over SSH
               uses: appleboy/ssh-action@master
@@ -38,7 +40,7 @@ jobs:
                       git stash 
                       git pull
                       cp .env.prod .env
-                      yarn build
+                      npm run build
                       pm2 delete thanh-api || true
                       pm2 start dist/main.js --name thanh-api
                       pm2 save
