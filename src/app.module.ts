@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -6,30 +7,39 @@ import { ConfigDatabase } from './configs/config';
 import { appConfig } from './constants/IConfig';
 import { JwtAuthGuard } from './guard/jwtGuard';
 import { JwtStrategy } from './guard/jwtStratery';
-import { AccountController } from './modules/Auth/auth.controller';
-import { AccountService } from './modules/Auth/auth.service';
-import { CategoryController } from './modules/Category/category.controller';
-import { CategoryService } from './modules/Category/category.service';
-import { DiscountController } from './modules/Discount/discount.controller';
-import { DiscountService } from './modules/Discount/discount.service';
-import { OrderController } from './modules/Order/order.controller';
-import { OrderService } from './modules/Order/order.service';
-import { ProducerController } from './modules/Producer/producer.controller';
-import { ProducerService } from './modules/Producer/producer.service';
-import { ProductController } from './modules/Product/product.controller';
-import { ProductService } from './modules/Product/product.service';
-import { ProvinceController } from './modules/Province/province.controller';
-import { ProvinceService } from './modules/Province/province.service';
-import { StatisticalController } from './modules/Statistical/statistical.controller';
-import { StatisticalService } from './modules/Statistical/statistical.service';
-import { UserController } from './modules/User/user.controller';
-import { UserService } from './modules/User/user.service';
+import { AccountController } from './modules/auth/auth.controller';
+import { AccountService } from './modules/auth/auth.service';
+import { CartController } from './modules/cart/Cart.controller';
+import { CartService } from './modules/cart/Cart.service';
+import { CategoryController } from './modules/category/category.controller';
+import { CategoryService } from './modules/category/category.service';
+import { CommentController } from './modules/comment/comment.controller';
+import { CommentService } from './modules/comment/comment.service';
+import { DiscountController } from './modules/discount/discount.controller';
+import { DiscountService } from './modules/discount/discount.service';
 import { EmailModule } from './modules/email/email.module';
 import { OtpController } from './modules/forgotPassword/forgot-password.controller';
 import { OtpService } from './modules/forgotPassword/forgot-password.service';
+import { NewService } from './modules/news/new.service';
+import { NewsController } from './modules/news/news.controller';
+import { OrderController } from './modules/order/order.controller';
+import { OrderService } from './modules/order/order.service';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
-
+import { ProducerController } from './modules/producer/producer.controller';
+import { ProducerService } from './modules/producer/producer.service';
+import { ProductController } from './modules/product/product.controller';
+import { ProductService } from './modules/product/product.service';
+import { ProvinceController } from './modules/province/province.controller';
+import { ProvinceService } from './modules/province/province.service';
+import { StatisticalController } from './modules/statistical/statistical.controller';
+import { StatisticalService } from './modules/statistical/statistical.service';
+import { UserController } from './modules/user/user.controller';
+import { UserService } from './modules/user/user.service';
+import { UserAddressController } from './modules/userAddress/userAddress.controller';
+import { UserAddressService } from './modules/userAddress/userAddress.service';
+import { VoucherController } from './modules/voucher/voucher.controller';
+import { VoucherService } from './modules/voucher/voucher.service';
 dotenv.config();
 @Module({
     imports: [
@@ -40,14 +50,16 @@ dotenv.config();
             username: ConfigDatabase.development.username,
             password: ConfigDatabase.development.password,
             database: ConfigDatabase.development.database,
-            autoLoadModels: true, // Automatically load models from the 'models' folder
-            synchronize: true, // Auto-create and update database tables (not recommended for production)
+            autoLoadModels: true,
+            synchronize: true,
         }),
         JwtModule.register({
             secret: appConfig.jwt.secret || 'book@123',
-            signOptions: { expiresIn: '1d' },
         }),
         EmailModule,
+        CacheModule.register({
+            ttl: 30,
+        }),
     ],
     controllers: [
         AccountController,
@@ -61,15 +73,17 @@ dotenv.config();
         ProvinceController,
         OtpController,
         PaymentController,
+        VoucherController,
+        UserAddressController,
+        CartController,
+        NewsController,
+        CommentController,
     ],
 
     providers: [
-        //auth
         JwtAuthGuard,
         JwtStrategy,
         { provide: 'APP_GUARD', useClass: JwtAuthGuard },
-
-        //service
         AccountService,
         ProductService,
         CategoryService,
@@ -81,6 +95,11 @@ dotenv.config();
         ProvinceService,
         OtpService,
         PaymentService,
+        VoucherService,
+        UserAddressService,
+        CartService,
+        NewService,
+        CommentService,
     ],
 })
 export class AppModule {}

@@ -27,6 +27,7 @@ export class EmailController {
         }
     }
 
+    @Public()
     @Post('multiple')
     async sendMultipleMail(@Body() emailMultipleDto: CreateEmailMultipleDto): Promise<{
         message: string;

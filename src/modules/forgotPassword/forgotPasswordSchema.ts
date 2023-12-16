@@ -5,7 +5,7 @@ import { Otp } from 'src/submodules/models/OptModel/Opt';
 
 interface TOpt extends Model<InferAttributes<Otp>, InferCreationAttributes<Otp>> {}
 export const OptModel = SequelizeBase.define<TOpt>(
-    'db_otpToken',
+    'db_otptoken',
     {
         ...baseAttributes,
         email: {
@@ -14,6 +14,7 @@ export const OptModel = SequelizeBase.define<TOpt>(
         code: {
             type: DataTypes.STRING,
         },
+        token: { type: DataTypes.STRING },
     },
     {
         freezeTableName: true,

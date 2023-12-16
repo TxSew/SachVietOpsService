@@ -28,7 +28,7 @@ export class EmailService {
 
     async sendMail(email: CreateEmailDto): Promise<void> {
         const mailOptions = {
-            from: this.myConfigService.getEmail,
+            from: `"No Reply"`,
             to: email.to,
             subject: email.subject,
             text: email.body,
@@ -39,7 +39,7 @@ export class EmailService {
 
     async sendMailTemplate(email: CreateEmailTemplateDto): Promise<void> {
         const mailOptions = {
-            from: this.myConfigService.getEmail,
+            from: `"No Reply"`,
             to: email.to,
             subject: email.subject,
             template: email.template,
@@ -54,7 +54,7 @@ export class EmailService {
     async sendMultipleEmails(emailData: CreateEmailMultipleDto): Promise<void> {
         const mailPromises = emailData.emails.map((toEmail) => {
             const mailOptions = {
-                from: this.myConfigService.getEmail,
+                from: `"No Reply"`,
                 to: toEmail,
                 subject: emailData.subject,
                 template: 'base',

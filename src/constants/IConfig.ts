@@ -13,6 +13,9 @@ export interface IConfig {
         STRIPE_SUCCESS_URL: string;
         STRIPE_CANCEL_URL: string;
     };
+    cod: {
+        COD_SUCCESS: string;
+    };
     email: {
         EMAIL_NAME: string;
         EMAIL_PASS: string;
@@ -46,6 +49,9 @@ export const appConfig: IConfig = {
         EMAIL_NAME: getEnv('EMAIL_NAME'),
         EMAIL_PASS: getEnv('EMAIL_PASS'),
         EMAIL_HOST: getEnv('EMAIL_HOST'),
+    },
+    cod: {
+        COD_SUCCESS: getEnv('COD_SUCCESS_URL'),
     },
     jwt: {
         secret: getEnv('JWT_SECRET_KEY') || 'book@123',

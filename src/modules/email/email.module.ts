@@ -26,9 +26,11 @@ import { MyConfigService } from 'src/myConfig.service';
                         pass: config.getEmailPassword,
                     },
                 },
+
                 defaults: {
                     from: `"No Reply"`,
                 },
+
                 template: {
                     dir: join(__dirname, 'templates'),
                     adapter: new HandlebarsAdapter(),

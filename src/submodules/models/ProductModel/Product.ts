@@ -10,10 +10,15 @@ export interface Product extends BaseModel, Model, Modified {
     slug?: string;
     price?: number;
     image?: string;
+    size?: number;
+    pageNumber?: number;
+    author?: string;
+    soldQuantity?: number;
     price_sale?: number;
     listImage?: string;
     quantity?: number;
     productId?: number;
+    soldInventory?: number;
     sale?: number | string;
 }
 export interface TProduct {

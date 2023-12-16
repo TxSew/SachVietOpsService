@@ -1,11 +1,9 @@
-// swagger/swagger.ts
-
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module'; // Update the import path
-import * as dotenv from 'dotenv';
-import * as cookieParser from 'cookie-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
+import * as dotenv from 'dotenv';
+import { AppModule } from './app.module'; // Update the import path
 
 dotenv.config();
 async function bootstrap() {
@@ -23,6 +21,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('', app, document);
 
-    await app.listen(process.env.PORT || 8003);
+    await app.listen(process.env.PORT || 8005);
 }
 bootstrap();
