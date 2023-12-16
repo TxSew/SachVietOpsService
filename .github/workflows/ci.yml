@@ -37,7 +37,7 @@ jobs:
                   script: |
                       echo "Connecting to remote server"
                       cd /var/www/quangthanh/book_server
-                      git stash 
+                      git reset --hard origin/main
                       git pull
                       cp .env.prod .env
                       npm run build
