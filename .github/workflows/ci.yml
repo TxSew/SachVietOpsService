@@ -14,43 +14,38 @@ jobs:
     BuildAndPushImageToDocker:
         name: 'Build and Push to Docker'
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [16.x]
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
         steps:
             - uses: actions/checkout@v2
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v2
+            - name: Use Node.js 16.x
+              uses: actions/setup-node@v1
               with:
-                  node-version: ${{ matrix.node-version }}
-            - name: Install dependencies
-              run: yarn install
-            - name: Install sshpass pass
-              run: sudo apt-get update && sudo apt-get install -y sshpass
-            - name: Build and Copy files using sshpass
-              env:
-                  SSH_HOST: ${{ secrets.SSH_HOST }}
-                  SSH_USER: ${{ secrets.SSH_USERNAME }}
-                  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-                  REMOTE_PATH: /var/www/quangthanh/book_server
-              run: |
-                  cp .env.prod .env
-                  yarn build
-                  sshpass -p $SSH_PASSWORD scp -o StrictHostKeyChecking=no -r ./dist $SSH_USER@$SSH_HOST:$REMOTE_PATH
+                  node-version: '16.x'
+
+            # - name: Install dependencies
+            #   run: npm install
+            # - name: Build
+            #   run: npm run build
+
             - name: Run commands over SSH
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
-                  password: ${{ secrets.SSH_PASSWORD }}
+                  key: ${{ secrets.SSH_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   script: |
                       echo "Connecting to remote server"
                       cd /var/www/quangthanh/book_server
-                      pm2 delete thanh-api || true
-                      pm2 start dist/main.js --name thanh-api
-                      pm2 save
+                      git reset --hard origin/main
+                      git pull
+                      cp .env.prod .env
+                      docker image prune --force
+                      docker compose -f docker-compose.prod.yaml up -d --build 
+                      # npm run build
+                      # pm2 delete thanh-api || true
+                      # pm2 start dist/main.js --name thanh-api
+                      # pm2 save
                       exit 0
             - name: Get current date
               id: date
