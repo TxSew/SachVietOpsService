@@ -306,10 +306,11 @@ export class ProductService {
             const product: any = await ProductModel.findOne({
                 where: { id: e.productId },
             });
+
             let quantity = (await product.quantity) - Number(e.quantity);
             const soldQuantity = (await product.soldQuantity) + Number(e.quantity);
 
-            await ProductModel.update(
+            const data = await ProductModel.update(
                 { quantity: quantity, soldQuantity: soldQuantity },
                 {
                     where: { id: product.get().id },

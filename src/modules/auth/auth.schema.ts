@@ -29,6 +29,12 @@ export const UserModel = SequelizeBase.define<Users>(
                 model: 'db_userGroup',
             },
         },
+        sex: {
+            type: DataTypes.NUMBER,
+        },
+        birthday: {
+            type: DataTypes.DATE,
+        },
         status: {
             type: DataTypes.NUMBER,
         },

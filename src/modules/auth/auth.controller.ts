@@ -34,6 +34,7 @@ export class AccountController {
     loginGoogle(@Body() props) {
         return this.accountService.loginGoogle(props);
     }
+
     @Post('changePassword')
     ChangePassword(@Body() changePasswordDto: ChangePasswordDTO, @CurrentAccount() account) {
         return this.accountService.changePassword(changePasswordDto, account.id);

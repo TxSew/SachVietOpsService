@@ -27,4 +27,9 @@ export class UserController {
     getMe(@CurrentAccount() account) {
         return this.userService.getMe(account.id);
     }
+
+    @Post('updateUser')
+    updateUser(@Body() props, @CurrentAccount() account) {
+        return this.userService.updateUser(props, account.id);
+    }
 }

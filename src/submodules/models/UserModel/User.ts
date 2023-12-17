@@ -6,7 +6,9 @@ export interface User extends Modified, BaseModel, Model {
     fullName?: string;
     password?: string;
     phone?: number;
+    sex?: number;
     userGroup?: number;
+    birthday?: Date;
     email?: string;
     address?: string;
 }

@@ -69,6 +69,7 @@ export class PaymentService {
         }
 
         if (orderDto.paymentMethod == 'Visa') {
+            console.log(orderDto);
             const line_items = orderDto.orderDetail.map((order: any) => {
                 const parseInt = Math.ceil(order.price);
                 return {
@@ -149,7 +150,6 @@ export class PaymentService {
                     orders: orders.metadata,
                     orderDetail: orderItems.orderDetail,
                 };
-                console.log('🚀 ~ file: payment.service.ts:152 ~ PaymentService ~ webhook ~ orderDto:', orderDto);
                 const order = (await this.orderService.createOrder(orderDto)) as any;
                 this.orderId = order.id;
         }

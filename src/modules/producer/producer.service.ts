@@ -47,8 +47,12 @@ export class ProducerService {
     }
 
     async createProducer(producer: Partial<Producer>): Promise<Producer> {
-        const producerData = await ProducerModel.create(producer);
-        return producerData;
+        try {
+            const producerData = await ProducerModel.create(producer);
+            return producerData;
+        } catch (err) {
+            throw ResponseError.badInput('producer add fail');
+        }
     }
 
     async update(id: number, producer: Producer) {

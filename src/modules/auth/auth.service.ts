@@ -1,15 +1,13 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { appConfig } from 'src/constants/IConfig';
-import { JwtAuthGuard, Public } from 'src/guard/jwtGuard';
 import { ResponseError } from 'src/helpers/ResponseError';
 import { User } from 'src/submodules/models/UserModel/User';
 import { EmailService } from '../email/email.service';
 import { UserModel } from './auth.schema';
 import { ChangePasswordDTO } from './dto/changePassword.dto';
-import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AccountService {
@@ -17,7 +15,6 @@ export class AccountService {
         private jwtService: JwtService,
         private emailService: EmailService
     ) {}
-    private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
     async register(account: Partial<User>) {
         if (!account.email || !account.password) throw ResponseError.notFound('Please enter your email or password');
@@ -31,7 +28,8 @@ export class AccountService {
 
         const user: User = await UserModel.create(account);
         const { password, ...rest } = user;
-        const access_token = this.generateToken(rest);
+
+        const access_token = await this.generateToken(user.get());
         await this.emailService.sendMailTemplate({
             subject: 'welcome email notification',
             to: user.email,
@@ -43,6 +41,7 @@ export class AccountService {
 
         return {
             access_token: access_token,
+            user: rest,
         };
     }
 

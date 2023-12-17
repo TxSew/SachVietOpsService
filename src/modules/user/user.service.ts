@@ -81,6 +81,7 @@ export class UserService implements OnModuleInit {
         });
         return User;
     }
+
     public async updateNewPassword(id: number, newPassword: string): Promise<unknown> {
         try {
             const user = await UserModel.findOne({
@@ -100,5 +101,14 @@ export class UserService implements OnModuleInit {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    async updateUser(props, id) {
+        const data = await UserModel.update(props, {
+            where: { id: id },
+        });
+        return {
+            message: 'update user successfully ',
+        };
     }
 }
