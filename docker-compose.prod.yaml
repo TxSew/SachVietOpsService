@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
     prod:
@@ -9,11 +9,12 @@ services:
         ports:
             - 8080:3000
         networks:
-            - nesjs-network
+            - nestjs-network
         volumes:
             - .:/usr/src/app
             - /usr/src/app/node_modules
         restart: unless-stopped
 
 networks:
-    nesjs-network:
+    nestjs-network:
+

@@ -40,10 +40,11 @@ jobs:
                       git reset --hard origin/main
                       git pull
                       cp .env.prod .env
-                      npm run build
-                      pm2 delete thanh-api || true
-                      pm2 start dist/main.js --name thanh-api
-                      pm2 save
+                      docker compose -f docker-compose.prod.yaml up --build
+                      # npm run build
+                      # pm2 delete thanh-api || true
+                      # pm2 start dist/main.js --name thanh-api
+                      # pm2 save
                       exit 0
             - name: Get current date
               id: date
