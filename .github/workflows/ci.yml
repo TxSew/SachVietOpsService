@@ -40,6 +40,7 @@ jobs:
                       git reset --hard origin/main
                       git pull
                       cp .env.prod .env
+                      docker image prune --force
                       docker compose -f docker-compose.prod.yaml up -d --build 
                       # npm run build
                       # pm2 delete thanh-api || true
