@@ -58,6 +58,7 @@ export class PaymentService {
     };
 
     async getPayment(orderDto: OrderDto) {
+        console.log('🚀 ~ file: payment.service.ts:61 ~ PaymentService ~ getPayment ~ orderDto:', orderDto);
         if (orderDto.paymentMethod == 'COD') {
             const order = await this.orderService.createOrder(orderDto);
 
@@ -108,10 +109,10 @@ export class PaymentService {
                         shipping_rate_data: {
                             type: 'fixed_amount',
                             fixed_amount: {
-                                amount: 19000,
+                                amount: 0,
                                 currency: 'vnd',
                             },
-                            display_name: 'Free shipping',
+                            display_name: 'Ground shipping',
                             delivery_estimate: {
                                 minimum: {
                                     unit: 'business_day',
@@ -125,6 +126,7 @@ export class PaymentService {
                         },
                     },
                 ],
+
                 line_items: [...line_items],
                 mode: 'payment',
                 success_url: `${appConfig.stripe.STRIPE_SUCCESS_URL}/${orderNew.get().id + 1}`,
