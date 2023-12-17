@@ -7,7 +7,7 @@ services:
             dockerfile: ./Dockerfile.prod
         command: npm run start:prod
         ports:
-            - 8080:3000
+            - 8080:8080
         networks:
             - nestjs-network
         volumes:
