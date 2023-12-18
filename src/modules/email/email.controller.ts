@@ -22,7 +22,6 @@ export class EmailController {
             this.emailService.sendMail(emailDto);
             return { message: 'Email is sent...' };
         } catch (error) {
-            console.log(error);
             return { message: 'Failed to send email...' };
         }
     }
@@ -36,7 +35,6 @@ export class EmailController {
             this.emailService.sendMultipleEmails(emailMultipleDto);
             return { message: 'Email is sent...' };
         } catch (error) {
-            console.log(error);
             return { message: 'Failed to send email...' };
         }
     }
@@ -50,7 +48,6 @@ export class EmailController {
             this.emailService.sendMailTemplate(createEmailTemplateDto);
             return { message: 'Email is sent...' };
         } catch (error) {
-            console.log(error);
             return { message: 'Failed to send email...' };
         }
     }

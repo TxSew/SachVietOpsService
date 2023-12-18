@@ -78,7 +78,6 @@ class HttpCartController {
     }
 
     async delete(id: number): Promise<any> {
-        console.log(id);
         try {
             const response = await this.axiosInstance.delete(`/order/${id}`);
             return response.data;

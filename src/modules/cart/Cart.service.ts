@@ -8,7 +8,6 @@ import { ProductService } from '../product/product.service';
 export class CartService {
     constructor(private productService: ProductService) {}
     async getCart(id: number) {
-        console.log('🚀 ~ file: Cart.service.ts:11 ~ CartService ~ getCart ~ id:', id);
         if (!id) throw ResponseError.notFound('user not found');
         try {
             return CartModel.findAll({
