@@ -25,17 +25,18 @@ export class OtpService {
         otp.email = user.email;
         otp.code = this.generateOTP();
         otp.id = user.get().id;
+        const otpCode = otp.code;
 
         const email = new CreateEmailDto();
         email.to = user.email;
 
         const data = {
-            subject: 'Password Reset OTP',
+            subject: 'Đặt lại mật khẩu OTP',
             to: email.to,
             template: './forgot-password',
             context: {
-                email: email.to,
-                otp: otp.code,
+                email: `"No Reply"`,
+                otp: otpCode,
             },
         };
         await this.emailService.sendMailTemplate(data);
@@ -56,6 +57,7 @@ export class OtpService {
             }).then((res) => {
                 return res;
             })) as any;
+
             const decoded = await this.jwtService.verify(getToken.token, {
                 secret: 'forgotPassword',
             });
