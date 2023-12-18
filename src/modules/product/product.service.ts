@@ -95,7 +95,29 @@ export class ProductService {
                 .catch((err) => {
                     throw ResponseError.badInput(`Unable to parse ${err.message}`);
                 });
-            const getAll: any = await ProductModel.findAll({});
+            const getAll: any = await ProductModel.findAll({
+                where: whereClause,
+                order: [[props.sortBy || 'createdAt', orderWith]],
+                include: [
+                    {
+                        model: ImagesProductModel,
+                        attributes: ['image', 'id'],
+                        as: 'productImages',
+                    },
+                    {
+                        model: CategoryModel,
+                        attributes: ['name', 'parentId', 'id', 'slug'],
+                        as: 'category',
+                        where: filterCategory,
+                    },
+                    {
+                        model: ProducerModel,
+                        attributes: ['name', 'id', 'code'],
+                        as: 'producer',
+                        where: filterProducer,
+                    },
+                ],
+            });
             let totalPage = Math.ceil(getAll.length / limited);
             return { totalPage, pageSize: Product.length, limit: limited, page, products: Product };
         } catch (err) {
