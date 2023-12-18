@@ -19,6 +19,7 @@ export class NewService {
         const news = await NewsModel.findAll({
             limit: limited,
             offset: offset,
+            order: [['createdAt', 'DESC']],
             where: status,
         });
         const listAll = await NewsModel.findAll({

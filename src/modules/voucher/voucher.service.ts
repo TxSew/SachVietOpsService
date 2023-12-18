@@ -3,12 +3,16 @@ import { ResponseError } from 'src/helpers/ResponseError';
 import { Voucher } from 'src/submodules/models/voucherModel/Voucher';
 import { UserModel } from '../auth/auth.schema';
 import { DiscountModel } from '../discount/discount.shema';
-import { VoucherModel } from './voucher.schema';
+import { VoucherModel, voucherModel } from './voucher.schema';
 import moment from 'moment';
+import { Op } from 'sequelize';
+import { SequelizeBase } from 'src/configs/SequelizeConfig';
 
 @Injectable()
 export class VoucherService {
     async getAllVoucherByUser(id) {
+        const currentDate = new Date();
+
         const discount = await VoucherModel.findAll({
             include: [
                 {
@@ -19,6 +23,16 @@ export class VoucherService {
                 {
                     model: DiscountModel,
                     as: 'discountVoucher',
+                    where: {
+                        expiration_date: {
+                            [Op.gte]: currentDate,
+                        },
+                        number_used: {
+                            [Op.lte]: SequelizeBase.literal(
+                                `(SELECT limit_number FROM db_discount WHERE db_discount.id = discountVoucher.id AND conditions_to_match)`
+                            ),
+                        },
+                    },
                 },
             ],
             where: {
@@ -27,7 +41,10 @@ export class VoucherService {
         });
         return discount;
     }
+
     async getAllVoucherByUserIsNull(id) {
+        const currentDate = new Date();
+        const relatedDate = (value: any) => new Date(value);
         const discount = await VoucherModel.findAll({
             include: [
                 {
@@ -38,6 +55,11 @@ export class VoucherService {
                 {
                     model: DiscountModel,
                     as: 'discountVoucher',
+                    where: {
+                        expiration_date: {
+                            [Op.gte]: currentDate, // Ensuring expiration date is greater than or equal to the current date
+                        },
+                    },
                 },
             ],
             where: {
