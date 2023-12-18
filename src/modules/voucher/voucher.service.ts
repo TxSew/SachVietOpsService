@@ -27,11 +27,7 @@ export class VoucherService {
                         expiration_date: {
                             [Op.gte]: currentDate,
                         },
-                        number_used: {
-                            [Op.lte]: SequelizeBase.literal(
-                                `(SELECT limit_number FROM db_discount WHERE db_discount.id = discountVoucher.id AND conditions_to_match)`
-                            ),
-                        },
+                      
                     },
                 },
             ],
