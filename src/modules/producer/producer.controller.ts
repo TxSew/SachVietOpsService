@@ -9,6 +9,11 @@ import { Public } from 'src/guard/jwtGuard';
 @Controller('producer')
 export class ProducerController {
     constructor(private readonly producerService: ProducerService) {}
+    @Public()
+    @Get('getList')
+    async getList(): Promise<any> {
+        return this.producerService.getAll();
+    }
 
     @Public()
     @Post('')

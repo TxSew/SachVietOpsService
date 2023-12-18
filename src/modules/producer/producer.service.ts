@@ -36,6 +36,12 @@ export class ProducerService {
             throw new HttpException(err, HttpStatus.FORBIDDEN);
         }
     }
+    async getAll(): Promise<any> {
+        const data = await ProducerModel.findAll({});
+        return {
+            producers: data,
+        };
+    }
     async getProducer(id: number): Promise<Producer> {
         const producer = await ProducerModel.findOne({
             where: {
