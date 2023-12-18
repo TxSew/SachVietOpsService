@@ -58,7 +58,6 @@ export class PaymentService {
     };
 
     async getPayment(orderDto: OrderDto) {
-        console.log('🚀 ~ file: payment.service.ts:61 ~ PaymentService ~ getPayment ~ orderDto:', orderDto);
         if (orderDto.paymentMethod == 'COD') {
             const order = await this.orderService.createOrder(orderDto);
 

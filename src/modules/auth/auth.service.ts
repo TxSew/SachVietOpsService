@@ -31,7 +31,7 @@ export class AccountService {
 
         const access_token = await this.generateToken(user.get());
         await this.emailService.sendMailTemplate({
-            subject: 'welcome email notification',
+            subject: 'Chào mừng quý khách của Sachviet.click',
             to: user.email,
             template: './welcome',
             context: {

@@ -22,7 +22,7 @@ export class UserService implements OnModuleInit {
                 offset,
                 order: [['createdAt', 'DESC']],
                 where: {
-                    [Op.or]: [{ fullName: { [Op.like]: `%${search}%` } }],
+                    [Op.or]: [{ fullName: { [Op.like]: `%${search}%` } }, { email: { [Op.like]: `%${search}%` } }],
                 },
             });
             if (!GetUsers) {
