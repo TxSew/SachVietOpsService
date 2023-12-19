@@ -1,59 +1,171 @@
-<html lang='en'>
-    <head>
-        <meta charset='UTF-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>Mail OTP</title>
-        <style>
-            * { padding: 0; margin: 0; box-sizing: border-box; } body { font-family: Arial, Helvetica, sans-serif;
-            display: flex; justify-content: center; align-items: center; } .wide { width: 800px; } /* Header */
-            .header-mail { max-height: 100px; background: #f7941e; display: flex; } .header-mail img { object-fit:
-            cover; display: block; margin: 0 auto; height: 100px; } /* Footer */ footer { padding: 20px; background:
-            #f7941e; display: flex; justify-content: space-between; } .footer-info { color: #fff; float: left; clear:
-            both; } .footer-info img { width: 150px; } .footer-info p { font-size: 14px; padding: 10px 0; } .footer-info
-            a { color: #008c89; font-weight: 600; font-size: 14px; } .footer-hotline { float: right; clear: both; }
-            .footer-hotline h3 { color: #fff; font-size: 14px; padding: 0 0 10px 0; } .footer-hotline p { font-size:
-            14px; color: #fff; } .container { text-align: center; } .container { background: seashell; padding: 15px 0;
-            } .container .top, .container .bot { font-size: 14px; padding: 10px 0; } .container .mid { font-weight:
-            bold; color: #008c89; } /* Content mail thông báo */ .content { text-align: center; background: seashell;
-            padding: 20px; } .content h1 { font-size: 20px; color: #008c89; } .content .top, .content .mid, .content
-            .bot { font-size: 14px; padding: 10px 0 0 0; } .content .mid span { color: #f7941e; font-weight: 600; }
-            .content button { padding: 8px; background: #008c89; border: none; border-radius: 8px; margin: 10px 0 0 0; }
-            .content button a { text-decoration: none; color: #fff; font-size: 14px; font-weight: bold; }
-        </style>
-    </head>
-    <body>
-        <div class='wide'>
-            <header class='header-mail'>
-                <a href='https://www.sachviet.click'>
-                    <img
-                        src='https://firebasestorage.googleapis.com/v0/b/bookscloud-3fd83.appspot.com/o/multipleFiles%2Flogo_img.png?alt=media&token=b7bf981f-4983-4fb7-9fd7-1f7f9ddfc661'
-                        alt=''
-                    />
-                </a>
-            </header>
-            <div class='content'>
-                <h1>Đơn hàng của bạn đã được tiếp nhận</h1>
-                <p class='top'>Cảm ơn bạn đã mua hàng tại sachviet.click</p>
-                <p class='mid'>Mã đơn hàng của bạn là: <span>#{{code}}</span></p>
-                <p class='bot'>Đơn hàng của bạn sẽ sớm được giao từ 3-5 ngày!</p>
-                <button>
-                    <a href='https://www.sachviet.click/searchOrder'>Tra cứu đơn hàng</a>
-                </button>
-            </div>
-            <footer>
-                <div class='footer-info'>
-                    <p>259 Hà Huy Tập, Tân Lợi, TP.BMT , Đắk Lắk</p>
-                    <a href='https://www.sachviet.click/'>sachviet.click</a>
-                </div>
-                <div class='footer-hotline'>
-                    <h3>SACHVIET Hotline:
-                        <a href='tel:0383476296' style="color:'#808080">
-                            0383476296
-                        </a>
-                    </h3>
-                    <p>sachviet@gmail.com</p>
-                </div>
-            </footer>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mail OTP</title>
+    <style>      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .wide {
+        width: 800px;
+      }
+
+      /* Header */
+      .header-mail {
+        max-height: 100px;
+        background: #f7941e;
+        display: flex;
+      }
+
+      .header-mail img {
+        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        height: 100px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 20px;
+        background: #f7941e;
+        display: flex;
+         justify-content: space-between;
+      }
+
+      .footer-info {
+        color: #fff;
+        float: left;
+         clear: both;
+      }
+
+      .footer-info img {
+        width: 150px;
+      }
+
+      .footer-info p {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .footer-info a {
+        color: #008c89;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .footer-hotline {
+        float: right;
+        clear: both;
+      }
+      .footer-hotline h3 {
+        color: #fff;
+        font-size: 14px;
+        padding: 0 0 10px 0;
+      }
+
+      .footer-hotline p {
+        font-size: 14px;
+        color: #fff;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .container {
+        background: seashell;
+        padding: 15px 0;
+      }
+
+      .container .top,
+      .container .bot {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .container .mid {
+        font-weight: bold;
+        color: #008c89;
+      }
+
+      /* Content mail thông báo */
+      .content {
+        text-align: center;
+        background: seashell;
+        padding: 20px;
+      }
+
+      .content h1 {
+        font-size: 20px;
+        color: #008c89;
+      }
+
+      .content .top,
+      .content .mid,
+      .content .bot {
+        font-size: 14px;
+        padding: 10px 0 0 0;
+      }
+
+      .content  .mid  span {
+        color: #f7941e;
+        font-weight: 600;
+      }
+
+      .content button {
+        padding: 8px;
+        background: #008c89;
+        border: none;
+        border-radius: 8px;
+        margin: 10px 0 0 0;
+      }
+
+      .content button a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+   <div class="wide">
+      <header class="header-mail">
+     <img
+          src="https://firebasestorage.googleapis.com/v0/b/bookscloud-3fd83.appspot.com/o/multipleFiles%2Flogo_img.png?alt=media&token=b7bf981f-4983-4fb7-9fd7-1f7f9ddfc661"
+          alt=""
+        />
+      </header>
+      <div class="content">
+        <h1>Đơn hàng của bạn đã được tiếp nhận</h1>
+        <p class="top">Cảm ơn bạn đã mua hàng tại sachviet.click</p>
+        <p class="mid">Mã đơn hàng của bạn là: <span>#{{code}}</span></p>
+        <p class="bot">Đơn hàng của bạn sẽ sớm được giao từ 3-5 ngày!</p>
+        <button>
+          <a href="https://www.sachviet.click/searchOrder">Tra cứu đơn hàng</a>
+        </button>
+      </div>
+      <footer>
+        <div class="footer-info">
+          <img src="/style/image/logo.png" alt="" />
+          <p>214 Hà Huy Tập, Tân Lợi, TP.BMT , Đắk Lắk</p>
+          <a href="https://www.sachviet.click/">sachviet.click</a>
         </div>
-    </body>
+        <div class="footer-hotline">
+          <h3>SACHVIET Hotline: 0383476296</h3>
+          <p>sachviet@gmail.com</p>
+        </div>
+      </footer>
+    </div>
+  </body>
 </html>
