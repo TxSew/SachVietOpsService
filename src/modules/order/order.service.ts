@@ -217,7 +217,29 @@ export class OrderService {
         const page = props.page || 1;
         const limited = Number(limit);
         const offset = (Number(page) - 1) * limited;
-        const orders = await OrderModel.findAll({});
+        const orders = await OrderModel.findAll({
+            include: [
+                {
+                    attributes: ['fullName'],
+                    model: UserModel,
+                    as: 'users',
+                },
+                {
+                    model: OrderDetailModel,
+                    as: 'orderDetail',
+                    include: [
+                        {
+                            model: ProductModel,
+                            as: 'product',
+                        },
+                    ],
+                },
+            ],
+            order: [['createdAt', 'DESC']],
+            where: {
+                userID: id,
+            },
+        });
 
         const orderCurrent = await OrderModel.findAll({
             limit: limited,

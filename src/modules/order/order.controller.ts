@@ -4,7 +4,6 @@ import { OrderService } from './order.service';
 import { Order, OrderDto, TOrderResponse, TOrders } from 'src/submodules/models/OrderModel/Order';
 import { OrderQueryDto } from './dto/query-orders';
 import { Public } from 'src/guard/jwtGuard';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CurrentAccount } from 'src/guard/currentUser';
 
 @ApiTags('order')
