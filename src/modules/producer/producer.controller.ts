@@ -32,7 +32,7 @@ export class ProducerController {
     }
 
     @Put('update/:id')
-    updateProducer(@Param() id: number, @Body() data: Producer) {
+    updateProducer(@Param('id') id: number, @Body() data: Producer) {
         return this.producerService.update(Number(id), data);
     }
 

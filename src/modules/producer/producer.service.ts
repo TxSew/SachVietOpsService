@@ -61,13 +61,19 @@ export class ProducerService {
         }
     }
 
-    async update(id: number, producer: Producer) {
-        const ProducerData = await ProducerModel.update(producer, {
-            where: {
-                id: id,
-            },
-        });
-        return ProducerData;
+    async update(id: number, producer: Producer): Promise<any> {
+        try {
+            const ProducerData = await ProducerModel.update(producer, {
+                where: {
+                    id: Number(id),
+                },
+            }).then((res) => {
+                return res;
+            });
+            return ProducerData;
+        } catch (err) {
+            throw ResponseError.badInput(err);
+        }
     }
     async removeProducerTrashed(id: number) {
         const destroy = await ProducerModel.destroy({

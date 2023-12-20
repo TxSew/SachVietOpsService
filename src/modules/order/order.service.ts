@@ -166,7 +166,7 @@ export class OrderService {
             let results = await OrderModel.create(resultOrder).then(async (res) => {
                 let id = await res.get().id;
                 const data = {
-                    subject: 'Order successfully',
+                    subject: 'Đặt hàng thành công - SACHVIET.CLICK',
                     to: resultOrder.email,
                     template: './order',
                     context: {

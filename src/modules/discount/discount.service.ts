@@ -36,7 +36,9 @@ export class DiscountService {
         const findOne = await DiscountModel.findOne({
             where: { code: props.code },
         });
-
+        if (Number(props.discount) > Number(props.payment_limit)) {
+            throw ResponseError.badInput('discount maximum exceeded');
+        }
         if (findOne) {
             throw ResponseError.badInput('Discount already exits');
         }
